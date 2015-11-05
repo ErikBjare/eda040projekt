@@ -11,9 +11,6 @@ import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by von on 2015-11-05.
- */
 public class NewFrameTest {
     @Test
     public void sendReceive() throws IOException {

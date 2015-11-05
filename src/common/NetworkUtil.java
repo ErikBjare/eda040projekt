@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Created by von on 2015-11-05.
+ * Contains a bunch of static methods for simplifying socket code.
  */
 public class NetworkUtil {
     public static byte[] toBytes(int i){

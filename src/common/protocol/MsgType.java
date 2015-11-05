@@ -1,7 +1,7 @@
 package common.protocol;
 
 /**
- * Created by von on 2015-11-05.
+ * The type of a message. Encoded in the first byte of each message sent.
  */
 public enum MsgType {
     connect, synchronizeClock, newFrame, shutdown

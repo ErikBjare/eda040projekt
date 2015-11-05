@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
- * Created by von on 2015-11-05.
+ * Message containing a new captured frame.
  */
 public class NewFrame extends Message {
     int size;

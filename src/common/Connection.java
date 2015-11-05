@@ -3,7 +3,9 @@ package common;
 import java.net.Socket;
 
 /**
- * Created by von on 2015-11-05.
+ * Wraps a socket, hiding the implementation details of the communication protocol.
+ *
+ * Makes extending the application to use UDP simpler.
  */
 public class Connection {
     /**
