@@ -15,6 +15,7 @@ public class Connection {
      */
     public Connection(String host, int port){
 
+
     }
     /**
      * Create a new connection using an existing socket.
