@@ -5,6 +5,11 @@ package server;
  */
 public class Updater extends Thread {
     private Monitor monitor;
+
+    public Updater(Monitor monitor) {
+        this.monitor = monitor;
+    }
+
     public void run(){
 
     }
