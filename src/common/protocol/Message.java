@@ -7,10 +7,10 @@ import java.net.Socket;
  * Represents a single message sent between a client and server. Capable of writing itself to and repopulating its fields from a socket.
  */
 public abstract class Message {
-    byte msgType;
+    MsgType msgType;
 
     public Message(MsgType msgType) {
-        this.msgType = (byte)msgType.ordinal();
+        this.msgType = msgType;
     }
 
     /**
@@ -19,7 +19,7 @@ public abstract class Message {
      * @throws IOException
      */
     public void send(Socket socket) throws IOException {
-        socket.getOutputStream().write(msgType);
+        socket.getOutputStream().write((byte)msgType.ordinal());
         sendPayload(socket);
     }
 
