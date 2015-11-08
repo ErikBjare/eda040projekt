@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>client</OriginalElement>
+  <nodes>
+    <node x="634.0" y="45.0">client.camera.CameraSender</node>
+    <node x="631.0" y="218.0">client.camera.FrameBuffer</node>
+    <node x="24.0" y="-186.0">client.gui.GUIMain</node>
+    <node x="631.0" y="296.0">client.camera.CameraReceiver</node>
+    <node x="-562.0" y="-120.0">client.SyncMode</node>
+    <node x="-394.0" y="-121.0">client.Mode</node>
+    <node x="490.0" y="-115.0">client.gui.SyncModeControl</node>
+    <node x="628.0" y="461.0">client.camera.Animator</node>
+    <node x="145.0" y="358.0">client.camera.Camera</node>
+    <node x="490.0" y="-250.0">client.gui.CameraControl</node>
+    <node x="490.0" y="-47.0">client.gui.ModeControl</node>
+    <node x="-548.0" y="145.0">client.SystemMonitor</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="client.gui.GUIMain" target="client.SystemMonitor">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.camera.CameraReceiver" target="client.camera.Camera">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.SystemMonitor" target="client.SyncMode">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.camera.Camera" target="client.camera.FrameBuffer">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.gui.GUIMain" target="client.camera.Camera">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.SystemMonitor" target="client.camera.Camera">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.gui.GUIMain" target="client.gui.ModeControl">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.camera.Camera" target="client.camera.CameraReceiver">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.camera.Camera" target="client.camera.CameraSender">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.camera.Animator" target="client.camera.Camera">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.camera.CameraSender" target="client.SystemMonitor">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.camera.CameraSender" target="client.camera.Camera">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.gui.GUIMain" target="client.gui.CameraControl">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.SystemMonitor" target="client.Mode">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.gui.GUIMain" target="client.gui.SyncModeControl">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="client.camera.CameraReceiver" target="client.SystemMonitor">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6000000000000001" x="175.16666666666652" y="123.83333333333326" />
+  <SelectedNodes>
+    <node>client.camera.Camera</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

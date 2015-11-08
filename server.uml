@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>server</OriginalElement>
+  <nodes>
+    <node x="-599.0" y="173.0">server.Main</node>
+    <node x="95.0" y="180.0">server.Monitor</node>
+    <node x="125.0" y="-154.0">server.Receiver</node>
+    <node x="452.0" y="-13.0">server.Sender</node>
+    <node x="-294.0" y="120.0">server.CameraServer</node>
+    <node x="137.0" y="515.0">server.Updater</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="server.CameraServer" target="server.Receiver">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="server.Updater" target="server.Monitor">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="server.CameraServer" target="server.Updater">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="server.Main" target="server.CameraServer">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="server.Sender" target="server.Monitor">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="server.CameraServer" target="server.Sender">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="server.Receiver" target="server.Monitor">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="server.CameraServer" target="server.Monitor">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="100.5" y="293.5" />
+  <SelectedNodes>
+    <node>server.Updater</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
