@@ -1,5 +1,7 @@
-/**
- * Created by erb on 2015-11-08.
- */
+import static spark.Spark.*;
+
 public class SparkTest {
+    public static void main(String[] args) {
+        get("/hello", (req, res) -> "Hello World");
+    }
 }
