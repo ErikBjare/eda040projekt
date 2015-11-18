@@ -18,7 +18,7 @@ public class Camera {
     protected FrameBuffer buffer;
 
     public Camera(SystemMonitor system, String host, int port) throws IOException {
-        this.socket = socket = new Socket(host, port);
+        this.socket = new Socket(host, port);
         this.receiver = new CameraReceiver(system, socket, this);
         this.sender = new CameraSender(system, socket, this);
         this.buffer = new FrameBuffer();
@@ -27,7 +27,10 @@ public class Camera {
     }
 
     public void receiveFrame() throws IOException {
-        byte msgType = NetworkUtil.readByte(socket.getInputStream());
+        int resp = -1;
+        while (resp == -1) resp = socket.getInputStream().read();
+        if (resp == -1) throw new RuntimeException("Socket returned -1");
+        byte msgType = (byte) resp;
         System.out.println("New message - msgType: "+msgType);
         NewFrame mess = new NewFrame(socket);
         System.out.println("frame size: "+mess.size);

@@ -2,15 +2,18 @@ package client;
 
 import client.camera.Camera;
 
+import java.util.ArrayList;
+
 /**
  * Created by von on 2015-11-08.
  */
 public class Animator extends Thread {
-    protected System system;
-    protected Camera camera;
+    protected SystemMonitor system;
+    protected ArrayList<Camera> cameraList;
 
-    public Animator(System system, Camera camera) {
+
+    public Animator(SystemMonitor system, ArrayList<Camera> cameraList) {
         this.system = system;
-        this.camera = camera;
+        this.cameraList = cameraList;
     }
 }

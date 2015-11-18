@@ -21,27 +21,29 @@ public class Receiver extends Thread {
         this.socket = socket;
     }
     public void run(){
-        try{
-            InputStream s = socket.getInputStream();
-            int firstByte = s.read(); //Reads the first byte
-            switch (firstByte){
-                case 0: //Connect
-                    monitor.connect();
-                    break;
-                case 3: //Change Mode
-                    int nextByte = s.read();
-                    if(nextByte == 0) monitor.setMode(Mode.ForceIdle);
-                    else if( nextByte == 1) monitor.setMode(Mode.ForceMovie);
+        while (true){
+            try{
+                InputStream s = socket.getInputStream();
+                int firstByte = s.read(); //Reads the first byte
+                switch (firstByte){
+                    case 0: //Connect
+                        monitor.connect();
+                        break;
+                    case 3: //Change Mode
+                        int nextByte = s.read();
+                        if(nextByte == 0) monitor.setMode(Mode.ForceIdle);
+                        else if( nextByte == 1) monitor.setMode(Mode.ForceMovie);
 
-                    break;
-                case 4: //Shutdown message
-                    monitor.shutdown();
-                    break;
-                default:  //Wrong message type.
-                    break;
+                        break;
+                    case 4: //Shutdown message
+                        monitor.shutdown();
+                        break;
+                    default:  //Wrong message type.
+                        break;
+                }
+            }  catch (IOException e) {
+                e.printStackTrace();
             }
-        }  catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

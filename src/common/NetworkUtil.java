@@ -40,8 +40,8 @@ public class NetworkUtil {
         return toInt(buffer);
     }
     public static byte readByte(InputStream input) throws IOException {
-        byte[] buffer = new byte[1];
-        NetworkUtil.readAll(input, buffer);
-        return buffer[0];
+        int response = input.read();
+        if (response == -1) throw new RuntimeException("socket end");
+        return (byte)response;
     }
 }

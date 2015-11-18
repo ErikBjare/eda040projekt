@@ -7,4 +7,7 @@ import javax.swing.*;
  */
 public class SyncModeControl extends ButtonGroup {
 
+    public SyncModeControl(){
+    }
+
 }

@@ -11,38 +11,19 @@ import java.net.Socket;
 public class Sender extends Thread {
     private Monitor monitor;
     private Socket socket;
-    private long lastSentFrameTime;
 
 
-    public Sender(Monitor monitor, Socket socket) {
+
+    public Sender(Monitor monitor) {
         this.monitor = monitor;
-        this.socket = socket;
+
     }
 
     public void run() {
-
-        try {
-            getReadyToSend(monitor.mode);
+        while (true){
             monitor.sendNext();
-            lastSentFrameTime = System.currentTimeMillis();
-            
-            } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
-    private void getReadyToSend(Mode mode) throws InterruptedException {
-        long frameMsInterval;
-        if (mode == Mode.Idle || mode == Mode.ForceIdle) {
-            frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
-        } else {
-            frameMsInterval = 1000 / Constants.MOVIE_FRAMERATE;
-        }
-        long timeDiff = System.currentTimeMillis() - lastSentFrameTime;
 
-        if (timeDiff < frameMsInterval) {
-            wait(frameMsInterval - timeDiff);
-        }
-
-    }
 }
