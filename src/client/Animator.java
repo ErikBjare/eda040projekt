@@ -1,4 +1,6 @@
-package client.camera;
+package client;
+
+import client.camera.Camera;
 
 /**
  * Created by von on 2015-11-08.
