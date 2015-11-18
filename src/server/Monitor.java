@@ -16,6 +16,7 @@ public class Monitor {
     private final Socket sendSocket;
     AxisM3006V camera;
     byte[] lastFrame;
+    boolean newPicArrived;
     boolean motionDetected;
     long timeStamp;
     Mode mode;
@@ -28,7 +29,7 @@ public class Monitor {
     }
 
     public synchronized void newFrame(long time, boolean motion, byte[] frame){
-
+        newPicArrived = true; //A new picture available
     }
     /* Connects the monitor to the camera */
     public synchronized boolean connect(){
@@ -45,6 +46,7 @@ public class Monitor {
             getReadyToSend();
             Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp);
             mess.send(sendSocket);
+            newPicArrived = false;
 
         } catch (InterruptedException e) {
             e.printStackTrace();
