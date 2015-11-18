@@ -13,9 +13,9 @@ import java.util.Arrays;
  * Message containing a new captured frame.
  */
 public class NewFrame extends Message {
-    int size;
+    public int size;
     byte[] frame;
-    long timestamp;
+    public long timestamp;
 
     @Override
     public boolean equals(Object o) {

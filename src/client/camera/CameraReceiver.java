@@ -2,6 +2,7 @@ package client.camera;
 
 import client.SystemMonitor;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -18,5 +19,14 @@ public class CameraReceiver extends Thread {
         this.camera = camera;
     }
 
-
+    @Override
+    public void run() {
+        while (true){
+            try {
+                camera.receiveFrame();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

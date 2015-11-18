@@ -39,4 +39,9 @@ public class NetworkUtil {
         NetworkUtil.readAll(input, buffer);
         return toInt(buffer);
     }
+    public static byte readByte(InputStream input) throws IOException {
+        byte[] buffer = new byte[1];
+        NetworkUtil.readAll(input, buffer);
+        return buffer[0];
+    }
 }
