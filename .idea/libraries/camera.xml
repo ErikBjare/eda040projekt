@@ -2,6 +2,8 @@
   <library name="camera">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/jar/camera.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/mockito-all-1.10.19.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/junit-4.7.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

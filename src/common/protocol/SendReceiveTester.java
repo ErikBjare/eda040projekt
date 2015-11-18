@@ -16,6 +16,7 @@ public class SendReceiveTester extends Thread {
      * Helper method for testing that a message can be written to the network and correctly reconstructed.
      */
     public static void assertSendRecvEqual(Message original, Function<Socket, Message> constructor) throws IOException {
+
         // Make a socket which stores all output that is sent through it
         Socket socket = mock(Socket.class);
         ByteArrayOutputStream output = new ByteArrayOutputStream();

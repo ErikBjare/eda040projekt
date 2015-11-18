@@ -12,6 +12,7 @@ import java.util.function.Function;
 import static org.junit.Assert.*;
 
 public class NewFrameTest {
+
     @Test
     public void sendReceive() throws IOException {
         Random random = new Random();
