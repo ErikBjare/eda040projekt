@@ -30,7 +30,7 @@ public class ModeChange extends Message {
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
-        out.write(newMode.ordinal());
+        out.write(NetworkUtil.toBytes(newMode.ordinal()));
         out.write(NetworkUtil.toBytes(timestamp));
     }
 
@@ -39,5 +39,24 @@ public class ModeChange extends Message {
         InputStream input = socket.getInputStream();
         newMode = Mode.fromInteger(NetworkUtil.readInt(input));
         timestamp = NetworkUtil.readLong(input);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ModeChange that = (ModeChange) o;
+
+        if (timestamp != that.timestamp) return false;
+        return newMode == that.newMode;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = newMode != null ? newMode.hashCode() : 0;
+        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+        return result;
     }
 }
