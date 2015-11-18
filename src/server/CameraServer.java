@@ -7,9 +7,9 @@ import java.net.Socket;
  */
 public class CameraServer {
     public CameraServer(Socket socket) {
-        monitor = new Monitor();
+        monitor = new Monitor(socket);
         receiver = new Receiver(monitor, socket);
-        sender = new Sender(monitor, socket);
+        sender = new Sender(monitor);
         updater = new Updater(monitor);
     }
 

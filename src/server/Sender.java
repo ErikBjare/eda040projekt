@@ -1,5 +1,8 @@
 package server;
 
+import client.Mode;
+import common.protocol.Constants;
+
 import java.net.Socket;
 
 /**
@@ -9,12 +12,17 @@ public class Sender extends Thread {
     private Monitor monitor;
     private Socket socket;
 
-    public Sender(Monitor monitor, Socket socket) {
+
+
+    public Sender(Monitor monitor) {
         this.monitor = monitor;
-        this.socket = socket;
-    }
-
-    public void run(){
 
     }
+
+    public void run() {
+
+                        monitor.sendNext();
+                      }
+
+
 }
