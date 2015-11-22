@@ -1,7 +1,6 @@
 package server;
 
 import client.Mode;
-import client.SystemMonitor;
 import common.protocol.Constants;
 import common.protocol.Message;
 import common.protocol.NewFrame;
@@ -48,7 +47,7 @@ public class Monitor {
         hardware.destroy();
         notifyAll();
     }
-    public synchronized void sendNext(){
+    public synchronized void sendNext() throws InterruptedException {
         try {
             System.out.print("Getting ready to send");
             getReadyToSend();
@@ -58,9 +57,6 @@ public class Monitor {
             mess.send(sendSocket);
             newPicArrived = false;
             System.out.println("Finished sending");
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

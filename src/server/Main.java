@@ -13,19 +13,13 @@ public class Main {
         try {
             sock = new ServerSocket(5656);
             System.out.println("Started server");
-            try {
-                Socket client = sock.accept();
-                System.out.println("Accepted connection");
-                new CameraServer(client);
-                System.out.println("Exited");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Socket client = sock.accept();
+            System.out.println("Accepted connection");
+            CameraServer cameraServer = new CameraServer(client);
+            cameraServer.join();
+            System.out.println("Exited");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }
