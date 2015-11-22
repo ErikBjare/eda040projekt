@@ -45,6 +45,18 @@ public class NewFrame extends Message {
         this.timestamp = timestamp;
     }
 
+    public byte[] getFrame() {
+        return frame;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
     @Override
     public String toString() {
         return "NewFrame{" +
