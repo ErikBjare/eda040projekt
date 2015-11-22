@@ -78,11 +78,12 @@ public class GUIMain extends JFrame implements Observer {
         title = new JLabel("Sync Mode", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
+        cams = new CameraControl[monitor.getNrCameras()];
+        for(int i = 0; i < monitor.getNrCameras(); i++){
+            cams[i] = new CameraControl();
+            add(cams[i], BorderLayout.SOUTH);
+        }
 
-        cams = new CameraControl[1];
-        cams[0] = new CameraControl();
-
-        add(cams[0], BorderLayout.SOUTH);
 
         update(monitor, this);
 
@@ -95,14 +96,16 @@ public class GUIMain extends JFrame implements Observer {
     }
 
     private void render() {
-        renderImage(0);
+        for(int i = 0; i < cams.length; i++){
+            renderImage(i);
+        }
     }
 
     private void renderImage(int i) {
      synchronized (monitor){
          byte[] img = monitor.getDisplayFrame(i);
          if(img != null)
-         cams[i].renderImage(img);
+         cams[i].displayImage(img);
 
      }
     }
@@ -111,8 +114,8 @@ public class GUIMain extends JFrame implements Observer {
         SystemMonitor monitor = new SystemMonitor();
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
         Camera [] cameras = {new Camera(monitor, "192.168.0.106", 5656)};
-        GUIMain gui = new GUIMain("title", monitor);
         monitor.init(cameras);
+        GUIMain gui = new GUIMain("title", monitor);
         //monitor.addObserver(gui);
     }
 }

@@ -17,13 +17,22 @@ public class CameraControl extends JPanel implements Observer {
         icon = new ImageIcon();
         delay = new JLabel();
         this.setSize(200, 200);
+        setLayout(new BorderLayout());
+        add(new JLabel(icon), BorderLayout.NORTH);
+        add(delay, BorderLayout.SOUTH);
+
     }
 
-    public void renderImage(byte[] image){
+    public void displayImage(byte[] image){
         Image img = getToolkit().createImage(image);
         getToolkit().prepareImage(img, -1, -1, null);
         icon.setImage(img);
         icon.paintIcon(this, this.getGraphics(), 5, 5);
+    }
+
+    public void displayDelay(long delay){
+        this.delay.setText(Long.toString(delay));
+
     }
 
     public void update(Observable observable, Object o) {
