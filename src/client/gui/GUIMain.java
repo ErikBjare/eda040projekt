@@ -113,9 +113,9 @@ public class GUIMain extends JFrame implements Observer {
     public static void main(String[] args) throws IOException {
         SystemMonitor monitor = new SystemMonitor();
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
-        Camera [] cameras = {new Camera(monitor, "192.168.0.106", 5656)};
+        Camera [] cameras = {new Camera(monitor, "localhost", 5656)};
         monitor.init(cameras);
         GUIMain gui = new GUIMain("title", monitor);
-        //monitor.addObserver(gui);
+        monitor.addObserver(gui);
     }
 }
