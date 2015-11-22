@@ -16,4 +16,8 @@ public class Animator extends Thread {
         this.system = system;
         this.cameraList = cameraList;
     }
+    public void run(){
+
+
+    }
 }
