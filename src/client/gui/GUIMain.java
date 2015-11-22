@@ -112,7 +112,7 @@ public class GUIMain extends JFrame implements Observer {
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
         Camera [] cameras = {new Camera(monitor, "192.168.0.106", 5656)};
         GUIMain gui = new GUIMain("title", monitor);
-        monitor.setCameraList(cameras);
+        monitor.init(cameras);
         //monitor.addObserver(gui);
     }
 }
