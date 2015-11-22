@@ -34,9 +34,11 @@ public class Monitor {
         lastFrame = frame.clone();
         timeStamp = time;
         motionDetected = motion;
+        notifyAll();
     }
     /* Connects the monitor to the camera */
     public synchronized boolean connect(){
+        notifyAll();
         return  hardware.connect();
     }
     /* Initiates camera shutdown sequence */
@@ -44,6 +46,7 @@ public class Monitor {
         //TODO define whether or not the camera should be destroyed on shutdown
         hardware.close();
         hardware.destroy();
+        notifyAll();
     }
     public synchronized void sendNext(){
         try {
@@ -93,6 +96,6 @@ public class Monitor {
             else wait();
         }
         System.out.println("");
-
+        notifyAll();
     }
 }
