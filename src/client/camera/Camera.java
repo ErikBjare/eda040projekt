@@ -47,7 +47,7 @@ public class Camera {
 
     }public synchronized void updateCurrentFrame(){
 
-    }public synchronized FrameBuffer getBuffer(){
+    }public FrameBuffer getBuffer(){
         return buffer;
     }
 

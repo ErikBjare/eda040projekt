@@ -23,8 +23,10 @@ public class SystemMonitor extends Observable {
 
 
     public synchronized void displayFrame(int cameraId, byte[] imageCopy){
+        System.out.println("performing displayFrame");
         currentFrames[cameraId] = imageCopy;
-        notifyObservers();
+        System.out.println(this.countObservers());
+        notifyObservers(this);
     }
 
     public synchronized void registerDelay(long captureTime){
