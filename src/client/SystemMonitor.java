@@ -48,4 +48,7 @@ public class SystemMonitor extends Observable {
     }
 
 
+    public synchronized byte[] getDisplayFrame(int i) {
+        return null;
+    }
 }
