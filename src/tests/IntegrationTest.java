@@ -1,6 +1,5 @@
 import client.SystemMonitor;
 import client.camera.Camera;
-import org.junit.After;
 import org.junit.Test;
 import server.CameraServer;
 
@@ -14,16 +13,6 @@ import java.net.UnknownHostException;
  * Created by erb on 2015-11-22.
  */
 public class IntegrationTest {
-
-    @After
-    public void tearDown() {
-        // Give some time to release resources
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
     public void startThenStopClient() {
