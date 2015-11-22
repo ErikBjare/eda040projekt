@@ -93,7 +93,7 @@ public class GUIMain extends JFrame implements Observer {
     }
 
     public void update(Observable observable, Object o) {
-        System.out.println("Updating GUI");
+//        System.out.println("Updating GUI");
         SwingUtilities.invokeLater(this::render);
     }
 
@@ -117,16 +117,16 @@ public class GUIMain extends JFrame implements Observer {
         SystemMonitor monitor = new SystemMonitor();
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
         Camera [] cameras = {new Camera(monitor, "localhost", 5656)};
-        System.out.println("LOL ANIMATOR");
+//        System.out.println("LOL ANIMATOR");
         Animator anim = new Animator(monitor, cameras);
-        System.out.println("First");
+//        System.out.println("First");
         monitor.init(cameras);
-        System.out.println("Second");
+//        System.out.println("Second");
         anim.start();
-        System.out.println("Third");
+//        System.out.println("Third");
         GUIMain gui = new GUIMain("title", monitor);
-        System.out.println("Fourth");
+//        System.out.println("Fourth");
         monitor.addObserver(gui);
-        System.out.println("Fifth");
+//        System.out.println("Fifth");
     }
 }

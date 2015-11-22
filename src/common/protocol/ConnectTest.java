@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.Random;
 
 public class ConnectTest {
+
+
     @Test
     public void sendReceive() throws IOException {
         Message mess = new Connect(System.currentTimeMillis());

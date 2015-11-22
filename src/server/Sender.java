@@ -20,7 +20,7 @@ public class Sender extends Thread {
         while (!Thread.currentThread().isInterrupted()){
             try {
                 monitor.sendNext();
-                sleep(1000);
+              //  sleep(1000);
             } catch (InterruptedException e) {
                 System.out.println("Sender was interrupted");
                 break;

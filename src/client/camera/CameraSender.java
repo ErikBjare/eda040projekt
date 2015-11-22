@@ -17,4 +17,5 @@ public class CameraSender extends Thread {
         this.socket = socket;
         this.camera = camera;
     }
+
 }
