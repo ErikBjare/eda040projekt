@@ -26,7 +26,7 @@ class ImagePanel extends JPanel {
 	ImageIcon icon;
 
 	public ImagePanel() {
-		super();
+
 		icon = new ImageIcon();
 		JLabel label = new JLabel(icon);
 		add(label, BorderLayout.CENTER);
@@ -35,14 +35,14 @@ class ImagePanel extends JPanel {
 
 	public void refresh(byte[] data) {
 		Image theImage = getToolkit().createImage(data);
-		getToolkit().prepareImage(theImage,-1,-1,null);	    
+		getToolkit().prepareImage(theImage,-1,-1,null);
 		icon.setImage(theImage);
 		icon.paintIcon(this, this.getGraphics(), 5, 5);
 	}
 }
 
-class ButtonHandler implements ActionListener {
 
+	class ButtonHandler implements ActionListener {
 	GUI gui;
 
 	public ButtonHandler(GUI gui) {

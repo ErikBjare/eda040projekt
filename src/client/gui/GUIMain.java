@@ -17,11 +17,12 @@ public class GUIMain extends JFrame implements Observer {
     List<CameraControl> cameras;
     SyncModeControl syncButtons;
     ModeControl modeButtons;
-    SystemMonitor system;
+    SystemMonitor monitor;
+    CameraControl[] cams;
 
-    public GUIMain(String s, SystemMonitor system) throws HeadlessException {
+    public GUIMain(String s, SystemMonitor monitor) throws HeadlessException {
         super(s);
-        this.system = system;
+        this.monitor = monitor;
         syncButtons = new SyncModeControl();
         modeButtons = new ModeControl();
         setMinimumSize(new Dimension(100, 100));
@@ -77,21 +78,44 @@ public class GUIMain extends JFrame implements Observer {
         title = new JLabel("Sync Mode", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
+        cams = new CameraControl[monitor.getNrCameras()];
+        for(int i = 0; i < monitor.getNrCameras(); i++){
+            cams[i] = new CameraControl();
+            add(cams[i], BorderLayout.SOUTH);
+        }
+
+
+        update(monitor, this);
 
         pack();
         setVisible(true);
     }
 
     public void update(Observable observable, Object o) {
+        SwingUtilities.invokeLater(this::render);
+    }
 
+    private void render() {
+        for(int i = 0; i < cams.length; i++){
+            renderImage(i);
+        }
+    }
+
+    private void renderImage(int i) {
+     synchronized (monitor){
+         byte[] img = monitor.getDisplayFrame(i);
+         if(img != null)
+         cams[i].displayImage(img);
+
+     }
     }
 
     public static void main(String[] args) throws IOException {
         SystemMonitor monitor = new SystemMonitor();
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
-        Camera [] cameras = {new Camera(monitor, "localhost", 5656)};
-        //GUIMain gui = new GUIMain("title", monitor);
-        monitor.setCameraList(cameras);
+        Camera [] cameras = {new Camera(monitor, "192.168.0.106", 5656)};
+        monitor.init(cameras);
+        GUIMain gui = new GUIMain("title", monitor);
         //monitor.addObserver(gui);
     }
 }

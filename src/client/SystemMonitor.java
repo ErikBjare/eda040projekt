@@ -9,16 +9,21 @@ import java.util.Observable;
  * Created by simon on 2015-11-08.
  */
 public class SystemMonitor extends Observable {
-    private ArrayList<Camera> cameraList;
+    private Camera[] cameraList;
     private byte[][] currentFrames;
     private Mode mode;
     private SyncMode syncMode;
-    public SystemMonitor(){
 
+
+    public SystemMonitor(){
+        mode = Mode.Auto;
+        syncMode = SyncMode.Auto;
 
     }
 
+
     public synchronized void displayFrame(int cameraId, byte[] imageCopy){
+        currentFrames[cameraId] = imageCopy;
 
     }
 
@@ -31,21 +36,26 @@ public class SystemMonitor extends Observable {
     }
 
     public synchronized void setSyncMode(SyncMode mode){
-
+        this.syncMode = mode;
     }
 
     public synchronized void setMode(Mode mode){
-
+        this.mode = mode;
     }
 
 
-    public synchronized void getNrCameras(){
+    public synchronized int getNrCameras(){
+        return cameraList.length;
 
     }
 
-    public synchronized void setCameraList(Camera[] cameras){
-
+    public synchronized void init(Camera[] cameras){
+        cameraList = cameras;
+        currentFrames = new byte[cameraList.length][];
     }
 
 
+    public synchronized byte[] getDisplayFrame(int i) {
+        return currentFrames[i];
+    }
 }
