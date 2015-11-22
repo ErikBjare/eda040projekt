@@ -26,7 +26,7 @@ public class Camera {
         sender.start();
     }
 
-    public void receiveFrame() throws IOException {
+    public synchronized void receiveFrame() throws IOException {
         int resp = -1;
         while (resp == -1) resp = socket.getInputStream().read();
         if (resp == -1) throw new RuntimeException("Socket returned -1");
@@ -35,7 +35,12 @@ public class Camera {
         NewFrame mess = new NewFrame(socket);
         System.out.println("frame size: "+mess.size);
         System.out.println("timestamp: "+mess.timestamp);
+        buffer.addFrame(mess);
 
 
+    }public synchronized void updateCurrentFrame(){
+
+    }public synchronized FrameBuffer getBuffer(){
+        return buffer;
     }
 }

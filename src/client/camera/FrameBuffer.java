@@ -16,7 +16,7 @@ public class FrameBuffer {
         this.frames = new ArrayList<NewFrame>();
     }
 
-    public void addFrame(NewFrame frame){
+    public synchronized void addFrame(NewFrame frame){
         frames.add(frame);
 
 
@@ -25,15 +25,15 @@ public class FrameBuffer {
 //    public byte[] getFirstFrame(){
 //        return frames.get(0).getFrame();
 //    }
-    public byte[] removeFirstFrame(){
+    public synchronized byte[] removeFirstFrame(){
         if(frames.size() < 1) return null;
         return frames.remove(0).getFrame();
     }
-    public byte[] getFrame(int i){
+    public synchronized byte[] getFrame(int i){
         if(frames.size() < 1) return null;
         return frames.get(i).getFrame();
     }
-    public long getNextTime(){
+    public synchronized long getNextTime(){
         if(frames.size() < 1) return -1;
         return frames.get(0).getTimestamp();
     }
