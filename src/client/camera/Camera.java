@@ -35,5 +35,7 @@ public class Camera {
         NewFrame mess = new NewFrame(socket);
         System.out.println("frame size: "+mess.size);
         System.out.println("timestamp: "+mess.timestamp);
+
+
     }
 }
