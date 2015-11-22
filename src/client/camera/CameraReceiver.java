@@ -21,7 +21,7 @@ public class CameraReceiver extends Thread {
 
     @Override
     public void run() {
-        while (true){
+        while (!Thread.currentThread().isInterrupted()){
             try {
                 camera.receiveFrame();
             } catch (IOException e) {

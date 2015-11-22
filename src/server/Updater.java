@@ -1,6 +1,5 @@
 package server;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.XPath;
 import se.lth.cs.eda040.fakecamera.AxisM3006V;
 
 /**
@@ -16,11 +15,18 @@ public class Updater extends Thread {
     }
 
 
-    public void run(){
-        while (true) {
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
             int size = AxisM3006V.IMAGE_BUFFER_SIZE;
             byte[] frame = new byte[size];
-            int len = hardware.getJPEG(frame,0);
+            try {
+                int len = hardware.getJPEG(frame, 0);
+            } catch (Error e) {
+                if (e.getMessage().startsWith("Interrupted")) {
+                    // A bullshit error that is really an InterruptedException from a Thread.sleep()
+                    break;
+                }
+            }
             monitor.newFrame(System.currentTimeMillis(), hardware.motionDetected(), frame);
         }
 

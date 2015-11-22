@@ -1,12 +1,9 @@
 package server;
 
 import client.Mode;
-import common.NetworkUtil;
-import common.protocol.MsgType;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.SwitchPoint;
 import java.net.Socket;
 
 /**
@@ -20,19 +17,25 @@ public class Receiver extends Thread {
         this.monitor = monitor;
         this.socket = socket;
     }
+
     public void run(){
-        while (true){
-            try{
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
                 InputStream s = socket.getInputStream();
+
+                // This is necessary in order to be able to stop and then join the thread when
+                // there are is no incoming data since s.read() is otherwise blocking.
+                socket.setSoTimeout(1000);
+
                 int firstByte = s.read(); //Reads the first byte
-                switch (firstByte){
+                switch (firstByte) {
                     case 0: //Connect
                         monitor.connect();
                         break;
                     case 3: //Change Mode
                         int nextByte = s.read();
-                        if(nextByte == 0) monitor.setMode(Mode.ForceIdle);
-                        else if( nextByte == 1) monitor.setMode(Mode.ForceMovie);
+                        if (nextByte == 0) monitor.setMode(Mode.ForceIdle);
+                        else if (nextByte == 1) monitor.setMode(Mode.ForceMovie);
 
                         break;
                     case 4: //Shutdown message
@@ -41,7 +44,9 @@ public class Receiver extends Thread {
                     default:  //Wrong message type.
                         break;
                 }
-            }  catch (IOException e) {
+            } catch (java.net.SocketTimeoutException e) {
+                continue;
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

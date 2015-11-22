@@ -1,8 +1,5 @@
 package server;
 
-import client.Mode;
-import common.protocol.Constants;
-
 import java.net.Socket;
 
 /**
@@ -20,8 +17,13 @@ public class Sender extends Thread {
     }
 
     public void run() {
-        while (true){
-            monitor.sendNext();
+        while (!Thread.currentThread().isInterrupted()){
+            try {
+                monitor.sendNext();
+            } catch (InterruptedException e) {
+                System.out.println("Sender was interrupted");
+                break;
+            }
         }
     }
 

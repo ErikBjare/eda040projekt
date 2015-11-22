@@ -10,7 +10,12 @@ import java.net.Socket;
 public class CameraServer {
     private final AxisM3006V hardware;
 
-    public CameraServer(Socket socket) throws InterruptedException {
+    Monitor monitor;
+    Receiver receiver;
+    Sender sender;
+    Updater updater;
+
+    public CameraServer(Socket socket) {
         this.hardware = new AxisM3006V();
         hardware.init();
         hardware.connect();
@@ -21,16 +26,26 @@ public class CameraServer {
         receiver.start();
         sender.start();
         updater.start();
-
-        receiver.join();
-        sender.join();
-        updater.join();
     }
 
-    Monitor monitor;
-    Receiver receiver;
-    Sender sender;
-    Updater updater;
+    public void stop() {
+        receiver.interrupt();
+        sender.interrupt();
+        updater.interrupt();
+    }
+
+    public void join() {
+        try {
+            receiver.join();
+            System.out.println("Receiver thread joined");
+            sender.join();
+            System.out.println("Sender thread joined");
+            updater.join();
+            System.out.println("Updater thread joined");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

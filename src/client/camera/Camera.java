@@ -1,12 +1,12 @@
 package client.camera;
 
 import client.SystemMonitor;
-import common.NetworkUtil;
-import common.protocol.Message;
 import common.protocol.NewFrame;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Created by von on 2015-11-05.
@@ -17,8 +17,14 @@ public class Camera {
     protected CameraSender sender;
     protected FrameBuffer buffer;
 
-    public Camera(SystemMonitor system, String host, int port) throws IOException {
-        this.socket = new Socket(host, port);
+    public Camera(SystemMonitor system, String host, int port) throws UnknownHostException, ConnectException {
+        try {
+            this.socket = new Socket(host, port);
+        } catch (ConnectException | UnknownHostException e) {
+            throw e;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.receiver = new CameraReceiver(system, socket, this);
         this.sender = new CameraSender(system, socket, this);
         this.buffer = new FrameBuffer();
@@ -35,5 +41,19 @@ public class Camera {
         NewFrame mess = new NewFrame(socket);
         System.out.println("frame size: "+mess.size);
         System.out.println("timestamp: "+mess.timestamp);
+    }
+
+    public void stop() {
+        receiver.interrupt();
+        sender.interrupt();
+    }
+
+    public void join() {
+        try {
+            receiver.join();
+            sender.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
