@@ -26,6 +26,7 @@ public class SystemMonitor extends Observable {
         System.out.println("performing displayFrame");
         currentFrames[cameraId] = imageCopy;
         System.out.println(this.countObservers());
+        setChanged();
         notifyObservers(this);
     }
 
