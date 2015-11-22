@@ -1,5 +1,6 @@
 package client.gui;
 
+import client.Animator;
 import client.SystemMonitor;
 import client.camera.Camera;
 
@@ -114,7 +115,10 @@ public class GUIMain extends JFrame implements Observer {
         SystemMonitor monitor = new SystemMonitor();
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
         Camera [] cameras = {new Camera(monitor, "localhost", 5656)};
+        Animator anim = new Animator(monitor, cameras);
+
         monitor.init(cameras);
+        anim.start();
         GUIMain gui = new GUIMain("title", monitor);
         monitor.addObserver(gui);
     }

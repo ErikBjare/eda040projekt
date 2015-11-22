@@ -44,6 +44,7 @@ public class Camera {
         buffer.addFrame(mess);
 
 
+
     }public synchronized void updateCurrentFrame(){
 
     }public synchronized FrameBuffer getBuffer(){

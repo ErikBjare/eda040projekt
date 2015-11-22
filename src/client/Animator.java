@@ -16,11 +16,16 @@ public class Animator extends Thread {
 
 
 
-    public Animator(SystemMonitor system, ArrayList<Camera> cameraList) {
+    public Animator(SystemMonitor system, Camera[] cameraList) {
         this.system = system;
 
 //        this.cameraList = cameraList;
-        this.frameBuffers = (FrameBuffer[])cameraList.stream().map(c->c.getBuffer()).toArray();
+        this.frameBuffers = new FrameBuffer[cameraList.length];
+
+        for (int i = 0; i < cameraList.length; i++) {
+            frameBuffers[i] = cameraList[i].getBuffer();
+        }
+
     }
     public void run(){
         //TODO add more cameras
@@ -28,6 +33,7 @@ public class Animator extends Thread {
         long timeStamp = frameBuffers[0].getNextTime();
         byte []next = frameBuffers[0].removeFirstFrame();
         if(next != null && timeStamp > -1){
+            System.out.println("Displaying frame, found a picture in the buffer");
             system.displayFrame(0, next);
 
         }

@@ -24,7 +24,7 @@ public class SystemMonitor extends Observable {
 
     public synchronized void displayFrame(int cameraId, byte[] imageCopy){
         currentFrames[cameraId] = imageCopy;
-
+        notifyObservers();
     }
 
     public synchronized void registerDelay(long captureTime){
