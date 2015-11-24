@@ -28,6 +28,9 @@ public class Sender extends Thread {
             } catch (IOException e) {
                 System.out.println("Socket closed due to IOException.");
                 break;
+            } catch (ShutdownException e) {
+                this.interrupt();
+                break;
             }
         }
     }

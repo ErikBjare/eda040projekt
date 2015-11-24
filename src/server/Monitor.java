@@ -1,9 +1,7 @@
 package server;
 
 import client.Mode;
-import common.protocol.Constants;
-import common.protocol.Message;
-import common.protocol.NewFrame;
+import common.protocol.*;
 import se.lth.cs.eda040.fakecamera.AxisM3006V;
 
 import java.io.IOException;
@@ -21,13 +19,15 @@ public class Monitor {
     long timeStamp;
     Mode mode;
     private long lastSentFrameTime;
+    private boolean isShutdown = false;
 
     public Monitor(Socket sendSocket, AxisM3006V hardware) {
         this.sendSocket = sendSocket;
         this.hardware = hardware;
     }
 
-    public synchronized void newFrame(long time, boolean motion, byte[] frame) {
+    public synchronized void newFrame(long time, boolean motion, byte[] frame) throws ShutdownException {
+        if (isShutdown) throw new ShutdownException();
         //System.out.println("New frame from hardware");
         newPicArrived = true; //A new picture available
         lastFrame = frame.clone();
@@ -37,7 +37,8 @@ public class Monitor {
     }
 
     /* Connects the monitor to the camera */
-    public synchronized boolean connect() {
+    public synchronized boolean connect() throws ShutdownException {
+        if (isShutdown) throw new ShutdownException();
         notifyAll();
         return hardware.connect();
     }
@@ -45,12 +46,14 @@ public class Monitor {
     /* Initiates camera shutdown sequence */
     public synchronized void shutdown() {
         //TODO define whether or not the camera should be destroyed on shutdown
+        isShutdown = true;
         hardware.close();
         hardware.destroy();
         notifyAll();
     }
 
-    public synchronized void sendNext() throws InterruptedException, IOException {
+    public synchronized void sendNext() throws InterruptedException, IOException, ShutdownException {
+        if (isShutdown) throw new ShutdownException();
         System.out.print("Getting ready to send");
         getReadyToSend();
         System.out.println("Creating message");
@@ -66,22 +69,18 @@ public class Monitor {
 
     }
 
-    private void getReadyToSend() throws InterruptedException {
+    private void getReadyToSend() throws InterruptedException, ShutdownException {
+        if (isShutdown) throw new ShutdownException();
         long frameMsInterval;
         if (mode == Mode.Idle || mode == Mode.ForceIdle) {
             frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
         } else {
             frameMsInterval = 1000 / Constants.MOVIE_FRAMERATE;
         }
-        long timeDiff = System.currentTimeMillis() - lastSentFrameTime;
-
-        if (timeDiff < frameMsInterval) {
-            wait(frameMsInterval - timeDiff);
-        }
-
         long now = System.currentTimeMillis();
         long wakeup = lastSentFrameTime + frameMsInterval;
-        while (!newPicArrived || now < wakeup) {
+        while (!newPicArrived || now < wakeup || isShutdown) {
+            if (isShutdown) throw new ShutdownException();
             now = System.currentTimeMillis();
             long timeLeft = wakeup - now;
             System.out.print(".");

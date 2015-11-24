@@ -12,12 +12,14 @@ public class Main {
         ServerSocket sock = null;
         try {
             sock = new ServerSocket(5656);
-            System.out.println("Started server");
-            Socket client = sock.accept();
-            System.out.println("Accepted connection");
-            CameraServer cameraServer = new CameraServer(client);
-            cameraServer.join();
-            System.out.println("Exited");
+            while (true) {
+                System.out.println("Started listening for new client");
+                Socket client = sock.accept();
+                System.out.println("Accepted connection");
+                CameraServer cameraServer = new CameraServer(client);
+                cameraServer.join();
+                System.out.println("Finished with client");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

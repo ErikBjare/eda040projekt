@@ -18,7 +18,7 @@ public class Receiver extends Thread {
         this.socket = socket;
     }
 
-    public void run(){
+    public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 InputStream s = socket.getInputStream();
@@ -47,7 +47,10 @@ public class Receiver extends Thread {
             } catch (java.net.SocketTimeoutException e) {
                 continue;
             } catch (IOException e) {
-                e.printStackTrace();
+                monitor.shutdown();
+                break;
+            } catch (ShutdownException e) {
+                break;
             }
         }
     }
