@@ -118,7 +118,7 @@ public class GUIMain extends JFrame implements Observer {
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
         Camera [] cameras = {new Camera(monitor, "localhost", 5656)};
 //        System.out.println("LOL ANIMATOR");
-        Animator anim = new Animator(monitor, cameras);
+        Animator anim = new Animator(monitor);
 //        System.out.println("First");
         monitor.init(cameras);
 //        System.out.println("Second");
