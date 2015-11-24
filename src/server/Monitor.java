@@ -22,12 +22,12 @@ public class Monitor {
     Mode mode;
     private long lastSentFrameTime;
 
-    public Monitor(Socket sendSocket, AxisM3006V hardware){
+    public Monitor(Socket sendSocket, AxisM3006V hardware) {
         this.sendSocket = sendSocket;
         this.hardware = hardware;
     }
 
-    public synchronized void newFrame(long time, boolean motion, byte[] frame){
+    public synchronized void newFrame(long time, boolean motion, byte[] frame) {
         //System.out.println("New frame from hardware");
         newPicArrived = true; //A new picture available
         lastFrame = frame.clone();
@@ -35,40 +35,37 @@ public class Monitor {
         motionDetected = motion;
         notifyAll();
     }
+
     /* Connects the monitor to the camera */
-    public synchronized boolean connect(){
+    public synchronized boolean connect() {
         notifyAll();
-        return  hardware.connect();
+        return hardware.connect();
     }
+
     /* Initiates camera shutdown sequence */
-    public synchronized void shutdown(){
+    public synchronized void shutdown() {
         //TODO define whether or not the camera should be destroyed on shutdown
         hardware.close();
         hardware.destroy();
         notifyAll();
     }
-    public synchronized void sendNext() throws InterruptedException {
-        try {
-            System.out.print("Getting ready to send");
-            getReadyToSend();
-            System.out.println("Creating message");
-            Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp);
-            System.out.println("Sending message");
-            mess.send(sendSocket);
-            newPicArrived = false;
-            System.out.println("Finished sending");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-
+    public synchronized void sendNext() throws InterruptedException, IOException {
+        System.out.print("Getting ready to send");
+        getReadyToSend();
+        System.out.println("Creating message");
+        Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp);
+        System.out.println("Sending message");
+        mess.send(sendSocket);
+        newPicArrived = false;
+        System.out.println("Finished sending");
         lastSentFrameTime = System.currentTimeMillis();
+    }
 
+    public synchronized void setMode(Mode newMode) {
 
     }
-    public synchronized void setMode(Mode newMode){
 
-    }
     private void getReadyToSend() throws InterruptedException {
         long frameMsInterval;
         if (mode == Mode.Idle || mode == Mode.ForceIdle) {

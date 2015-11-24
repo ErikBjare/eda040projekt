@@ -1,5 +1,6 @@
 package server;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -23,6 +24,9 @@ public class Sender extends Thread {
               //  sleep(1000);
             } catch (InterruptedException e) {
                 System.out.println("Sender was interrupted");
+                break;
+            } catch (IOException e) {
+                System.out.println("Socket closed due to IOException.");
                 break;
             }
         }
