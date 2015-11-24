@@ -16,6 +16,7 @@ public class Camera {
     protected CameraReceiver receiver;
     protected CameraSender sender;
     protected FrameBuffer buffer;
+    protected SystemMonitor system;
 
     public Camera(SystemMonitor system, String host, int port) throws UnknownHostException, ConnectException {
         try {
@@ -25,6 +26,7 @@ public class Camera {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.system = system;
         this.receiver = new CameraReceiver(system, socket, this);
         this.sender = new CameraSender(system, socket, this);
         this.buffer = new FrameBuffer();
@@ -37,17 +39,17 @@ public class Camera {
         while (resp == -1) resp = socket.getInputStream().read();
         if (resp == -1) throw new RuntimeException("Socket returned -1");
         byte msgType = (byte) resp;
-//        System.out.println("New message - msgType: "+msgType);
+        System.out.println("New message - msgType: "+msgType);
         NewFrame mess = new NewFrame(socket);
-//        System.out.println("frame size: "+mess.size);
-//        System.out.println("timestamp: "+mess.timestamp);
+        System.out.println("frame size: "+mess.size);
+        System.out.println("timestamp: "+mess.timestamp);
         buffer.addFrame(mess);
+        system.receivedFrame();
+    }
+    public synchronized void updateCurrentFrame(){
 
-
-
-    }public synchronized void updateCurrentFrame(){
-
-    }public FrameBuffer getBuffer(){
+    }
+    public FrameBuffer getBuffer(){
         return buffer;
     }
 

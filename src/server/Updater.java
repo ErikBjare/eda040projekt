@@ -2,9 +2,6 @@ package server;
 
 import se.lth.cs.eda040.fakecamera.AxisM3006V;
 
-/**
- * Created by von on 2015-11-05.
- */
 public class Updater extends Thread {
     private Monitor monitor;
     private AxisM3006V hardware;
@@ -28,9 +25,12 @@ public class Updater extends Thread {
                     break;
                 }
             }
-            if(len > 0 ){
-                monitor.newFrame(System.currentTimeMillis(), hardware.motionDetected(), frame);
-
+            try {
+                if (len > 0) {
+                    monitor.newFrame(System.currentTimeMillis(), hardware.motionDetected(), frame);
+                }
+            } catch (ShutdownException e) {
+                break;
             }
         }
 
