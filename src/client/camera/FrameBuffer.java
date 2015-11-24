@@ -3,7 +3,6 @@ package client.camera;
 import common.protocol.NewFrame;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
  * Created by von on 2015-11-05.

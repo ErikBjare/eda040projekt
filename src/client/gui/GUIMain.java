@@ -4,7 +4,6 @@ import client.Animator;
 import client.SystemMonitor;
 import client.camera.Camera;
 import common.LogUtil;
-import common.StdOutHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,10 +11,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by von on 2015-11-08.

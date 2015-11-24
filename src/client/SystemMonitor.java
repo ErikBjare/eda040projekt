@@ -7,7 +7,6 @@ import common.protocol.NewFrame;
 
 import java.util.ArrayList;
 import java.util.Observable;
-import java.util.logging.Logger;
 
 /**
  * Created by simon on 2015-11-08.

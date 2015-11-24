@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Logger;
 
 /**
  * Created by von on 2015-11-05.
