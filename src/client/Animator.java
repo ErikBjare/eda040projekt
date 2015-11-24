@@ -15,6 +15,7 @@ public class Animator extends Thread {
 
     public Animator(SystemMonitor system) {
         this.system = system;
+        setName("Animator");
     }
 
     public void run() {

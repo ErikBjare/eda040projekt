@@ -1,9 +1,11 @@
 package client.camera;
 
 import client.SystemMonitor;
+import common.LogUtil;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 /**
  * Created by von on 2015-11-05.
@@ -17,6 +19,7 @@ public class CameraReceiver extends Thread {
         this.system = system;
         this.socket = socket;
         this.camera = camera;
+        setName("CameraReceiver"+getName().substring(getName().indexOf('-')));
     }
 
     @Override
@@ -25,7 +28,7 @@ public class CameraReceiver extends Thread {
             try {
                 camera.receiveFrame();
             } catch (IOException e) {
-                e.printStackTrace();
+                LogUtil.exception(e);
             }
         }
     }

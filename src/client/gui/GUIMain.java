@@ -3,6 +3,8 @@ package client.gui;
 import client.Animator;
 import client.SystemMonitor;
 import client.camera.Camera;
+import common.LogUtil;
+import common.StdOutHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +12,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by von on 2015-11-08.
@@ -93,11 +99,11 @@ public class GUIMain extends JFrame implements Observer {
     }
 
     public void update(Observable observable, Object o) {
-//        System.out.println("Updating GUI");
         SwingUtilities.invokeLater(this::render);
     }
 
     private void render() {
+        LogUtil.info("Rendering GUI");
         for(int i = 0; i < cams.length; i++){
             renderImage(i);
         }
@@ -107,7 +113,6 @@ public class GUIMain extends JFrame implements Observer {
      synchronized (monitor) {
          byte[] img = monitor.getDisplayFrame(i);
          if (img != null){
-             System.out.println(img);
          cams[i].displayImage(img);
      }
      }
@@ -117,16 +122,10 @@ public class GUIMain extends JFrame implements Observer {
         SystemMonitor monitor = new SystemMonitor();
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
         Camera [] cameras = {new Camera(monitor, "localhost", 5656)};
-//        System.out.println("LOL ANIMATOR");
         Animator anim = new Animator(monitor);
-//        System.out.println("First");
         monitor.init(cameras);
-//        System.out.println("Second");
         anim.start();
-//        System.out.println("Third");
         GUIMain gui = new GUIMain("title", monitor);
-//        System.out.println("Fourth");
         monitor.addObserver(gui);
-//        System.out.println("Fifth");
     }
 }

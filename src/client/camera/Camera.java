@@ -1,12 +1,14 @@
 package client.camera;
 
 import client.SystemMonitor;
+import common.LogUtil;
 import common.protocol.NewFrame;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Logger;
 
 /**
  * Created by von on 2015-11-05.
@@ -39,10 +41,8 @@ public class Camera {
         while (resp == -1) resp = socket.getInputStream().read();
         if (resp == -1) throw new RuntimeException("Socket returned -1");
         byte msgType = (byte) resp;
-        System.out.println("New message - msgType: "+msgType);
+        LogUtil.info("New message - msgType: " + msgType);
         NewFrame mess = new NewFrame(socket);
-        System.out.println("frame size: "+mess.size);
-        System.out.println("timestamp: "+mess.timestamp);
         buffer.addFrame(mess);
         system.receivedFrame();
     }

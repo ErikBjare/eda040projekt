@@ -16,6 +16,7 @@ public class Receiver extends Thread {
     public Receiver(Monitor monitor, Socket socket) {
         this.monitor = monitor;
         this.socket = socket;
+        setName("Receiver");
     }
 
     public void run() {

@@ -1,5 +1,7 @@
 package server;
 
+import common.LogUtil;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,12 +15,12 @@ public class Main {
         try {
             sock = new ServerSocket(5656);
             while (true) {
-                System.out.println("Started listening for new client");
+                LogUtil.info("Started listening for new client");
                 Socket client = sock.accept();
-                System.out.println("Accepted connection");
+                LogUtil.info("Accepted connection");
                 CameraServer cameraServer = new CameraServer(client);
                 cameraServer.join();
-                System.out.println("Finished with client");
+                LogUtil.info("Finished with client");
             }
         } catch (IOException e) {
             e.printStackTrace();
