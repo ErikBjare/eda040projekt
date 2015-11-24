@@ -1,6 +1,7 @@
 package server;
 
 import client.Mode;
+import common.LogUtil;
 import common.protocol.*;
 import se.lth.cs.eda040.fakecamera.AxisM3006V;
 
@@ -54,14 +55,11 @@ public class Monitor {
 
     public synchronized void sendNext() throws InterruptedException, IOException, ShutdownException {
         if (isShutdown) throw new ShutdownException();
-        System.out.print("Getting ready to send");
         getReadyToSend();
-        System.out.println("Creating message");
         Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp);
-        System.out.println("Sending message");
         mess.send(sendSocket);
         newPicArrived = false;
-        System.out.println("Finished sending");
+        LogUtil.info("Sent message: " + mess.getClass().toString());
         lastSentFrameTime = System.currentTimeMillis();
     }
 
@@ -83,11 +81,9 @@ public class Monitor {
             if (isShutdown) throw new ShutdownException();
             now = System.currentTimeMillis();
             long timeLeft = wakeup - now;
-            System.out.print(".");
             if (timeLeft > 0) wait(timeLeft);
             else wait();
         }
-        System.out.println("");
         notifyAll();
     }
 }

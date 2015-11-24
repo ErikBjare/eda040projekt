@@ -23,7 +23,7 @@ public class Main {
                 LogUtil.info("Finished with client");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtil.exception(e);
         }
     }
 }

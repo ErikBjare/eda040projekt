@@ -6,10 +6,12 @@ package common;
 public class LogUtil {
     protected static final String format = "%-10s %-20s %s\n";
     public static void exception(String message, Exception e){
-        logErr(Thread.currentThread().getName(), "EXCEPTION", message + ": " + e.getMessage());
+        logErr(Thread.currentThread().getName(), "EXCEPTION", e.getMessage() + "(" +message+ ")\n");
+        e.printStackTrace();
     }
     public static void exception(Exception e){
-        logErr(Thread.currentThread().getName(), "EXCEPTION", e.getMessage());
+        logErr(Thread.currentThread().getName(), "EXCEPTION", e.getMessage()+"\n");
+        e.printStackTrace();
     }
     public static void info(String message){
         log(Thread.currentThread().getName(), "INFO", message);

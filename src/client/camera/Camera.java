@@ -25,7 +25,7 @@ public class Camera {
         } catch (ConnectException | UnknownHostException e) {
             throw e;
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtil.exception(e);
         }
         this.system = system;
         this.receiver = new CameraReceiver(system, socket, this);
@@ -62,7 +62,7 @@ public class Camera {
             receiver.join();
             sender.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LogUtil.exception(e);
         }
     }
 }
