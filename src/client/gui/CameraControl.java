@@ -1,30 +1,41 @@
 package client.gui;
 
+import common.LogUtil;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
 
 /**
  * Created by von on 2015-11-08.
  */
 public class CameraControl extends JPanel implements Observer {
-    ImageIcon icon;
-    JLabel delay;
+    public ImageIcon icon;
+    public JLabel delay;
 
     public CameraControl() {
         super();
         icon = new ImageIcon();
-        delay = new JLabel();
-        this.setSize(200, 200);
+        delay = new JLabel(icon);
         setLayout(new BorderLayout());
-        add(new JLabel(icon), BorderLayout.NORTH);
-        add(delay, BorderLayout.SOUTH);
-
+        add(delay, BorderLayout.CENTER);
+        this.setSize(200, 200);
     }
 
     public void displayImage(byte[] image){
-        Image img = getToolkit().createImage(image);
+        //Image img = getToolkit().createImage(image);
+        LogUtil.info("Rendering Icon: "+image.length);
+        Image img = null;
+        try {
+            img = ImageIO.read(new ByteArrayInputStream(image));
+        } catch (IOException e) {
+            LogUtil.exception(e);
+        }
         getToolkit().prepareImage(img, -1, -1, null);
         icon.setImage(img);
         icon.paintIcon(this, this.getGraphics(), 5, 5);

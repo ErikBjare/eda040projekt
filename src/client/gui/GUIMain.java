@@ -3,6 +3,7 @@ package client.gui;
 import client.Animator;
 import client.SystemMonitor;
 import client.camera.Camera;
+import common.Constants;
 import common.LogUtil;
 
 import javax.swing.*;
@@ -11,16 +12,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
 
 /**
  * Created by von on 2015-11-08.
  */
 public class GUIMain extends JFrame implements Observer {
-    List<CameraControl> cameras;
-    SyncModeControl syncButtons;
-    ModeControl modeButtons;
-    SystemMonitor monitor;
-    CameraControl[] cams;
+    public SyncModeControl syncButtons;
+    public ModeControl modeButtons;
+    public SystemMonitor monitor;
+    public CameraControl[] cams;
 
     public GUIMain(String s, SystemMonitor monitor) throws HeadlessException {
         super(s);
@@ -39,8 +40,12 @@ public class GUIMain extends JFrame implements Observer {
         JButton idleButton = new JButton("Idle");
         JButton movieButton = new JButton("Movie");
 
-        syncButtons.add(syncAutoButton); syncButtons.add(syncButton); syncButtons.add(asyncButton);
-        modeButtons.add(autoButton); modeButtons.add(idleButton); modeButtons.add(movieButton);
+        syncButtons.add(syncAutoButton);
+        syncButtons.add(syncButton);
+        syncButtons.add(asyncButton);
+        modeButtons.add(autoButton);
+        modeButtons.add(idleButton);
+        modeButtons.add(movieButton);
 
         JPanel menuBar = new JPanel();
         menuBar.setLayout(new BorderLayout());
@@ -81,7 +86,7 @@ public class GUIMain extends JFrame implements Observer {
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
         cams = new CameraControl[monitor.getNrCameras()];
-        for(int i = 0; i < monitor.getNrCameras(); i++){
+        for (int i = 0; i < monitor.getNrCameras(); i++) {
             cams[i] = new CameraControl();
             add(cams[i], BorderLayout.SOUTH);
         }
@@ -97,30 +102,36 @@ public class GUIMain extends JFrame implements Observer {
         SwingUtilities.invokeLater(this::render);
     }
 
-    private void render() {
+    public void render() {
         LogUtil.info("Rendering GUI");
-        for(int i = 0; i < cams.length; i++){
+        for (int i = 0; i < cams.length; i++) {
             renderImage(i);
         }
     }
 
-    private void renderImage(int i) {
-     synchronized (monitor) {
-         byte[] img = monitor.getDisplayFrame(i);
-         if (img != null){
-         cams[i].displayImage(img);
-     }
-     }
+    public void renderImage(int i) {
+        synchronized (monitor) {
+            byte[] img = monitor.getDisplayFrame(i);
+            if (img != null) {
+                cams[i].displayImage(img);
+            } else {
+                LogUtil.info("Tried to render image, but no image available.");
+            }
+        }
     }
 
     public static void main(String[] args) throws IOException {
         SystemMonitor monitor = new SystemMonitor();
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
-        Camera [] cameras = {new Camera(monitor, "localhost", 5656)};
+        Camera[] cameras = {new Camera(monitor, "localhost", 5656)};
         Animator anim = new Animator(monitor);
         monitor.init(cameras);
         anim.start();
-        GUIMain gui = new GUIMain("title", monitor);
+        GUIMain gui = new GUIMain(Constants.GUI_TITLE, monitor);
+        Random random = new Random();
+//        byte[] initialImage = new byte[10000];
+//        random.nextBytes(initialImage);
+//        gui.cams[0].displayImage(initialImage);
         monitor.addObserver(gui);
     }
 }

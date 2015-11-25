@@ -1,13 +1,17 @@
+import client.Animator;
 import client.SystemMonitor;
 import client.camera.Camera;
+import client.gui.GUIMain;
+import common.Constants;
 import org.junit.Test;
 import server.CameraServer;
 
-import java.io.IOException;
 import java.net.ConnectException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.UnknownHostException;
+
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by erb on 2015-11-22.
@@ -16,7 +20,7 @@ public class IntegrationTest {
 
     @Test
     public void startThenStopClient() {
-        Client client = new Client();
+        ClientWrap client = new ClientWrap();
         client.start();
 
         try {
@@ -30,7 +34,7 @@ public class IntegrationTest {
 
     @Test
     public void startThenStopServer() {
-        Server server = new Server();
+        ServerWrap server = new ServerWrap();
         server.start();
 
         try {
@@ -45,9 +49,9 @@ public class IntegrationTest {
     @Test
     public void startAndConnectThenStopBoth() {
         // TODO: Actually check if things go right and not just terminate...
-        Server server = new Server();
+        ServerWrap server = new ServerWrap();
         server.start();
-        Client client = new Client();
+        ClientWrap client = new ClientWrap();
         client.start();
 
         try {
@@ -63,92 +67,47 @@ public class IntegrationTest {
 
     }
 
-}
-
-class Server extends Thread {
-    boolean crash = false;
-    CameraServer cameraServer;
-
-    public void run() {
-        ServerSocket sock = null;
-        try {
-            sock = new ServerSocket(5656);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        try {
-            sock.setSoTimeout(1000);
-            System.out.println("Started server, waiting for connection");
-            Socket client;
-            while(!Thread.currentThread().isInterrupted()) {
-                try {
-                    client = sock.accept();
-                    System.out.println("Accepted connection");
-                    cameraServer = new CameraServer(client);
-                    break;
-                } catch (java.net.SocketTimeoutException e) {
-                    continue;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+    @Test
+    public void guiStateChanged() throws InterruptedException {
+        SystemMonitor sm = spy(new SystemMonitor());
+        Animator anim = spy(new Animator(sm));
+        ServerWrap server = new ServerWrap(s->spy(new CameraServer(s)));
+        server.start();
+        ClientWrap client = new ClientWrap(()->sm, sysmon -> {
             try {
-                sock.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void cancel() {
-        this.interrupt();
-        try {
-            this.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(cameraServer != null) {
-            cameraServer.stop();
-            cameraServer.join();
-        }
-        System.out.println("Server has been stopped");
-    }
-}
-
-class Client extends Thread {
-    boolean crash = false;
-    Camera camera;
-
-    public void run() {
-        SystemMonitor monitor = new SystemMonitor();
-        System.out.println("Trying to connect...");
-        while(!Thread.currentThread().isInterrupted()) {
-            try {
-                camera = new Camera(monitor, "localhost", 5656);
-                System.out.println("Connected to client");
-                break;
-            } catch (ConnectException e) {
-                continue;
+                return spy(new Camera(sysmon, Constants.HOST, Constants.PORT));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
+            } catch (ConnectException e) {
+                e.printStackTrace();
             }
-        }
-    }
+            throw new Error("Camera creation failed");
+        });
+        client.start();
+        Thread.sleep(200);
+        GUIMain gui = spy(new GUIMain(Constants.GUI_TITLE, sm));
+        sm.addObserver(gui);
+        anim.start();
 
-    public void cancel() {
-        this.interrupt();
         try {
-            this.join();
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (camera != null) {
-            camera.stop();
-            camera.join();
-        }
-        System.out.println("Client has been stopped");
+        // TODO: Check if connection was successful and if the proper data was transmitted
+
+        client.cancel();
+        server.cancel();
+
+        // GUI's update method should have been called
+        verify(gui, atLeastOnce()).update(any(), any());
+
+        // This does the actual drawing, and should have been called by swing
+        verify(gui, atLeastOnce()).render();
+
+        assertTrue(gui.cams[0].icon.getIconHeight() > 100);
+        assertTrue(gui.cams[0].icon.getIconWidth() > 100);
     }
+
 }
+
