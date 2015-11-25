@@ -28,14 +28,8 @@ public class CameraControl extends JPanel implements Observer {
     }
 
     public void displayImage(byte[] image){
-        //Image img = getToolkit().createImage(image);
+        Image img = getToolkit().createImage(image);
         LogUtil.info("Rendering Icon: "+image.length);
-        Image img = null;
-        try {
-            img = ImageIO.read(new ByteArrayInputStream(image));
-        } catch (IOException e) {
-            LogUtil.exception(e);
-        }
         getToolkit().prepareImage(img, -1, -1, null);
         icon.setImage(img);
         icon.paintIcon(this, this.getGraphics(), 5, 5);
