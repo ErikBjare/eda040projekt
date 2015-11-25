@@ -94,8 +94,7 @@ public class GUIMain extends JFrame implements Observer {
         //update(monitor, this);
         pack();
         setVisible(true);
-
-
+        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
     public void update(Observable observable, Object o) {

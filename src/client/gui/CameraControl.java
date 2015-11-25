@@ -32,7 +32,9 @@ public class CameraControl extends JPanel implements Observer {
         LogUtil.info("Rendering Icon: "+image.length);
         getToolkit().prepareImage(img, -1, -1, null);
         icon.setImage(img);
-        icon.paintIcon(this, this.getGraphics(), 5, 5);
+        // icon.paintIcon(this, this.getGraphics(), 100, 0);
+        revalidate();
+        repaint();
     }
 
     public void displayDelay(long delay){
