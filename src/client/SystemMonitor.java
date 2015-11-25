@@ -2,6 +2,7 @@ package client;
 
 import client.camera.Camera;
 import client.camera.FrameBuffer;
+import common.LogUtil;
 import common.protocol.NewFrame;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ public class SystemMonitor extends Observable {
     private Mode mode;
     private SyncMode syncMode;
 
-
     public SystemMonitor() {
         mode = Mode.Auto;
         syncMode = SyncMode.Auto;
@@ -32,17 +32,15 @@ public class SystemMonitor extends Observable {
                 wait();
                 next = frameBuffers[0].removeFirstFrame();
             }
-            System.out.println("Displaying frame, found a picture in the buffer");
+            LogUtil.info("Displaying frame, found a picture in the buffer");
             displayFrame(0, next.getFrame());
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LogUtil.exception(e);
         }
     }
 
     public synchronized void displayFrame(int cameraId, byte[] imageCopy) {
-        System.out.println("performing displayFrame");
         currentFrames[cameraId] = imageCopy;
-        System.out.println(this.countObservers());
         setChanged();
         notifyObservers(this);
     }

@@ -1,6 +1,7 @@
 package client.camera;
 
 import client.SystemMonitor;
+import common.LogUtil;
 import common.protocol.NewFrame;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class Camera {
         } catch (ConnectException | UnknownHostException e) {
             throw e;
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtil.exception(e);
         }
         this.system = system;
         this.receiver = new CameraReceiver(system, socket, this);
@@ -39,10 +40,8 @@ public class Camera {
         while (resp == -1) resp = socket.getInputStream().read();
         if (resp == -1) throw new RuntimeException("Socket returned -1");
         byte msgType = (byte) resp;
-        System.out.println("New message - msgType: "+msgType);
+        LogUtil.info("New message - msgType: " + msgType);
         NewFrame mess = new NewFrame(socket);
-        System.out.println("frame size: "+mess.size);
-        System.out.println("timestamp: "+mess.timestamp);
         buffer.addFrame(mess);
         system.receivedFrame();
     }
@@ -63,7 +62,7 @@ public class Camera {
             receiver.join();
             sender.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LogUtil.exception(e);
         }
     }
 }

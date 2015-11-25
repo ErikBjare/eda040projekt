@@ -16,6 +16,7 @@ public class CameraSender extends Thread {
         this.system = system;
         this.socket = socket;
         this.camera = camera;
+        setName("CameraSender"+getName().substring(getName().indexOf('-')));
     }
 
 }

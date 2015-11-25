@@ -1,5 +1,7 @@
 package server;
 
+import common.LogUtil;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -14,7 +16,7 @@ public class Sender extends Thread {
 
     public Sender(Monitor monitor) {
         this.monitor = monitor;
-
+        setName("Sender");
     }
 
     public void run() {
@@ -23,10 +25,10 @@ public class Sender extends Thread {
                 monitor.sendNext();
               //  sleep(1000);
             } catch (InterruptedException e) {
-                System.out.println("Sender was interrupted");
+                LogUtil.exception("Sender was interrupted", e);
                 break;
             } catch (IOException e) {
-                System.out.println("Socket closed due to IOException.");
+                LogUtil.exception("Socket closed due to IOException.", e);
                 break;
             } catch (ShutdownException e) {
                 this.interrupt();
