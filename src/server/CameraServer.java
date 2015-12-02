@@ -20,7 +20,7 @@ public class CameraServer {
     public CameraServer(Socket socket) {
         this.hardware = new AxisM3006V();
         hardware.init();
-        hardware.setProxy("argus-1.student.lth.se", 5656);
+        hardware.setProxy("argus-2.student.lth.se", 9191);
         hardware.connect();
         monitor = new Monitor(socket,hardware);
         receiver = new Receiver(monitor, socket);

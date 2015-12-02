@@ -2,11 +2,10 @@ package client;
 
 import client.camera.Camera;
 import client.camera.FrameBuffer;
+import client.camera.ImageFrame;
 import common.LogUtil;
-import common.protocol.NewFrame;
 
-import java.util.ArrayList;
-import java.util.Observable;
+import java.util.*;
 
 /**
  * Created by simon on 2015-11-08.
@@ -14,37 +13,59 @@ import java.util.Observable;
 public class SystemMonitor extends Observable {
     private Camera[] cameraList;
     private FrameBuffer[] frameBuffers;
-    private byte[][] currentFrames;
+    private HashMap<Integer, byte[]> currentFrames;
+    private PriorityQueue<ImageFrame> images;
     private Mode mode;
     private SyncMode syncMode;
+    private long lastShownTimeframe;
 
     public SystemMonitor() {
+
         mode = Mode.Auto;
         syncMode = SyncMode.Auto;
+        images = new PriorityQueue<ImageFrame>(10, new Comparator<ImageFrame>() {
+            @Override
+            public int compare(ImageFrame o1, ImageFrame o2) {
+               if (o1.getFrame().timestamp == (o2.getFrame().timestamp)) return 0;
+                return (o1.getFrame().timestamp > o2.getFrame().timestamp) ? 1 : -1;
+            }
+        });
 
     }
 
     public synchronized void animate() {
         try {
-            NewFrame next;
-            next = frameBuffers[0].removeFirstFrame();
+            //TODO Implement for more cameras aswell as synchronization
+
+           ImageFrame next = images.poll();
+            //TODO adding correct timedifference with wait
             while (next == null){
                 wait();
-                next = frameBuffers[0].removeFirstFrame();
+                next = images.poll();
+
             }
-            LogUtil.info("Displaying frame, found a picture in the buffer");
-            displayFrame(0, next.getFrame());
+
+
+            LogUtil.info("Displaying frame from camera " + next.getCamera() + " , found a picture in the buffer");
+            displayFrame(next.getCamera(), next.getFrame().getFrameAsBytes());
         } catch (InterruptedException e) {
             LogUtil.exception(e);
         }
     }
 
     public synchronized void displayFrame(int cameraId, byte[] imageCopy) {
-        currentFrames[cameraId] = imageCopy;
+        currentFrames.put(cameraId, imageCopy);
         setChanged();
         notifyObservers(this);
+
+
     }
 
+    public synchronized void addImage(ImageFrame image){
+        images.add(image);
+        notifyAll();
+
+    }
     public synchronized void registerDelay(long captureTime) {
 
     }
@@ -61,6 +82,10 @@ public class SystemMonitor extends Observable {
         this.mode = mode;
     }
 
+    public synchronized Set<Integer> getCameraIds(){
+
+        return currentFrames.keySet();
+    }
 
     public synchronized int getNrCameras() {
         return cameraList.length;
@@ -69,16 +94,12 @@ public class SystemMonitor extends Observable {
 
     public synchronized void init(Camera[] cameras) {
         cameraList = cameras;
-        currentFrames = new byte[cameraList.length][];
-        this.frameBuffers = new FrameBuffer[cameraList.length];
-        for (int i = 0; i < cameraList.length; i++) {
-            frameBuffers[i] = cameraList[i].getBuffer();
-        }
+        currentFrames = new HashMap<Integer, byte[]>(8);
     }
 
 
     public synchronized byte[] getDisplayFrame(int i) {
-        return currentFrames[i];
+        return currentFrames.get(i);
     }
 
     public synchronized void receivedFrame() {

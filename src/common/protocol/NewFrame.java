@@ -45,7 +45,7 @@ public class NewFrame extends Message {
         this.timestamp = timestamp;
     }
 
-    public byte[] getFrame() {
+    public byte[] getFrameAsBytes() {
         return frame;
     }
 

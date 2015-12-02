@@ -12,8 +12,9 @@ import java.net.Socket;
 public class Main {
     public static void main(String[] args) {
         ServerSocket sock = null;
+
         try {
-            sock = new ServerSocket(5656);
+            sock = new ServerSocket(9191);
             while (true) {
                 LogUtil.info("Started listening for new client");
                 Socket client = sock.accept();

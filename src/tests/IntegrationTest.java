@@ -1,3 +1,5 @@
+//package tests;
+
 import client.Animator;
 import client.SystemMonitor;
 import client.camera.Camera;
@@ -75,7 +77,8 @@ public class IntegrationTest {
         server.start();
         ClientWrap client = new ClientWrap(()->sm, sysmon -> {
             try {
-                return spy(new Camera(sysmon, Constants.HOST, Constants.PORT));
+                //TODO Change camera ID to be variable
+                return spy(new Camera(sysmon, Constants.HOST, Constants.PORT, 0));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (ConnectException e) {

@@ -9,10 +9,8 @@ import common.LogUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.*;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Random;
 
 /**
  * Created by von on 2015-11-08.
@@ -21,10 +19,11 @@ public class GUIMain extends JFrame implements Observer {
     public SyncModeControl syncButtons;
     public ModeControl modeButtons;
     public SystemMonitor monitor;
-    public CameraControl[] cams;
+    public HashMap<Integer, CameraControl> cams;
 
     public GUIMain(String s, SystemMonitor monitor) throws HeadlessException {
         super(s);
+        this.cams = new HashMap<>(8);
         this.monitor = monitor;
         syncButtons = new SyncModeControl();
         modeButtons = new ModeControl();
@@ -85,11 +84,17 @@ public class GUIMain extends JFrame implements Observer {
         title = new JLabel("Sync Mode", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
-        cams = new CameraControl[monitor.getNrCameras()];
-        for (int i = 0; i < monitor.getNrCameras(); i++) {
-            cams[i] = new CameraControl();
-            add(cams[i], BorderLayout.SOUTH);
+
+        for(int id : monitor.getCameraIds()){
+            cams.put(id, new CameraControl(monitor, id));
+            add(cams.get(id), BorderLayout.SOUTH);
+            monitor.addObserver(cams.get(id));
         }
+//
+//        for (int i = 0; i < monitor.getNrCameras(); i++) {
+//            cams[i] = new CameraControl();
+//            add(cams[i], BorderLayout.SOUTH);
+//        }
 
         //update(monitor, this);
         pack();
@@ -98,31 +103,17 @@ public class GUIMain extends JFrame implements Observer {
     }
 
     public void update(Observable observable, Object o) {
-        SwingUtilities.invokeLater(this::render);
+
+//        SwingUtilities.invokeLater(this::render);
     }
 
-    public void render() {
-        LogUtil.info("Rendering GUI");
-        for (int i = 0; i < cams.length; i++) {
-            renderImage(i);
-        }
-    }
 
-    public void renderImage(int i) {
-        synchronized (monitor) {
-            byte[] img = monitor.getDisplayFrame(i);
-            if (img != null) {
-                cams[i].displayImage(img);
-            } else {
-                LogUtil.info("Tried to render image, but no image available.");
-            }
-        }
-    }
+
 
     public static void main(String[] args) throws IOException {
         SystemMonitor monitor = new SystemMonitor();
-        //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
-        Camera[] cameras = {new Camera(monitor, "localhost", 5656)};
+        Camera [] cameras = {new Camera(monitor, "localhost", 9191, 1)};
+//        Camera[] cameras = {new Camera(monitor, "localhost", 5656, 0),new Camera(monitor, "localhost", 9191, 1)};
         Animator anim = new Animator(monitor);
         monitor.init(cameras);
         anim.start();

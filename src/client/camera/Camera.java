@@ -18,8 +18,11 @@ public class Camera {
     protected CameraSender sender;
     protected FrameBuffer buffer;
     protected SystemMonitor system;
+    private int id;
 
-    public Camera(SystemMonitor system, String host, int port) throws UnknownHostException, ConnectException {
+
+    public Camera(SystemMonitor system, String host, int port, int id) throws UnknownHostException, ConnectException {
+        this.id = id;
         try {
             this.socket = new Socket(host, port);
         } catch (ConnectException | UnknownHostException e) {
@@ -41,8 +44,8 @@ public class Camera {
         if (resp == -1) throw new RuntimeException("Socket returned -1");
         byte msgType = (byte) resp;
         LogUtil.info("New message - msgType: " + msgType);
-        NewFrame mess = new NewFrame(socket);
-        buffer.addFrame(mess);
+        ImageFrame mess = new ImageFrame(id, new NewFrame(socket));
+        system.addImage(mess);
         system.receivedFrame();
     }
     public synchronized void updateCurrentFrame(){

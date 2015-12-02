@@ -1,5 +1,6 @@
 package client.gui;
 
+import client.SystemMonitor;
 import common.LogUtil;
 
 import javax.imageio.ImageIO;
@@ -17,9 +18,13 @@ import java.util.Random;
 public class CameraControl extends JPanel implements Observer {
     public ImageIcon icon;
     public JLabel delay;
+    private SystemMonitor system;
+    private int cameraId;
 
-    public CameraControl() {
+    public CameraControl(SystemMonitor system, int cameraId) {
         super();
+        this.system = system;
+        this.cameraId = cameraId;
         icon = new ImageIcon();
         delay = new JLabel(icon);
         setLayout(new BorderLayout());
@@ -44,5 +49,21 @@ public class CameraControl extends JPanel implements Observer {
 
     public void update(Observable observable, Object o) {
 
+        SwingUtilities.invokeLater(this::renderImage);
+
+
+
+    }
+
+
+    public void renderImage() {
+        synchronized (system) {
+
+            byte[] img = system.getDisplayFrame(cameraId);
+        if (img != null) {
+            displayImage(img);
+        } else {
+            LogUtil.info("Tried to render image, but no image available.");
+        }}
     }
 }

@@ -20,7 +20,7 @@ public class FrameBuffer {
     }
 
 //    public byte[] getFirstFrame(){
-//        return frames.get(0).getFrame();
+//        return frames.get(0).getFrameAsBytes();
 //    }
 
     public NewFrame removeFirstFrame(){
