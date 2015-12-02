@@ -1,7 +1,8 @@
 package server;
 
 import common.LogUtil;
-import se.lth.cs.eda040.fakecamera.AxisM3006V;
+//import se.lth.cs.eda040.fakecamera.AxisM3006V;
+import se.lth.cs.eda040.proxycamera.AxisM3006V;
 
 import java.net.Socket;
 
@@ -19,6 +20,7 @@ public class CameraServer {
     public CameraServer(Socket socket) {
         this.hardware = new AxisM3006V();
         hardware.init();
+        hardware.setProxy("argus-1.student.lth.se", 5656);
         hardware.connect();
         monitor = new Monitor(socket,hardware);
         receiver = new Receiver(monitor, socket);
