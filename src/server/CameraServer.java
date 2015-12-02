@@ -48,6 +48,10 @@ public class CameraServer {
         } catch (InterruptedException e) {
             LogUtil.exception(e);
         }
+        finally {
+            hardware.close();
+            hardware.destroy();
+        }
     }
 
 

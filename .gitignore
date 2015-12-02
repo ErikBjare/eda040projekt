@@ -1,5 +1,7 @@
 /bin
 /out
 /target
+/build_src
+/build_bin
 .idea
 skeleton.iml
