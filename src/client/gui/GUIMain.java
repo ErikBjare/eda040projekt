@@ -1,13 +1,18 @@
 package client.gui;
 
 import client.Animator;
+import client.Mode;
+import client.SyncMode;
 import client.SystemMonitor;
 import client.camera.Camera;
 import common.Constants;
 import common.LogUtil;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
@@ -47,29 +52,28 @@ public class GUIMain extends JFrame implements Observer {
         modeButtons.add(idleButton);
         modeButtons.add(movieButton);
 
+        addButtonActionListener(syncAutoButton, SyncMode.Auto);
+        addButtonActionListener(syncButton, SyncMode.ForceSync);
+        addButtonActionListener(asyncButton, SyncMode.ForceAsync);
+        addButtonActionListener(autoButton, Mode.Auto);
+        addButtonActionListener(idleButton, Mode.ForceIdle);
+        addButtonActionListener(movieButton, Mode.ForceMovie);
+
+
         JPanel menuBar = new JPanel();
         menuBar.setLayout(new BorderLayout());
-        JPanel titleBar = new JPanel();
-        JPanel southTitleBar = new JPanel();
         JPanel westMenuBar = new JPanel();
         westMenuBar.setLayout(new BorderLayout());
         JPanel eastMenuBar = new JPanel();
         eastMenuBar.setLayout(new BorderLayout());
-        JPanel westNorthMenuBar = new JPanel();
-        JPanel eastNorthMenuBar = new JPanel();
+
 
 
         add(menuBar, BorderLayout.NORTH);
 
-//        menuBar.add(titleBar, BorderLayout.NORTH);
-//        menuBar.add(southTitleBar, BorderLayout.SOUTH);
-//        southTitleBar.add(westMenuBar, BorderLayout.WEST);
-//        southTitleBar.add(eastMenuBar, BorderLayout.EAST);
 
         menuBar.add(westMenuBar, BorderLayout.WEST);
         menuBar.add(eastMenuBar, BorderLayout.EAST);
-//        eastMenuBar.add(eastNorthMenuBar, BorderLayout.NORTH);
-//        westMenuBar.add(westNorthMenuBar, BorderLayout.NORTH);
 
         eastMenuBar.add(syncAutoButton, BorderLayout.WEST);
         eastMenuBar.add(syncButton, BorderLayout.CENTER);
@@ -85,16 +89,48 @@ public class GUIMain extends JFrame implements Observer {
         title = new JLabel("Sync Mode", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
-        cams = new CameraControl[monitor.getNrCameras()];
-        for (int i = 0; i < monitor.getNrCameras(); i++) {
+        int nbrCameras = monitor.getNrCameras();
+        cams = new CameraControl[nbrCameras];
+        for (int i = 0; i < nbrCameras; i++) {
             cams[i] = new CameraControl();
             add(cams[i], BorderLayout.SOUTH);
         }
 
-        //update(monitor, this);
+        //update    (monitor, this);
         pack();
         setVisible(true);
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+    }
+
+    private void addButtonActionListener(JButton button, SyncMode syncMode) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        monitor.setSyncMode(syncMode);
+                    }
+                });
+
+                System.out.println("Pressed AutoSync");
+            }
+        });
+    }
+    private void addButtonActionListener(JButton button, Mode mode) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        monitor.setMode(mode);
+                    }
+                });
+
+                System.out.println("Pressed AutoSync");
+            }
+        });
     }
 
     public void update(Observable observable, Object o) {
@@ -122,7 +158,7 @@ public class GUIMain extends JFrame implements Observer {
     public static void main(String[] args) throws IOException {
         SystemMonitor monitor = new SystemMonitor();
         //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
-        Camera[] cameras = {new Camera(monitor, "localhost", 5656)};
+        Camera[] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 9191)};
         Animator anim = new Animator(monitor);
         monitor.init(cameras);
         anim.start();
