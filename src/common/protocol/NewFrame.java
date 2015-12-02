@@ -20,7 +20,7 @@ public class NewFrame extends Message {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
 
         NewFrame newFrame = (NewFrame) o;
 
@@ -33,7 +33,7 @@ public class NewFrame extends Message {
     @Override
     public int hashCode() {
         int result = size;
-        result = 31 * result + (frame != null ? Arrays.hashCode(frame) : 0);
+        result = 31 * result + (frame != null ? frame.hashCode() : 0);
         result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
         return result;
     }
@@ -61,7 +61,7 @@ public class NewFrame extends Message {
     public String toString() {
         return "NewFrame{" +
                 "size=" + size +
-                ", frame=" + Arrays.toString(frame) +
+                ", frame=" + frame.toString() +
                 ", timestamp=" + timestamp +
                 '}';
     }

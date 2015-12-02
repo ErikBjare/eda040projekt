@@ -43,7 +43,7 @@ public class ModeChange extends Message {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
 
         ModeChange that = (ModeChange) o;
 
