@@ -1,6 +1,6 @@
 package server;
 
-import common.LogUtil;
+import client_util.LogUtil;
 
 import java.io.IOException;
 import java.net.ServerSocket;

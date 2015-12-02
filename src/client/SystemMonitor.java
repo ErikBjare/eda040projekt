@@ -2,10 +2,10 @@ package client;
 
 import client.camera.Camera;
 import client.camera.FrameBuffer;
-import common.LogUtil;
+import client_util.LogUtil;
+import common.Mode;
 import common.protocol.NewFrame;
 
-import java.util.ArrayList;
 import java.util.Observable;
 
 /**

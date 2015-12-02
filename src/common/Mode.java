@@ -1,6 +1,4 @@
-package client;
-
-import common.NetworkUtil;
+package common;
 
 /**
  * Created by von on 2015-11-08.
