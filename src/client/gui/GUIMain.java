@@ -88,11 +88,13 @@ public class GUIMain extends JFrame implements Observer {
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
 
-
+        String [] cameraPlacements = new String[]{"East", "West"};
+        int i = 0;
         for (int id : monitor.getCameraIds()) {
             cams.put(id, new CameraControl(monitor, id));
-            add(cams.get(id), BorderLayout.SOUTH);
+            add(cams.get(id), cameraPlacements[i]);
             monitor.addObserver(cams.get(id));
+            i++;
 
         }
 //
@@ -148,8 +150,8 @@ public class GUIMain extends JFrame implements Observer {
     public static void main(String[] args) throws IOException {
         SystemMonitor monitor = new SystemMonitor();
 
-        Camera[] cameras = {new Camera(monitor, "localhost", 9191, 1)};
-//        Camera[] cameras = {new Camera(monitor, "localhost", 5656, 0),new Camera(monitor, "localhost", 9191, 1)};
+//        Camera[] cameras = {new Camera(monitor, "localhost", 9191, 1)};
+        Camera[] cameras = {new Camera(monitor, "localhost", 5656, 0),new Camera(monitor, "localhost", 5657, 1)};
 
         Animator anim = new Animator(monitor);
         monitor.init(cameras);

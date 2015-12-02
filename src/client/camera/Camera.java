@@ -39,6 +39,8 @@ public class Camera {
     }
 
     public synchronized void receiveFrame() throws IOException {
+//        System.out.println("Current reciever thread " + Thread.currentThread());
+        LogUtil.info("Entering recieveframe");
         int resp = -1;
         while (resp == -1) resp = socket.getInputStream().read();
         if (resp == -1) throw new RuntimeException("Socket returned -1");

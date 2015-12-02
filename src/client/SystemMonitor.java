@@ -17,7 +17,9 @@ public class SystemMonitor extends Observable {
     private PriorityQueue<ImageFrame> images;
     private Mode mode;
     private SyncMode syncMode;
-    private long lastShownTimeframe;
+    private long currentlyShownFrameTimeStamp;
+    private long timeOfUpdate;
+    private long diff;
 
     public SystemMonitor() {
 
@@ -44,13 +46,34 @@ public class SystemMonitor extends Observable {
                 next = images.poll();
 
             }
+            displayFrame(next.getCamera(), next.getFrame().getFrameAsBytes());
+            long timeDiff = next.getFrame().timestamp -currentlyShownFrameTimeStamp;
+            long before = System.currentTimeMillis();
+            if(timeSinceLastFrame() < timeDiff){
+                System.out.println(timeDiff - timeSinceLastFrame()-diff);
+                System.out.println(diff);
+                wait(timeDiff - timeSinceLastFrame()-diff);
+            }
+            long diff = System.currentTimeMillis() - before;
+            diff = diff - (timeDiff-timeSinceLastFrame());
+
+
+            timeOfUpdate = System.currentTimeMillis();
 
 
             LogUtil.info("Displaying frame from camera " + next.getCamera() + " , found a picture in the buffer");
-            displayFrame(next.getCamera(), next.getFrame().getFrameAsBytes());
+
+            currentlyShownFrameTimeStamp = next.getFrame().timestamp;
+
+
+
+
         } catch (InterruptedException e) {
             LogUtil.exception(e);
         }
+    }
+    private synchronized long timeSinceLastFrame(){
+        return System.currentTimeMillis() - timeOfUpdate;
     }
 
     public synchronized void displayFrame(int cameraId, byte[] imageCopy) {

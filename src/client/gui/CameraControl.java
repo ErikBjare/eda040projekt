@@ -48,7 +48,7 @@ public class CameraControl extends JPanel implements Observer {
     }
 
     public void update(Observable observable, Object o) {
-
+        LogUtil.info("Rendering Icon");
         SwingUtilities.invokeLater(this::renderImage);
 
 
@@ -57,6 +57,7 @@ public class CameraControl extends JPanel implements Observer {
 
 
     public void renderImage() {
+
         synchronized (system) {
 
             byte[] img = system.getDisplayFrame(cameraId);
