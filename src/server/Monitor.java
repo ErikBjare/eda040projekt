@@ -61,7 +61,7 @@ public class Monitor {
         Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp);
         mess.send(sendSocket);
         newPicArrived = false;
-        LogUtil.info("Sent message: " + mess.getClass().toString());
+        LogUtil.info("Sent new message");
         lastSentFrameTime = System.currentTimeMillis();
     }
 
