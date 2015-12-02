@@ -20,7 +20,7 @@ public class Monitor {
     boolean newPicArrived;
     boolean motionDetected;
     long timeStamp;
-    Mode mode;
+    int mode;
     private long lastSentFrameTime;
     private boolean isShutdown = false;
 
@@ -65,7 +65,7 @@ public class Monitor {
         lastSentFrameTime = System.currentTimeMillis();
     }
 
-    public synchronized void setMode(Mode newMode) {
+    public synchronized void setMode(int newMode) {
 
     }
 

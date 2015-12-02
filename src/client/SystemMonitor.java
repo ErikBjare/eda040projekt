@@ -15,7 +15,7 @@ public class SystemMonitor extends Observable {
     private Camera[] cameraList;
     private FrameBuffer[] frameBuffers;
     private byte[][] currentFrames;
-    private Mode mode;
+    private int mode;
     private SyncMode syncMode;
 
     public SystemMonitor() {
@@ -57,7 +57,7 @@ public class SystemMonitor extends Observable {
         this.syncMode = mode;
     }
 
-    public synchronized void setMode(Mode mode) {
+    public synchronized void setMode(int mode) {
         this.mode = mode;
     }
 

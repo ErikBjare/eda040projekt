@@ -3,14 +3,10 @@ package common;
 /**
  * Created by von on 2015-11-08.
  */
-public enum Mode {
-    Auto, Idle, Movie, ForceIdle, ForceMovie;
-
-    public static Mode fromInteger(int i) {
-        return values()[i];
-    }
-
-    public static byte[] toBytes(Mode mode){
-        return NetworkUtil.toBytes(mode.ordinal());
-    }
+public class Mode {
+    public static final int Auto = 0;
+    public static final int Idle = 1;
+    public static final int Movie = 2;
+    public static final int ForceIdle = 3;
+    public static final int ForceMovie = 4;
 }
