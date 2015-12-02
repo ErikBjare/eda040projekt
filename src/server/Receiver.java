@@ -1,6 +1,6 @@
 package server;
 
-import client.Mode;
+import common.Mode;
 
 import java.io.IOException;
 import java.io.InputStream;

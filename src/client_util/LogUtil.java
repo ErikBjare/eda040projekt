@@ -1,4 +1,4 @@
-package common;
+package client_util;
 
 /**
  * Created by von on 2015-11-24.

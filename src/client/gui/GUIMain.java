@@ -4,12 +4,11 @@ import client.Animator;
 import client.SystemMonitor;
 import client.camera.Camera;
 import common.Constants;
-import common.LogUtil;
+import client_util.LogUtil;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;

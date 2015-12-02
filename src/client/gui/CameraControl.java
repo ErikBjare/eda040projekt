@@ -1,15 +1,11 @@
 package client.gui;
 
-import common.LogUtil;
+import client_util.LogUtil;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Random;
 
 /**
  * Created by von on 2015-11-08.
