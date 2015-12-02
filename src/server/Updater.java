@@ -11,7 +11,7 @@ public class Updater extends Thread {
     public Updater(Monitor monitor, AxisM3006V hardware) {
         this.monitor = monitor;
         this.hardware = hardware;
-        setName("Updater");
+//        setName("Updater");
     }
 
 

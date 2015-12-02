@@ -16,7 +16,7 @@ public class Receiver extends Thread {
     public Receiver(Monitor monitor, Socket socket) {
         this.monitor = monitor;
         this.socket = socket;
-        setName("Receiver");
+//        setName("Receiver");
     }
 
     public void run() {
@@ -26,7 +26,9 @@ public class Receiver extends Thread {
 
                 // This is necessary in order to be able to stop and then join the thread when
                 // there are is no incoming data since s.read() is otherwise blocking.
-                socket.setSoTimeout(1000);
+
+                // setSoTimeout is not available in the java to c compiler
+                //socket.setSoTimeout(1000);
 
                 int firstByte = s.read(); //Reads the first byte
                 switch (firstByte) {

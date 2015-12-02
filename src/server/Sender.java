@@ -16,7 +16,7 @@ public class Sender extends Thread {
 
     public Sender(Monitor monitor) {
         this.monitor = monitor;
-        setName("Sender");
+//        setName("Sender");
     }
 
     public void run() {
