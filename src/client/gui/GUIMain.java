@@ -87,7 +87,7 @@ public class GUIMain extends JFrame implements Observer {
         title = new JLabel("Sync Mode", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
-
+        //TODO Add correct bordering. Now hardcoded
         String [] cameraPlacements = new String[]{"East", "West"};
         int i = 0;
         for (int id : monitor.getCameraIds()) {
