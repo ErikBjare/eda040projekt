@@ -29,8 +29,8 @@ public class SystemMonitor extends Observable {
 
     public SystemMonitor() {
 
-        mode = Mode.Auto;
-        syncMode = SyncMode.Auto;
+        mode = Mode.Idle;
+        syncMode = SyncMode.Sync;
         images = new PriorityQueue<ImageFrame>(10, new Comparator<ImageFrame>() {
             @Override
             public int compare(ImageFrame o1, ImageFrame o2) {
@@ -62,16 +62,12 @@ public class SystemMonitor extends Observable {
                 long movieTime = now -calcSyncDelay();
                 long timeLeftToDisplay = next.getFrame().timestamp - movieTime;
 
-//                if(timeLeftToDisplay > Constants.TIME_WINDOW && syncMode == SyncMode.Sync){
-//                    syncMode = SyncMode.Async;
-//                }
                 if (timeLeftToDisplay <= 0) {
 
                     next = images.poll(); // Remove frame from priorityqueue
                     LogUtil.info("Displaying frame from camera " + next.getCamera() + " , found a picture in the buffer");
 
                     checkSynchronization(now);
-
                     displayFrame(next.getCamera(), next.getFrame().getFrameAsBytes());
                     currentlyShownFrameTimeStamp = next.getFrame().timestamp;
                 } else {
@@ -79,8 +75,7 @@ public class SystemMonitor extends Observable {
                 }
 
             }
-//            while()
-        
+
 
 
 
@@ -106,11 +101,11 @@ public class SystemMonitor extends Observable {
 
     }
     private void checkSynchronization(long now){
-
+        LogUtil.info("" + (now-currentlyShownFrameTimeStamp));
         if(now-currentlyShownFrameTimeStamp > Constants.TIME_WINDOW && syncMode == SyncMode.Sync){
-            syncMode = SyncMode.Async;
+            setSyncMode(SyncMode.Async);
         }else if(now-currentlyShownFrameTimeStamp < Constants.TIME_WINDOW && syncMode == SyncMode.Async){
-            syncMode = SyncMode.Sync;
+            setSyncMode(SyncMode.Sync);
         }
     }
 
