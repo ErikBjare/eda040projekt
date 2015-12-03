@@ -64,7 +64,7 @@ public class Monitor {
     }
 
     public synchronized void setMode(Mode newMode) {
-
+        this.mode = newMode;
     }
 
     private void getReadyToSend() throws InterruptedException, ShutdownException {

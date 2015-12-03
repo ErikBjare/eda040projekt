@@ -5,7 +5,11 @@ import client.camera.FrameBuffer;
 import client.camera.ImageFrame;
 import common.Constants;
 import common.LogUtil;
+import common.protocol.ModeChange;
+import jdk.nashorn.internal.runtime.options.LoggingOption;
+import sun.rmi.log.LogInputStream;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -131,8 +135,16 @@ public class SystemMonitor extends Observable {
     }
 
     public synchronized void setMode(Mode mode) {
+        LogUtil.info("Setting mode to: " + mode);
         this.mode = mode;
+        broadcastMode(mode);
+    }
 
+    private synchronized void broadcastMode(Mode mode) {
+        for (Camera camera : cameraList) {
+            LogUtil.info("Adding mode change to mailbox: " + camera.toString());
+            camera.addMessage(new ModeChange(mode, System.currentTimeMillis()));
+        }
     }
 
     public synchronized Set<Integer> getCameraIds() {

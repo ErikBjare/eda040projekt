@@ -1,6 +1,8 @@
 package server;
 
 import client.Mode;
+import common.LogUtil;
+import common.protocol.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,17 +31,18 @@ public class Receiver extends Thread {
                 socket.setSoTimeout(1000);
 
                 int firstByte = s.read(); //Reads the first byte
+                LogUtil.info("Received message: "+firstByte);
                 switch (firstByte) {
                     case 0: //Connect
+                        Connect c = new Connect(socket);
                         monitor.connect();
                         break;
-                    case 3: //Change Mode
-                        int nextByte = s.read();
-                        if (nextByte == 0) monitor.setMode(Mode.ForceIdle);
-                        else if (nextByte == 1) monitor.setMode(Mode.ForceMovie);
-
+                    case 1: //Change Mode
+                        ModeChange mc = new ModeChange(socket);
+                        monitor.setMode(mc.newMode);
                         break;
                     case 4: //Shutdown message
+                        Shutdown sd = new Shutdown(socket);
                         monitor.shutdown();
                         break;
                     default:  //Wrong message type.
