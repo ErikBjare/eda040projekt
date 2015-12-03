@@ -13,8 +13,8 @@ import java.util.Arrays;
  * Message containing a new captured frame.
  */
 public class ModeChange extends Message {
-    Mode newMode;
-    long timestamp;
+    public Mode newMode;
+    public long timestamp;
 
     public ModeChange(Mode newMode, long timestamp) {
         super(MsgType.modeChange);
