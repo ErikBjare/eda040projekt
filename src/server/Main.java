@@ -15,7 +15,7 @@ public class Main {
 
         try {
             sock = new ServerSocket(Integer.parseInt(args[0]));
-            while (true) {
+            while (!Thread.interrupted()) {
                 LogUtil.info("Started listening for new client");
                 Socket client = sock.accept();
                 LogUtil.info("Accepted connection");

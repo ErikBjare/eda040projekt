@@ -14,8 +14,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Created by von on 2015-11-08.
@@ -26,15 +30,17 @@ public class GUIMain extends JFrame implements Observer {
     public SystemMonitor monitor;
     public HashMap<Integer, CameraControl> cams;
 
-    public GUIMain(String s, SystemMonitor monitor) throws HeadlessException {
+    public GUIMain(String s, SystemMonitor monitor)  {
         super(s);
         this.cams = new HashMap<>(8);
         this.monitor = monitor;
         syncButtons = new SyncModeControl();
         modeButtons = new ModeControl();
-        setMinimumSize(new Dimension(100, 100));
-        this.createImage(460, 260);
+        setMinimumSize(new Dimension(500, 500));
+//        this.createImage(460, 260);
         setLayout(new BorderLayout());
+
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         //init buttons
         JButton syncAutoButton = new JButton("Auto");
@@ -91,6 +97,7 @@ public class GUIMain extends JFrame implements Observer {
         String [] cameraPlacements = new String[]{"East", "West"};
         int i = 0;
         for (int id : monitor.getCameraIds()) {
+            LogUtil.info("Found id:" + id);
             cams.put(id, new CameraControl(monitor, id));
             add(cams.get(id), cameraPlacements[i]);
             monitor.addObserver(cams.get(id));
@@ -147,16 +154,24 @@ public class GUIMain extends JFrame implements Observer {
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         SystemMonitor monitor = new SystemMonitor();
 
 //        Camera[] cameras = {new Camera(monitor, "localhost", 9191, 1)};
-        Camera[] cameras = {new Camera(monitor, "localhost", 5656, 0),new Camera(monitor, "localhost", 5657, 1)};
-
+        Camera[] cameras = new Camera[0];
+        try {
+            cameras = new Camera[]{new Camera(monitor, "localhost", 5656, 0),new Camera(monitor, "localhost", 5657, 1)};
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
         Animator anim = new Animator(monitor);
         monitor.init(cameras);
-        anim.start();
+
         GUIMain gui = new GUIMain(Constants.GUI_TITLE, monitor);
+        anim.start();
+//        sleep(100);
         Random random = new Random();
 //        byte[] initialImage = new byte[10000];
 //        random.nextBytes(initialImage);

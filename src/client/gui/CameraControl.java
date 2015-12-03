@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
@@ -33,6 +34,7 @@ public class CameraControl extends JPanel implements Observer {
     }
 
     public void displayImage(byte[] image){
+//        LogUtil.info("Byte Array contains: " + Arrays.toString(image));
         Image img = getToolkit().createImage(image);
         LogUtil.info("Rendering Icon: "+image.length);
         getToolkit().prepareImage(img, -1, -1, null);
@@ -48,16 +50,14 @@ public class CameraControl extends JPanel implements Observer {
     }
 
     public void update(Observable observable, Object o) {
-        LogUtil.info("Rendering Icon");
+        System.out.println("Rendering Icon");
+//        LogUtil.info("Rendering Icon");
         SwingUtilities.invokeLater(this::renderImage);
-
-
-
     }
 
 
     public void renderImage() {
-
+//        LogUtil.info("Entering renderimage!");
         synchronized (system) {
 
             byte[] img = system.getDisplayFrame(cameraId);

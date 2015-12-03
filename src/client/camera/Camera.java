@@ -18,7 +18,7 @@ public class Camera {
     protected CameraSender sender;
     protected FrameBuffer buffer;
     protected SystemMonitor system;
-    private int id;
+    public int id;
 
 
     public Camera(SystemMonitor system, String host, int port, int id) throws UnknownHostException, ConnectException {
@@ -48,7 +48,6 @@ public class Camera {
         LogUtil.info("New message - msgType: " + msgType);
         ImageFrame mess = new ImageFrame(id, new NewFrame(socket));
         system.addImage(mess);
-        system.receivedFrame();
     }
     public synchronized void updateCurrentFrame(){
 

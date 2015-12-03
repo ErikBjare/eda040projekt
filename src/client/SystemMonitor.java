@@ -3,9 +3,11 @@ package client;
 import client.camera.Camera;
 import client.camera.FrameBuffer;
 import client.camera.ImageFrame;
+import common.Constants;
 import common.LogUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by simon on 2015-11-08.
@@ -28,67 +30,92 @@ public class SystemMonitor extends Observable {
         images = new PriorityQueue<ImageFrame>(10, new Comparator<ImageFrame>() {
             @Override
             public int compare(ImageFrame o1, ImageFrame o2) {
-               if (o1.getFrame().timestamp == (o2.getFrame().timestamp)) return 0;
+                if (o1.getFrame().timestamp == (o2.getFrame().timestamp)) return 0;
                 return (o1.getFrame().timestamp > o2.getFrame().timestamp) ? 1 : -1;
             }
         });
 
     }
 
-    public synchronized void animate() {
-        try {
+    public synchronized void animate() throws InterruptedException {
+
+
             //TODO Implement for more cameras aswell as synchronization
 
-           ImageFrame next = images.poll();
+            ImageFrame next = images.peek();
             //TODO adding correct timedifference with wait
-            while (next == null){
-                wait();
-                next = images.poll();
+
+
+            while (true) {
+                next = images.peek();
+                if (next == null) {
+                    wait();
+                    continue;
+                }
+
+                long now = System.currentTimeMillis();
+
+                long movieTime = now -calcSyncDelay();
+                long timeLeftToDisplay = next.getFrame().timestamp - movieTime;
+
+//                if(timeLeftToDisplay > Constants.TIME_WINDOW && syncMode == SyncMode.Sync){
+//                    syncMode = SyncMode.Async;
+//                }
+                if (timeLeftToDisplay <= 0) {
+
+                    next = images.poll(); // Remove frame from priorityqueue
+                    LogUtil.info("Displaying frame from camera " + next.getCamera() + " , found a picture in the buffer");
+
+                    checkSynchronization(now);
+
+                    displayFrame(next.getCamera(), next.getFrame().getFrameAsBytes());
+                    currentlyShownFrameTimeStamp = next.getFrame().timestamp;
+                } else {
+                    wait(timeLeftToDisplay);
+                }
 
             }
-            displayFrame(next.getCamera(), next.getFrame().getFrameAsBytes());
-            long timeDiff = next.getFrame().timestamp -currentlyShownFrameTimeStamp;
-            long before = System.currentTimeMillis();
-            if(timeSinceLastFrame() < timeDiff){
-                System.out.println(timeDiff - timeSinceLastFrame()-diff);
-                System.out.println(diff);
-                wait(timeDiff - timeSinceLastFrame()-diff);
-            }
-            long diff = System.currentTimeMillis() - before;
-            diff = diff - (timeDiff-timeSinceLastFrame());
-
-
-            timeOfUpdate = System.currentTimeMillis();
-
-
-            LogUtil.info("Displaying frame from camera " + next.getCamera() + " , found a picture in the buffer");
-
-            currentlyShownFrameTimeStamp = next.getFrame().timestamp;
+//            while()
+        
 
 
 
-
-        } catch (InterruptedException e) {
-            LogUtil.exception(e);
+    }
+    private long calcSyncDelay(){
+        if(syncMode == SyncMode.Async || syncMode == SyncMode.ForceAsync){
+            return 0;
+        }else {
+            return  Constants.SYNC_DELAY;
         }
     }
-    private synchronized long timeSinceLastFrame(){
+
+    private synchronized long timeSinceLastUpdate() {
         return System.currentTimeMillis() - timeOfUpdate;
     }
 
     public synchronized void displayFrame(int cameraId, byte[] imageCopy) {
+//        LogUtil.info("Byteimage: " + imageCopy);
         currentFrames.put(cameraId, imageCopy);
         setChanged();
         notifyObservers(this);
 
 
     }
+    private void checkSynchronization(long now){
 
-    public synchronized void addImage(ImageFrame image){
+        if(now-currentlyShownFrameTimeStamp > Constants.TIME_WINDOW && syncMode == SyncMode.Sync){
+            syncMode = SyncMode.Async;
+        }else if(now-currentlyShownFrameTimeStamp < Constants.TIME_WINDOW && syncMode == SyncMode.Async){
+            syncMode = SyncMode.Sync;
+        }
+    }
+
+    public synchronized void addImage(ImageFrame image) {
         images.add(image);
         notifyAll();
 
     }
+
     public synchronized void registerDelay(long captureTime) {
 
     }
@@ -105,9 +132,10 @@ public class SystemMonitor extends Observable {
         this.mode = mode;
     }
 
-    public synchronized Set<Integer> getCameraIds(){
-
-        return currentFrames.keySet();
+    public synchronized Set<Integer> getCameraIds() {
+        return Arrays.stream(cameraList)
+                .map(c -> c.id)
+                .collect(Collectors.toSet());
     }
 
     public synchronized int getNrCameras() {
@@ -125,7 +153,4 @@ public class SystemMonitor extends Observable {
         return currentFrames.get(i);
     }
 
-    public synchronized void receivedFrame() {
-        notifyAll();
-    }
 }
