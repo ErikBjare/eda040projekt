@@ -1,9 +1,6 @@
 package client.gui;
 
-import client.Animator;
-import client.Mode;
-import client.SyncMode;
-import client.SystemMonitor;
+import client.*;
 import client.camera.Camera;
 import common.Constants;
 import common.LogUtil;
@@ -29,8 +26,9 @@ public class GUIMain extends JFrame implements Observer {
     public ModeControl modeButtons;
     public SystemMonitor monitor;
     public HashMap<Integer, CameraControl> cams;
+    private JLabel currentSyncMode;
 
-    public GUIMain(String s, SystemMonitor monitor)  {
+    public GUIMain(String s, SystemMonitor monitor) {
         super(s);
         this.cams = new HashMap<>(8);
         this.monitor = monitor;
@@ -57,10 +55,10 @@ public class GUIMain extends JFrame implements Observer {
         modeButtons.add(idleButton);
         modeButtons.add(movieButton);
 
-        addButtonActionListener(syncAutoButton, SyncMode.Auto);
+        addButtonActionListener(syncAutoButton, SyncMode.Sync);
         addButtonActionListener(syncButton, SyncMode.ForceSync);
         addButtonActionListener(asyncButton, SyncMode.ForceAsync);
-        addButtonActionListener(autoButton, Mode.Auto);
+        addButtonActionListener(autoButton, Mode.Idle);
         addButtonActionListener(idleButton, Mode.ForceIdle);
         addButtonActionListener(movieButton, Mode.ForceMovie);
 
@@ -75,6 +73,8 @@ public class GUIMain extends JFrame implements Observer {
 
         add(menuBar, BorderLayout.NORTH);
 
+        currentSyncMode = new JLabel("Sync");
+        menuBar.add(currentSyncMode, BorderLayout.CENTER);
 
         menuBar.add(westMenuBar, BorderLayout.WEST);
         menuBar.add(eastMenuBar, BorderLayout.EAST);
@@ -94,7 +94,7 @@ public class GUIMain extends JFrame implements Observer {
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
         //TODO Add correct bordering. Now hardcoded
-        String [] cameraPlacements = new String[]{"East", "West"};
+        String[] cameraPlacements = new String[]{"East", "West"};
         int i = 0;
         for (int id : monitor.getCameraIds()) {
             LogUtil.info("Found id:" + id);
@@ -124,10 +124,12 @@ public class GUIMain extends JFrame implements Observer {
                     @Override
                     public void run() {
                         monitor.setSyncMode(syncMode);
+                        syncButtons.setEnabled(button);
+
+                        syncButtons.clearSelection();
+                        syncButtons.setSelected(button.getModel(), true);
                     }
                 });
-
-                System.out.println("Pressed AutoSync");
             }
         });
     }
@@ -140,27 +142,33 @@ public class GUIMain extends JFrame implements Observer {
                     @Override
                     public void run() {
                         monitor.setMode(mode);
+                        modeButtons.setEnabled(button);
+
+                        modeButtons.clearSelection();
+                        modeButtons.setSelected(button.getModel(), true);
                     }
                 });
-
-                System.out.println("Pressed AutoSync");
             }
         });
     }
 
     public void update(Observable observable, Object o) {
+        if ((GUIUpdate) o == GUIUpdate.SyncModeUpdate)
+            SwingUtilities.invokeLater(() -> {
+                currentSyncMode.setText(monitor.getSyncMode().toString());
 
+            });
 //        SwingUtilities.invokeLater(this::render);
     }
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         SystemMonitor monitor = new SystemMonitor();
 
 //        Camera[] cameras = {new Camera(monitor, "localhost", 9191, 1)};
         Camera[] cameras = new Camera[0];
         try {
-            cameras = new Camera[]{new Camera(monitor, "localhost", 5656, 0),new Camera(monitor, "localhost", 5657, 1)};
+            cameras = new Camera[]{new Camera(monitor, "localhost", 5656, 0), new Camera(monitor, "localhost", 5657, 1)};
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (ConnectException e) {

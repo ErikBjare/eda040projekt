@@ -1,5 +1,6 @@
 package client.gui;
 
+import client.GUIUpdate;
 import client.SystemMonitor;
 import common.LogUtil;
 
@@ -33,10 +34,10 @@ public class CameraControl extends JPanel implements Observer {
         this.setSize(200, 200);
     }
 
-    public void displayImage(byte[] image){
+    public void displayImage(byte[] image) {
 //        LogUtil.info("Byte Array contains: " + Arrays.toString(image));
         Image img = getToolkit().createImage(image);
-        LogUtil.info("Rendering Icon: "+image.length);
+        LogUtil.info("Rendering Icon: " + image.length);
         getToolkit().prepareImage(img, -1, -1, null);
         icon.setImage(img);
         // icon.paintIcon(this, this.getGraphics(), 100, 0);
@@ -44,15 +45,17 @@ public class CameraControl extends JPanel implements Observer {
         repaint();
     }
 
-    public void displayDelay(long delay){
+    public void displayDelay(long delay) {
         this.delay.setText(Long.toString(delay));
 
     }
 
     public void update(Observable observable, Object o) {
-        System.out.println("Rendering Icon");
+        if ((GUIUpdate) o == GUIUpdate.FrameUpdate) {
+            System.out.println("Rendering Icon");
 //        LogUtil.info("Rendering Icon");
-        SwingUtilities.invokeLater(this::renderImage);
+            SwingUtilities.invokeLater(this::renderImage);
+        }
     }
 
 
@@ -61,10 +64,11 @@ public class CameraControl extends JPanel implements Observer {
         synchronized (system) {
 
             byte[] img = system.getDisplayFrame(cameraId);
-        if (img != null) {
-            displayImage(img);
-        } else {
-            LogUtil.info("Tried to render image, but no image available.");
-        }}
+            if (img != null) {
+                displayImage(img);
+            } else {
+                LogUtil.info("Tried to render image, but no image available.");
+            }
+        }
     }
 }

@@ -97,7 +97,7 @@ public class SystemMonitor extends Observable {
 //        LogUtil.info("Byteimage: " + imageCopy);
         currentFrames.put(cameraId, imageCopy);
         setChanged();
-        notifyObservers(this);
+        notifyObservers(GUIUpdate.FrameUpdate);
 
 
     }
@@ -126,10 +126,13 @@ public class SystemMonitor extends Observable {
 
     public synchronized void setSyncMode(SyncMode mode) {
         this.syncMode = mode;
+        setChanged();
+        notifyObservers(GUIUpdate.SyncModeUpdate);
     }
 
     public synchronized void setMode(Mode mode) {
         this.mode = mode;
+
     }
 
     public synchronized Set<Integer> getCameraIds() {
@@ -153,4 +156,7 @@ public class SystemMonitor extends Observable {
         return currentFrames.get(i);
     }
 
+    public SyncMode getSyncMode() {
+        return syncMode;
+    }
 }
