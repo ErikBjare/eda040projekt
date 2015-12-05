@@ -1,6 +1,10 @@
 package server;
 
+import common.LogUtil;
 import se.lth.cs.eda040.proxycamera.AxisM3006V;
+
+import java.io.IOException;
+import java.net.SocketException;
 
 public class Updater extends Thread {
     private Monitor monitor;
@@ -14,28 +18,34 @@ public class Updater extends Thread {
 
 
     public void run() {
+        try {
         while (!Thread.currentThread().isInterrupted()) {
             int size = AxisM3006V.IMAGE_BUFFER_SIZE;
             byte[] frame = new byte[size];
             int len = 0;
-            try {
+
                 len = hardware.getJPEG(frame, 0);
-            } catch (Error e) {
-                if (e.getMessage().startsWith("Interrupted")) {
-                    // A bullshit error that is really an InterruptedException from a Thread.sleep()
-                    break;
-                }
-            }
+
             try {
                 if (len > 0) {
-                    monitor.newFrame(System.currentTimeMillis(),  hardware.motionDetected() , frame);
+                    boolean motion = false;
+                    if(System.currentTimeMillis()%50==0) motion = true;
+
+                    monitor.newFrame(System.currentTimeMillis(),  motion , frame);
 //                    System.out.println("MOtion detected:: " + hardware.motionDetected());
                 }
             } catch (ShutdownException e) {
                 break;
             }
         }
+        }catch (Error e){
+//            LogUtil.exception(e);
 
+
+        }finally {
+
+            monitor.shutdown();
+        }
 
     }
 }

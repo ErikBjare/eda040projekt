@@ -22,7 +22,7 @@ public class SystemMonitor extends Observable {
     private Mode mode;
     private SyncMode syncMode;
     private long currentlyShownFrameTimeStamp;
-
+    private long lastModeChangeTime;
 
     private int motionCamera;
 
@@ -43,7 +43,9 @@ public class SystemMonitor extends Observable {
         //TODO must hand thread safety
         return currentlyShownFrameTimeStamp;
     }
-
+    public Mode getMode(){
+        return mode;
+    }
     public synchronized void animate() throws InterruptedException {
 
 
@@ -61,7 +63,6 @@ public class SystemMonitor extends Observable {
                 }
 
                 long now = System.currentTimeMillis();
-
                 long movieTime = now -calcSyncDelay();
                 long timeLeftToDisplay = next.getFrame().timestamp - movieTime;
 
@@ -102,6 +103,8 @@ public class SystemMonitor extends Observable {
     }
     private void checkSynchronization(long now){
 //        LogUtil.info("" + (now-currentlyShownFrameTimeStamp));
+//        LogUtil.info("Current delay between two shown pictures " + (now-currentlyShownFrameTimeStamp));
+
         if(now-currentlyShownFrameTimeStamp > Constants.TIME_WINDOW && syncMode == SyncMode.Sync){
             setSyncMode(SyncMode.Async);
         }else if(now-currentlyShownFrameTimeStamp < Constants.TIME_WINDOW && syncMode == SyncMode.Async){
@@ -110,7 +113,7 @@ public class SystemMonitor extends Observable {
     }
 
     public synchronized void addImage(ImageFrame image) {
-        LogUtil.info("Priority queue size : " + images.size());
+//        LogUtil.info("Priority queue size : " + images.size());
         if(image.getFrame().motionDetected && mode == Mode.Idle){
            motionDetected(image.getCamera());
             //TODO Alert which camera recieved the motion-detection
@@ -135,9 +138,12 @@ public class SystemMonitor extends Observable {
     }
 
     public synchronized void setSyncMode(SyncMode mode) {
+        if(System.currentTimeMillis() - lastModeChangeTime >  Constants.RETARDEDNESS){
         this.syncMode = mode;
+        lastModeChangeTime = System.currentTimeMillis();
         setChanged();
         notifyObservers(GUIUpdate.SyncModeUpdate);
+        }
     }
 
     public synchronized void setMode(Mode mode) {
@@ -151,6 +157,8 @@ public class SystemMonitor extends Observable {
 //            LogUtil.info("Adding mode change to mailbox: " + camera.toString());
             camera.addMessage(new ModeChange(mode, System.currentTimeMillis()));
         }
+        setChanged();
+        notifyObservers(GUIUpdate.ModeUpdate);
     }
 
     public synchronized Set<Integer> getCameraIds() {

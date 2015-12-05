@@ -27,13 +27,13 @@ public class Main {
         t2.start();
         t3.start();
         t4.start();
-        String[] hosts = IntStream.iterate(5656, i->i+1)
-                .mapToObj(i->"localhost "+i)
-                .limit(2)
-                .collect(Collectors.joining(" "))
-                .split(" ");
+//        String[] hosts = IntStream.iterate(5656, i->i+1)
+//                .mapToObj(i->"localhost "+i)
+//                .limit(4)
+//                .collect(Collectors.joining(" "))
+//                .split(" ");
 //        Stream<String> hosts = Stream.generate(()->"localhost");
 //        Stream<String> combinedStreams = Stream.concat(ports, hosts, )
-        client.gui.GUIMain.main(hosts);
+//        client.gui.GUIMain.main(hosts);
     }
 }

@@ -24,6 +24,7 @@ public class CameraControl extends JPanel implements Observer {
     private int nbrCameras;
     private long dt;
     private ImageFrame currentlyShownImage;
+    private long lastMotionUpdate;
 
     public CameraControl(SystemMonitor system, int cameraId) {
 
@@ -143,8 +144,7 @@ public class CameraControl extends JPanel implements Observer {
                 displayDelay(frame.getFrame().timestamp);
             }
         }
-        LogUtil.info("Time for rendering: " + (System.currentTimeMillis()-before));
-//        }
+//        LogUtil.info("Time for rendering: " + (System.currentTimeMillis()-before));
     }
 
     private void displayMotion(ImageFrame frame) {
@@ -152,12 +152,16 @@ public class CameraControl extends JPanel implements Observer {
 
 
             if (frame.getFrame().motionDetected) {
+                lastMotionUpdate = System.currentTimeMillis();
                 motion.setForeground(new Color(255,0,0));
                 motion.setText("<Motion Detected>");
             }
             else {
-                motion.setForeground(new Color(0,255,0));
-                motion.setText("<No Motion Detected>");
+                if(System.currentTimeMillis() - lastMotionUpdate  > 2000) {
+                    motion.setForeground(new Color(0, 255, 0));
+                    motion.setText("<No Motion Detected>");
+
+                }
             }
         }
     }

@@ -25,6 +25,8 @@ public class Monitor {
     public Monitor(Socket sendSocket, AxisM3006V hardware) {
         this.sendSocket = sendSocket;
         this.hardware = hardware;
+        this.mode = Mode.Idle;
+
     }
 
     public synchronized void newFrame(long time, boolean motion, byte[] frame) throws ShutdownException {
