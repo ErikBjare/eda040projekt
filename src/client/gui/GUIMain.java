@@ -74,6 +74,8 @@ public class GUIMain extends JFrame implements Observer {
         add(menuBar, BorderLayout.NORTH);
 
         currentSyncMode = new JLabel("Sync");
+        currentSyncMode.setHorizontalAlignment(SwingConstants.CENTER);
+        currentSyncMode.setFont(new Font("Arial", Font.BOLD, 30));
         menuBar.add(currentSyncMode, BorderLayout.CENTER);
 
         menuBar.add(westMenuBar, BorderLayout.WEST);
