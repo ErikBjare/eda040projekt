@@ -17,14 +17,13 @@ import java.util.stream.Collectors;
  */
 public class SystemMonitor extends Observable {
     private List<Camera> cameraList;
-    private FrameBuffer[] frameBuffers;
     private HashMap<Integer, ImageFrame> currentFrames;
     private PriorityQueue<ImageFrame> images;
     private Mode mode;
     private SyncMode syncMode;
     private long currentlyShownFrameTimeStamp;
-    private long timeOfUpdate;
-    private long diff;
+
+
     private int motionCamera;
 
     public SystemMonitor() {
@@ -44,6 +43,7 @@ public class SystemMonitor extends Observable {
         //TODO must hand thread safety
         return currentlyShownFrameTimeStamp;
     }
+
     public synchronized void animate() throws InterruptedException {
 
 
@@ -91,9 +91,6 @@ public class SystemMonitor extends Observable {
         }
     }
 
-    private synchronized long timeSinceLastUpdate() {
-        return System.currentTimeMillis() - timeOfUpdate;
-    }
 
     public synchronized void displayFrame(int cameraId, ImageFrame imageCopy) {
 //        LogUtil.info("Byteimage: " + imageCopy);

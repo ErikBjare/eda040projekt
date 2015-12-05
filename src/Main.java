@@ -29,7 +29,7 @@ public class Main {
         t4.start();
         String[] hosts = IntStream.iterate(5656, i->i+1)
                 .mapToObj(i->"localhost "+i)
-                .limit(4)
+                .limit(2)
                 .collect(Collectors.joining(" "))
                 .split(" ");
 //        Stream<String> hosts = Stream.generate(()->"localhost");

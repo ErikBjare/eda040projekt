@@ -22,8 +22,11 @@ public class CameraControl extends JPanel implements Observer {
     private SystemMonitor system;
     private int cameraId;
     private int nbrCameras;
+    private long dt;
+    private ImageFrame currentlyShownImage;
 
     public CameraControl(SystemMonitor system, int cameraId) {
+
         super();
         panel = new JPanel();
 
@@ -80,17 +83,28 @@ public class CameraControl extends JPanel implements Observer {
 
     public void displayImage(byte[] image) {
 //        LogUtil.info("Byte Array contains: " + Arrays.toString(image));
+        long before = System.currentTimeMillis();
         Image img = getToolkit().createImage(image);
+//        LogUtil.info("Time for createImage: " + (System.currentTimeMillis()-before));
+
+        before = System.currentTimeMillis();
 //        LogUtil.info("Rendering Icon: " + image.length);
         getToolkit().prepareImage(img, -1, -1, null);
-        Dimension imgsize = calcImgSize();
+//        LogUtil.info("Time for prepareImage: " + (System.currentTimeMillis()-before));
+//        Dimension imgsize = calcImgSize();
 
 //        img = (calcImgSize() == null) ? img : img.getScaledInstance((int)imgsize.getWidth(),  (int)imgsize.getHeight(),Image.SCALE_DEFAULT);
 //        System.out.println(getWidth() + "X" + getHeight());
+         before = System.currentTimeMillis();
         icon.setImage(img);
+//        LogUtil.info("Time for setImage: " + (System.currentTimeMillis()-before));
         // icon.paintIcon(this, this.getGraphics(), 100, 0);
 //        revalidate();
+        before = System.currentTimeMillis();
+
         repaint();
+//        LogUtil.info("Time for repaint: " + (System.currentTimeMillis()-before));
+
     }
 
     public void displayDelay(long delay) {
@@ -99,30 +113,44 @@ public class CameraControl extends JPanel implements Observer {
     }
 
     public void update(Observable observable, Object o) {
-        if ((GUIUpdate) o == GUIUpdate.FrameUpdate) {
+
+        if ((GUIUpdate) o == GUIUpdate.FrameUpdate ) {
+            ImageFrame toBeShown = system.getDisplayFrame(cameraId);
+          if(currentlyShownImage != toBeShown){
+
 //            System.out.println("Rendering Icon");
+//            renderImage();
             SwingUtilities.invokeLater(this::renderImage);
+        }
         }
     }
 
 
     public void renderImage() {
 //        LogUtil.info("Entering renderimage!");
+        long before = System.currentTimeMillis();
+
         synchronized (system) {
 
             ImageFrame frame = system.getDisplayFrame(cameraId);
+            currentlyShownImage = frame;
             if (frame.getFrame().getFrameAsBytes() != null) {
+//                if(System.currentTimeMillis()-dt > 50){
+//                    dt = System.currentTimeMillis();
                 displayImage(frame.getFrame().getFrameAsBytes());
+
                 displayMotion(frame);
                 displayDelay(frame.getFrame().timestamp);
-            } else {
-//                LogUtil.info("Tried to render image, but no image available.");
             }
         }
+        LogUtil.info("Time for rendering: " + (System.currentTimeMillis()-before));
+//        }
     }
 
     private void displayMotion(ImageFrame frame) {
-        SwingUtilities.invokeLater(()-> {
+
+
+
             if (frame.getFrame().motionDetected) {
                 motion.setForeground(new Color(255,0,0));
                 motion.setText("<Motion Detected>");
@@ -131,6 +159,7 @@ public class CameraControl extends JPanel implements Observer {
                 motion.setForeground(new Color(0,255,0));
                 motion.setText("<No Motion Detected>");
             }
-        }  );
+        }
     }
-}
+
+

@@ -9,4 +9,5 @@ public class Constants {
     public static final String GUI_TITLE = "Surveillance";
     public static final long SYNC_DELAY = 200;
     public static final long TIME_WINDOW = 200;
+    public static final long RETARDEDNESS = 1000;
 }
