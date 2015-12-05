@@ -95,17 +95,28 @@ public class GUIMain extends JFrame implements Observer {
         title = new JLabel("Sync Mode", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
-        //TODO Add correct bordering. Now hardcoded
-        String[] cameraPlacements = new String[]{"East", "West"};
+
+        GridLayout cameraDisplay = new GridLayout(2, 4);
+        JPanel cameraPlacement = new JPanel(cameraDisplay);
+        add(cameraPlacement, BorderLayout.SOUTH);
         int i = 0;
-        for (int id : monitor.getCameraIds()) {
-            LogUtil.info("Found id:" + id);
+        for(int id: monitor.getCameraIds()){
             cams.put(id, new CameraControl(monitor, id));
-            add(cams.get(id), cameraPlacements[i]);
+            cameraPlacement.add(cams.get(id));
             monitor.addObserver(cams.get(id));
             i++;
-
         }
+        //TODO Add correct bordering. Now hardcoded
+//        String[] cameraPlacements = new String[]{"East", "West"};
+//        int i = 0;
+//        for (int id : monitor.getCameraIds()) {
+//            LogUtil.info("Found id:" + id);
+//            cams.put(id, new CameraControl(monitor, id));
+//            add(cams.get(id), cameraPlacements[i]);
+//            monitor.addObserver(cams.get(id));
+//            i++;
+//
+//        }
 //
 //        for (int i = 0; i < monitor.getNrCameras(); i++) {
 //            cams[i] = new CameraControl();
@@ -170,7 +181,9 @@ public class GUIMain extends JFrame implements Observer {
 //        Camera[] cameras = {new Camera(monitor, "localhost", 9191, 1)};
         Camera[] cameras = new Camera[0];
         try {
-            cameras = new Camera[]{new Camera(monitor, "localhost", 5656, 0), new Camera(monitor, "localhost", 5657, 1)};
+            cameras = new Camera[]{new Camera(monitor, "localhost", 5656, 0), new Camera(monitor, "localhost", 5657, 1),
+                    new Camera(monitor, "localhost", 5658, 2), new Camera(monitor, "localhost", 5659, 3),
+                    new Camera(monitor, "localhost", 5660, 4), new Camera(monitor, "localhost", 5661, 5)};
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (ConnectException e) {
