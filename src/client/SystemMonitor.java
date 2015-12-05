@@ -71,7 +71,7 @@ public class SystemMonitor extends Observable {
                     next = images.poll(); // Remove frame from priorityqueue
 //                    LogUtil.info("Displaying frame from camera " + next.getCamera() + " , found a picture in the buffer");
 
-                    checkSynchronization(now);
+                    checkSynchronization(next.getFrame().timestamp);
                     displayFrame(next.getCamera(), next);
                     currentlyShownFrameTimeStamp = next.getFrame().timestamp;
                 } else {
