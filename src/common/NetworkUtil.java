@@ -8,11 +8,15 @@ import java.nio.ByteBuffer;
  * Contains a bunch of static methods for simplifying socket code.
  */
 public class NetworkUtil {
+    public static final int INTEGER_SIZE = 4*8;
+    public static final int BYTE_SIZE = 1*8;
+    public static final int LONG_SIZE = 8*8;
+
     public static byte[] toBytes(int i){
-        return ByteBuffer.allocate(Integer.SIZE / Byte.SIZE).putInt(i).array();
+        return ByteBuffer.allocate(INTEGER_SIZE/ BYTE_SIZE).putInt(i).array();
     }
     public static byte[] toBytes(long l){
-        return ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(l).array();
+        return ByteBuffer.allocate(LONG_SIZE / BYTE_SIZE).putLong(l).array();
     }
     public static void readAll(InputStream input, byte[] buffer) throws IOException {
         int  read = 0;
