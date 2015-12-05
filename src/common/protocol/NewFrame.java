@@ -16,6 +16,20 @@ public class NewFrame extends Message {
     public int size;
     byte[] frame;
     public long timestamp;
+    public boolean motionDetected;
+
+    public NewFrame(int size, byte[] frame, long timestamp, boolean motionDetected) {
+        super(MsgType.newFrame);
+        this.size = size;
+        this.frame = frame;
+        this.timestamp = timestamp;
+        this.motionDetected = motionDetected;
+    }
+
+    public NewFrame(Socket socket) throws IOException {
+        super(MsgType.newFrame);
+        this.decode(socket);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -24,10 +38,22 @@ public class NewFrame extends Message {
 
         NewFrame newFrame = (NewFrame) o;
 
+        if (motionDetected != newFrame.motionDetected) return false;
         if (size != newFrame.size) return false;
         if (timestamp != newFrame.timestamp) return false;
-        return Arrays.equals(frame, newFrame.frame);
+        if (!Arrays.equals(frame, newFrame.frame)) return false;
 
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "NewFrame{" +
+                "size=" + size +
+                ", frame=" + Arrays.toString(frame) +
+                ", timestamp=" + timestamp +
+                ", motionDetected=" + motionDetected +
+                '}';
     }
 
     @Override
@@ -35,14 +61,8 @@ public class NewFrame extends Message {
         int result = size;
         result = 31 * result + (frame != null ? Arrays.hashCode(frame) : 0);
         result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+        result = 31 * result + (motionDetected ? 1 : 0);
         return result;
-    }
-
-    public NewFrame(int size, byte[] frame, long timestamp) {
-        super(MsgType.newFrame);
-        this.size = size;
-        this.frame = frame;
-        this.timestamp = timestamp;
     }
 
     public byte[] getFrameAsBytes() {
@@ -57,26 +77,16 @@ public class NewFrame extends Message {
         return size;
     }
 
-    @Override
-    public String toString() {
-        return "NewFrame{" +
-                "size=" + size +
-                ", frame=" + Arrays.toString(frame) +
-                ", timestamp=" + timestamp +
-                '}';
-    }
 
-    public NewFrame(Socket socket) throws IOException {
-        super(MsgType.newFrame);
-        this.decode(socket);
-    }
 
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
         out.write(NetworkUtil.toBytes(size));
         out.write(frame);
+        NetworkUtil.writeBool(out, motionDetected);
         out.write(NetworkUtil.toBytes(timestamp));
+
     }
 
     @Override
@@ -85,6 +95,7 @@ public class NewFrame extends Message {
         size = NetworkUtil.readInt(input);
         frame = new byte[size];
         NetworkUtil.readAll(input, frame);
+        motionDetected = NetworkUtil.readBool(input);
         timestamp = NetworkUtil.readLong(input);
     }
 }

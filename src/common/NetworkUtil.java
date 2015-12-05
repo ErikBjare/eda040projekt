@@ -2,6 +2,7 @@ package common;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
@@ -43,5 +44,13 @@ public class NetworkUtil {
         int response = input.read();
         if (response == -1) throw new RuntimeException("socket end");
         return (byte)response;
+    }
+    public static boolean readBool(InputStream inputStream) throws  IOException{
+        int response = inputStream.read();
+        return response == 0 ? false : true;
+    }
+    public static void writeBool(OutputStream out, boolean b) throws  IOException{
+        out.write(b ? 1 : 0 );
+
     }
 }

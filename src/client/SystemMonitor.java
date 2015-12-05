@@ -6,10 +6,6 @@ import client.camera.ImageFrame;
 import common.Constants;
 import common.LogUtil;
 import common.protocol.ModeChange;
-import jdk.nashorn.internal.runtime.options.LoggingOption;
-import sun.rmi.log.LogInputStream;
-
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,6 +22,7 @@ public class SystemMonitor extends Observable {
     private long currentlyShownFrameTimeStamp;
     private long timeOfUpdate;
     private long diff;
+    private int motionCamera;
 
     public SystemMonitor() {
 
@@ -38,7 +35,7 @@ public class SystemMonitor extends Observable {
                 return (o1.getFrame().timestamp > o2.getFrame().timestamp) ? 1 : -1;
             }
         });
-
+        motionCamera = -1;
     }
 
     public synchronized void animate() throws InterruptedException {
@@ -110,6 +107,10 @@ public class SystemMonitor extends Observable {
     }
 
     public synchronized void addImage(ImageFrame image) {
+        if(image.getFrame().motionDetected && mode == Mode.Idle  ){
+           motionDetected(image.getCamera());
+            //TODO Alert which camera recieved the motion-detection
+        }
         images.add(image);
         notifyAll();
 
@@ -119,8 +120,14 @@ public class SystemMonitor extends Observable {
 
     }
 
-    public synchronized void motionDetected() {
-
+    public synchronized void motionDetected(int id) {
+        motionCamera = id;
+        setMode(Mode.Movie);
+        setChanged();
+        notifyObservers(GUIUpdate.MotionDetected);
+    }
+    public synchronized int getMotionCamera(){
+        return motionCamera;
     }
 
     public synchronized void setSyncMode(SyncMode mode) {

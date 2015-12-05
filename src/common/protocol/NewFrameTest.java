@@ -18,7 +18,7 @@ public class NewFrameTest {
         Random random = new Random();
         byte[] frame = new byte[1000];
         random.nextBytes(frame);
-        Message mess = new NewFrame(1000, frame, System.currentTimeMillis());
+        Message mess = new NewFrame(1000, frame, System.currentTimeMillis(), false);
         SendReceiveTester.assertSendRecvEqual(mess, NewFrameTest::getSocketMessageFunction);
     }
 
