@@ -28,7 +28,8 @@ public class Updater extends Thread {
             }
             try {
                 if (len > 0) {
-                    monitor.newFrame(System.currentTimeMillis(), hardware.motionDetected(), frame);
+                    monitor.newFrame(System.currentTimeMillis(),  hardware.motionDetected() , frame);
+//                    System.out.println("MOtion detected:: " + hardware.motionDetected());
                 }
             } catch (ShutdownException e) {
                 break;

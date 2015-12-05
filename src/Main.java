@@ -1,3 +1,9 @@
+import java.util.Arrays;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 /**
  * Created by Tank on 12/2/2015.
  */
@@ -10,9 +16,9 @@ public class Main {
         String[] s5 = new String[]{"5660", "argus-6.student.lth.se", "9191" };
         String[] s6 = new String[]{"5661", "argus-7.student.lth.se", "9191" };
         Thread t3 = new Thread(()->server.Main.main(s3));
-        Thread t4 = new Thread(()->server.Main.main(s4));
         Thread t1 = new Thread(()->server.Main.main(s));
         Thread t2 = new Thread(()->server.Main.main(s1));
+        Thread t4 = new Thread(()->server.Main.main(s4));
         Thread t5 = new Thread(()->server.Main.main(s5));
         Thread t6 = new Thread(()->server.Main.main(s6));
         t5.start();
@@ -21,6 +27,13 @@ public class Main {
         t2.start();
         t3.start();
         t4.start();
-        client.gui.GUIMain.main(new String[]{});
+        String[] hosts = IntStream.iterate(5656, i->i+1)
+                .mapToObj(i->"localhost "+i)
+                .limit(4)
+                .collect(Collectors.joining(" "))
+                .split(" ");
+//        Stream<String> hosts = Stream.generate(()->"localhost");
+//        Stream<String> combinedStreams = Stream.concat(ports, hosts, )
+        client.gui.GUIMain.main(hosts);
     }
 }
