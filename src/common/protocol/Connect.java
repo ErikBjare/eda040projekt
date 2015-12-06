@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Arrays;
 
 /**
  * Message containing a new captured frame.
@@ -27,7 +26,7 @@ public class Connect extends Message {
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
-        out.write(NetworkUtil.toBytes(timestamp));
+        NetworkUtil.send(out,timestamp);
     }
 
     @Override
@@ -39,7 +38,7 @@ public class Connect extends Message {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
 
         Connect connect = (Connect) o;
 

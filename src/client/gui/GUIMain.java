@@ -3,7 +3,8 @@ package client.gui;
 import client.*;
 import client.camera.Camera;
 import common.Constants;
-import common.LogUtil;
+import client_util.LogUtil;
+import common.Mode;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicOptionPaneUI;
@@ -11,6 +12,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -150,7 +154,7 @@ public class GUIMain extends JFrame implements Observer {
         });
     }
 
-    private void addButtonActionListener(JButton button, Mode mode) {
+    private void addButtonActionListener(JButton button, int mode) {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

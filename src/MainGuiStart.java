@@ -27,7 +27,7 @@ public class MainGuiStart {
 
         String[] hosts = IntStream.iterate(5656, i -> i + 1)
                 .mapToObj(i->"localhost "+i)
-                .limit(nbrCameras)
+                .limit(4)
                 .collect(Collectors.joining(" "))
                 .split(" ");
         client.gui.GUIMain.main(hosts);

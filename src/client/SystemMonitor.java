@@ -2,14 +2,17 @@ package client;
 
 import client.camera.Camera;
 import client.camera.ImageFrame;
+import client_util.LogUtil;
 import common.Constants;
-import common.LogUtil;
+import common.Mode;
+import common.protocol.NewFrame;
 import common.protocol.ModeChange;
 import common.protocol.NewFrame;
 
 import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Observable;
 
 /**
  * Created by simon on 2015-11-08.
@@ -18,7 +21,7 @@ public class SystemMonitor extends Observable {
     private List<Camera> cameraList;
     private HashMap<Integer, ImageFrame> currentFrames;
     private PriorityQueue<ImageFrame> images;
-    private Mode mode;
+    private int mode;
     private SyncMode syncMode;
     private long currentlyShownFrameTimeStamp;
     private long lastModeChangeTime;
@@ -42,7 +45,7 @@ public class SystemMonitor extends Observable {
         //TODO must hand thread safety
         return currentlyShownFrameTimeStamp;
     }
-    public Mode getMode(){
+    public int getMode(){
         return mode;
     }
     public synchronized void animate() throws InterruptedException {
@@ -142,13 +145,13 @@ public class SystemMonitor extends Observable {
         }
     }
 
-    public synchronized void setMode(Mode mode) {
-//        LogUtil.info("Setting mode to: " + mode);
+    public synchronized void setMode(int mode) {
+        LogUtil.info("Setting mode to: " + mode);
         this.mode = mode;
         broadcastMode(mode);
     }
 
-    private synchronized void broadcastMode(Mode mode) {
+    private synchronized void broadcastMode(int mode) {
         for (Camera camera : cameraList) {
 //            LogUtil.info("Adding mode change to mailbox: " + camera.toString());
             camera.addMessage(new ModeChange(mode, System.currentTimeMillis()));

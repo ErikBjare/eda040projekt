@@ -1,22 +1,21 @@
 package common.protocol;
 
-import client.Mode;
+import common.Mode;
 import common.NetworkUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Arrays;
 
 /**
  * Message containing a new captured frame.
  */
 public class ModeChange extends Message {
-    public Mode newMode;
-    public long timestamp;
+    public int newMode;
+    long timestamp;
 
-    public ModeChange(Mode newMode, long timestamp) {
+    public ModeChange(int newMode, long timestamp) {
         super(MsgType.modeChange);
         this.newMode = newMode;
         this.timestamp = timestamp;
@@ -30,21 +29,21 @@ public class ModeChange extends Message {
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
-        out.write(NetworkUtil.toBytes(newMode.ordinal()));
-        out.write(NetworkUtil.toBytes(timestamp));
+        NetworkUtil.send(out,newMode);
+        NetworkUtil.send(out,timestamp);
     }
 
     @Override
     protected void decode(Socket socket) throws IOException {
         InputStream input = socket.getInputStream();
-        newMode = Mode.fromInteger(NetworkUtil.readInt(input));
+        newMode = NetworkUtil.readInt(input);
         timestamp = NetworkUtil.readLong(input);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
 
         ModeChange that = (ModeChange) o;
 
@@ -53,10 +52,4 @@ public class ModeChange extends Message {
 
     }
 
-    @Override
-    public int hashCode() {
-        int result = newMode != null ? newMode.hashCode() : 0;
-        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
-        return result;
-    }
 }

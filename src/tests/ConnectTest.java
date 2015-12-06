@@ -1,10 +1,9 @@
-package common.protocol;
-
+import common.protocol.Connect;
+import common.protocol.Message;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Random;
 
 public class ConnectTest {
 

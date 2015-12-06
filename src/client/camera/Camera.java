@@ -1,8 +1,8 @@
 package client.camera;
 
 import client.SystemMonitor;
-import common.LogUtil;
 import common.protocol.Message;
+import client_util.LogUtil;
 import common.protocol.NewFrame;
 
 import java.io.IOException;

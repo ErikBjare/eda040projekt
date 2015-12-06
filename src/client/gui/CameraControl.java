@@ -1,9 +1,9 @@
 package client.gui;
 
+import client.camera.ImageFrame;
+import client_util.LogUtil;
 import client.GUIUpdate;
 import client.SystemMonitor;
-import client.camera.ImageFrame;
-import common.LogUtil;
 
 import javax.swing.*;
 import java.awt.*;

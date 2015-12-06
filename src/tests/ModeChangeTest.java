@@ -1,6 +1,6 @@
-package common.protocol;
-
-import client.Mode;
+import common.Mode;
+import common.protocol.Message;
+import common.protocol.ModeChange;
 import org.junit.Test;
 
 import java.io.IOException;
