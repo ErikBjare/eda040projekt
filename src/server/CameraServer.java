@@ -23,10 +23,10 @@ public class CameraServer {
         hardware.init();
         hardware.setProxy("argus-1.student.lth.se", 5656);
         hardware.connect();
-        monitor = new Monitor(socket,hardware);
+        monitor = new Monitor(socket, hardware);
         receiver = new Receiver(monitor, socket);
         sender = new Sender(monitor);
-        updater = new Updater(monitor,hardware);
+        updater = new Updater(monitor, hardware);
         receiver.start();
         sender.start();
         updater.start();
@@ -39,20 +39,21 @@ public class CameraServer {
     }
 
     public void join() {
-        try {
-            receiver.join();
-            LogUtil.info("Receiver thread joined");
-            sender.join();
-            LogUtil.info("Sender thread joined");
-            updater.join();
-            LogUtil.info("Updater thread joined");
-        } catch (InterruptedException e) {
-            LogUtil.exception(e);
-        }
-        finally {
-            hardware.close();
-            hardware.destroy();
-        }
+//        try {
+        // There is no join() implementation in the C compiled version
+//            receiver.join();
+//            LogUtil.info("Receiver thread joined");
+//            sender.join();
+//            LogUtil.info("Sender thread joined");
+//            updater.join();
+//            LogUtil.info("Updater thread joined");
+//        } catch (InterruptedException e) {
+//            LogUtil.exception(e);
+//        }
+//        finally {
+        hardware.close();
+        hardware.destroy();
+//        }
     }
 
 
