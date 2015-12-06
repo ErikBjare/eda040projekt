@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Arrays;
 
 /**
  * Message containing a new captured frame.
@@ -25,8 +24,10 @@ public class NewFrame extends Message {
 
         if (size != newFrame.size) return false;
         if (timestamp != newFrame.timestamp) return false;
-        return Arrays.equals(frame, newFrame.frame);
-
+        for (int i = 0; i < frame.length; i++) {
+            if ( frame[i] != ((NewFrame) o).frame[i]) return false;
+        }
+        return true;
     }
 
     @Override
@@ -73,9 +74,9 @@ public class NewFrame extends Message {
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
-        NetworkUtil.send(out,size);
+        NetworkUtil.send(out, size);
         out.write(frame);
-        NetworkUtil.send(out,timestamp);
+        NetworkUtil.send(out, timestamp);
     }
 
     @Override
