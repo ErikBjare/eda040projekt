@@ -17,9 +17,9 @@ public class LogUtil {
         log(Thread.currentThread().getName(), "INFO", message);
     }
     public static void log(String thread, String level, String message){
-//        System.out.printf(format, level, thread, message);
+       System.out.println(message);
     }
     public static void logErr(String thread, String level, String message){
-//        System.err.printf(format, level, thread, message);
+       System.err.println(message);
     }
 }
