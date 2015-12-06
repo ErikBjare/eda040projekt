@@ -17,26 +17,28 @@ public class NewFrame extends Message {
     byte[] frame;
     public long timestamp;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    // DOES NOT COMPILE TO C
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        NewFrame newFrame = (NewFrame) o;
+//
+//        if (size != newFrame.size) return false;
+//        if (timestamp != newFrame.timestamp) return false;
+//        return Arrays.equals(frame, newFrame.frame);
+//
+//    }
 
-        NewFrame newFrame = (NewFrame) o;
-
-        if (size != newFrame.size) return false;
-        if (timestamp != newFrame.timestamp) return false;
-        return Arrays.equals(frame, newFrame.frame);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = size;
-        result = 31 * result + (frame != null ? Arrays.hashCode(frame) : 0);
-        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
-        return result;
-    }
+    // ARRAYS.HASHCODE DOES NOT COMPILE TO C
+//    @Override
+//    public int hashCode() {
+//        int result = size;
+//        result = 31 * result + (frame != null ? Arrays.hashCode(frame) : 0);
+//        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+//        return result;
+//    }
 
     public NewFrame(int size, byte[] frame, long timestamp) {
         super(MsgType.newFrame);
