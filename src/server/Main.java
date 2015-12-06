@@ -1,6 +1,7 @@
 package server;
 
 import common.LogUtil;
+import se.lth.cs.eda040.proxycamera.AxisM3006V;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,13 +12,19 @@ import java.net.Socket;
  */
 public class Main {
     public static void main(String[] args) {
+        String cameraHostname = args[1];
+        int cameraPort = Integer.parseInt(args[2]);
 
-        ServerSocket sock = null;
+        AxisM3006V hardware = new AxisM3006V();
+        hardware.init();
+        hardware.setProxy(cameraHostname, cameraPort);
+        hardware.connect();
 
         try {
+            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077);
+            jpeghttpServer.start();
 
-            sock = new ServerSocket(Integer.parseInt(args[0]));
-
+            ServerSocket sock = new ServerSocket(Integer.parseInt(args[0]));
 
             while (!Thread.interrupted()) {
                 try {
@@ -25,10 +32,10 @@ public class Main {
                     Socket client = sock.accept();
                     LogUtil.info("Accepted connection");
 
-                    CameraServer cameraServer = new CameraServer(args[1], Integer.parseInt(args[2]), client);
+                    CameraServer cameraServer = new CameraServer(hardware, client);
 
                     cameraServer.join();
-                    LogUtil.info("Finished with client");
+                   LogUtil.info("Finished with client");
                 } catch (IOException e) {
                     LogUtil.exception(e);
                 }
@@ -38,4 +45,5 @@ public class Main {
             LogUtil.exception(e);
         }
     }
+
 }

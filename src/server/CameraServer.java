@@ -10,18 +10,16 @@ import java.net.Socket;
  * Created by von on 2015-11-08.
  */
 public class CameraServer {
-    private final AxisM3006V hardware;
+    AxisM3006V hardware;
 
     Monitor monitor;
     Receiver receiver;
     Sender sender;
     Updater updater;
+    JPEGHTTPServer jpeghttpServer;
 
-    public CameraServer(String hostname, int port, Socket socket) {
-        this.hardware = new AxisM3006V();
-        hardware.init();
-        hardware.setProxy(hostname, port);
-        hardware.connect();
+    public CameraServer(AxisM3006V hardware, Socket socket) {
+        this.hardware = hardware;
         monitor = new Monitor(socket,hardware);
         receiver = new Receiver(monitor, socket);
         sender = new Sender(monitor);
@@ -31,10 +29,12 @@ public class CameraServer {
         updater.start();
     }
 
+
     public void stop() {
         receiver.interrupt();
         sender.interrupt();
         updater.interrupt();
+        jpeghttpServer.interrupt();
     }
 
     public void join() {
@@ -45,6 +45,8 @@ public class CameraServer {
             LogUtil.info("Sender thread joined");
             updater.join();
             LogUtil.info("Updater thread joined");
+            jpeghttpServer.join();
+            LogUtil.info("HTTP server thread joined");
         } catch (InterruptedException e) {
             LogUtil.exception(e);
         }
