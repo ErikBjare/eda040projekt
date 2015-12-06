@@ -14,19 +14,19 @@ public class Shutdown extends Message {
     long timestamp;
 
     public Shutdown(long timestamp) {
-        super(MsgType.shutdown);
+        super(MsgType.SHUTDOWN);
         this.timestamp = timestamp;
     }
 
     public Shutdown(Socket socket) throws IOException {
-        super(MsgType.shutdown);
+        super(MsgType.SHUTDOWN);
         this.decode(socket);
     }
 
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
-        NetworkUtil.send(out,timestamp);
+        NetworkUtil.send(out, timestamp);
     }
 
     @Override

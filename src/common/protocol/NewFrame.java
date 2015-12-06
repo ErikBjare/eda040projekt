@@ -39,8 +39,7 @@ public class NewFrame extends Message {
 //    }
 
     public NewFrame(int size, byte[] frame, long timestamp) {
-        // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
-        super((byte)4);
+        super(MsgType.NEW_FRAME);
         this.size = size;
         this.frame = frame;
         this.timestamp = timestamp;
@@ -68,8 +67,7 @@ public class NewFrame extends Message {
 //    }
 
     public NewFrame(Socket socket) throws IOException {
-        // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
-        super((byte)4);
+        super(MsgType.NEW_FRAME);
         this.decode(socket);
     }
 
