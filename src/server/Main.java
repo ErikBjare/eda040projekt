@@ -9,7 +9,7 @@ import java.net.Socket;
 public class Main {
     public static void start(AxisWrapper hardware){
 //        hardware.init();
-        hardware.connect();
+//        hardware.connect();
 
         try {
             Monitor monitor = new Monitor(hardware);

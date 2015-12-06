@@ -43,7 +43,8 @@ public class Monitor {
     public synchronized boolean connect() throws ShutdownException {
         if (isShutdown) throw new ShutdownException();
         notifyAll();
-        return hardware.connect();
+        // return hardware.connect();
+        return true;
     }
 
     /* Initiates camera shutdown sequence */
