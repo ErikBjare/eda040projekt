@@ -37,7 +37,6 @@ public class GUIMain extends JFrame implements Observer {
         this.cams = new HashMap<>(8);
         this.monitor = monitor;
         syncButtons = new SyncModeControl();
-        modeButtons = new ModeControl();
         setMinimumSize(new Dimension(500, 500));
 //        this.createImage(460, 260);
         setLayout(new BorderLayout());
@@ -46,18 +45,27 @@ public class GUIMain extends JFrame implements Observer {
 
         //init buttons
         JButton syncAutoButton = new JButton("Auto");
-        JButton syncButton = new JButton("Sync");
-        JButton asyncButton = new JButton("Async");
+        JButton syncButton = new JButton("Forced Sync");
+        JButton asyncButton = new JButton("Forced Async");
         JButton autoButton = new JButton("Auto");
-        JButton idleButton = new JButton("Idle");
-        JButton movieButton = new JButton("Movie");
+        JButton idleButton = new JButton("Forced Idle");
+        JButton movieButton = new JButton("Forced Movie");
 
         syncButtons.add(syncAutoButton);
         syncButtons.add(syncButton);
         syncButtons.add(asyncButton);
+
+
+        JPanel westMenuBar = new JPanel();
+
+        JLabel modeType = new JLabel("Mode: Auto", JLabel.CENTER);
+        modeType.setFont(new Font("Arial", Font.BOLD, 26));
+        modeButtons = new ModeControl(westMenuBar, modeType);
+
         modeButtons.add(autoButton);
         modeButtons.add(idleButton);
         modeButtons.add(movieButton);
+        monitor.addObserver(modeButtons);
 
         addButtonActionListener(syncAutoButton, SyncMode.Sync);
         addButtonActionListener(syncButton, SyncMode.ForceSync);
@@ -69,15 +77,14 @@ public class GUIMain extends JFrame implements Observer {
 
         JPanel menuBar = new JPanel();
         menuBar.setLayout(new BorderLayout());
-        JPanel westMenuBar = new JPanel();
         westMenuBar.setLayout(new BorderLayout());
         JPanel eastMenuBar = new JPanel();
         eastMenuBar.setLayout(new BorderLayout());
 
 
-        add(menuBar, BorderLayout.NORTH);
+        add(menuBar, BorderLayout.SOUTH);
 
-        currentSyncMode = new JLabel("Sync");
+        currentSyncMode = new JLabel("Cameras: <Not Synchronized>");
         currentSyncMode.setHorizontalAlignment(SwingConstants.CENTER);
         currentSyncMode.setFont(new Font("Arial", Font.BOLD, 30));
         menuBar.add(currentSyncMode, BorderLayout.CENTER);
@@ -93,22 +100,18 @@ public class GUIMain extends JFrame implements Observer {
         westMenuBar.add(idleButton, BorderLayout.CENTER);
         westMenuBar.add(movieButton, BorderLayout.EAST);
 
-        JLabel title = new JLabel("Mode", JLabel.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 26));
-        westMenuBar.add(title, BorderLayout.NORTH);
-        title = new JLabel("Sync Mode", JLabel.CENTER);
+        westMenuBar.add(modeType, BorderLayout.NORTH);
+        JLabel title = new JLabel("Sync Mode", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
 
         GridLayout cameraDisplay = new GridLayout(2, 4);
         JPanel cameraPlacement = new JPanel(cameraDisplay);
-        add(cameraPlacement, BorderLayout.SOUTH);
-        int i = 0;
-        for(int id: monitor.getCameraIds()){
+        add(cameraPlacement, BorderLayout.CENTER);
+        for (int id : monitor.getCameraIds()) {
             cams.put(id, new CameraControl(monitor, id));
             cameraPlacement.add(cams.get(id));
             monitor.addObserver(cams.get(id));
-            i++;
         }
         //TODO Add correct bordering. Now hardcoded
 //        String[] cameraPlacements = new String[]{"East", "West"};
@@ -170,12 +173,18 @@ public class GUIMain extends JFrame implements Observer {
     }
 
     public void update(Observable observable, Object o) {
-        if ((GUIUpdate) o == GUIUpdate.SyncModeUpdate)
+
+        if ((GUIUpdate) o == GUIUpdate.SyncModeUpdate) {
             SwingUtilities.invokeLater(() -> {
-                currentSyncMode.setText(monitor.getSyncMode().toString());
+                if (monitor.getSyncMode() == SyncMode.Async || monitor.getSyncMode() == SyncMode.ForceAsync ){
+                currentSyncMode.setText("Cameras: <Not Synchronized>");
+                }else{currentSyncMode.setText("Cameras: <Synchronized>");
+                }
+
 
             });
 //        SwingUtilities.invokeLater(this::render);
+        }
     }
 
 
@@ -183,11 +192,15 @@ public class GUIMain extends JFrame implements Observer {
         SystemMonitor monitor = new SystemMonitor();
 
 //        Camera[] cameras = {new Camera(monitor, "localhost", 9191, 1)};
-        Camera[] cameras = new Camera[0];
+        ArrayList<Camera> cameras = new ArrayList<>();
         try {
-            cameras = new Camera[]{new Camera(monitor, "localhost", 5656, 0), new Camera(monitor, "localhost", 5657, 1),
-                    new Camera(monitor, "localhost", 5658, 2), new Camera(monitor, "localhost", 5659, 3),
-                    new Camera(monitor, "localhost", 5660, 4), new Camera(monitor, "localhost", 5661, 5)};
+            for (int i = 0; i < args.length; i += 2) {
+
+                cameras.add(new Camera(monitor, args[i], Integer.parseInt(args[i + 1]), i / 2));
+
+            }
+
+
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (ConnectException e) {

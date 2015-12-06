@@ -2,12 +2,15 @@ package client;
 
 import client.camera.Camera;
 import client.camera.FrameBuffer;
+import client.camera.ImageFrame;
 import client_util.LogUtil;
+import common.Constants;
 import common.Mode;
 import common.protocol.NewFrame;
 import common.protocol.ModeChange;
-import common.Constants;
-import client.camera.ImageFrame;
+import common.protocol.NewFrame;
+
+import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.Observable;
@@ -16,15 +19,14 @@ import java.util.Observable;
  * Created by simon on 2015-11-08.
  */
 public class SystemMonitor extends Observable {
-    private Camera[] cameraList;
-    private FrameBuffer[] frameBuffers;
-    private HashMap<Integer, byte[]> currentFrames;
+    private List<Camera> cameraList;
+    private HashMap<Integer, ImageFrame> currentFrames;
     private PriorityQueue<ImageFrame> images;
     private int mode;
     private SyncMode syncMode;
     private long currentlyShownFrameTimeStamp;
-    private long timeOfUpdate;
-    private long diff;
+    private long lastModeChangeTime;
+
     private int motionCamera;
 
     public SystemMonitor() {
@@ -40,7 +42,13 @@ public class SystemMonitor extends Observable {
         });
         motionCamera = -1;
     }
-
+    public synchronized long getTimeStampFromLastFrame(){
+        //TODO must hand thread safety
+        return currentlyShownFrameTimeStamp;
+    }
+    public int getMode(){
+        return mode;
+    }
     public synchronized void animate() throws InterruptedException {
 
 
@@ -58,17 +66,16 @@ public class SystemMonitor extends Observable {
                 }
 
                 long now = System.currentTimeMillis();
-
                 long movieTime = now -calcSyncDelay();
                 long timeLeftToDisplay = next.getFrame().timestamp - movieTime;
 
                 if (timeLeftToDisplay <= 0) {
 
                     next = images.poll(); // Remove frame from priorityqueue
-                    LogUtil.info("Displaying frame from camera " + next.getCamera() + " , found a picture in the buffer");
+//                    LogUtil.info("Displaying frame from camera " + next.getCamera() + " , found a picture in the buffer");
 
-                    checkSynchronization(now);
-                    displayFrame(next.getCamera(), next.getFrame().getFrameAsBytes());
+                    checkSynchronization(next.getFrame().timestamp);
+                    displayFrame(next.getCamera(), next);
                     currentlyShownFrameTimeStamp = next.getFrame().timestamp;
                 } else {
                     wait(timeLeftToDisplay);
@@ -88,11 +95,8 @@ public class SystemMonitor extends Observable {
         }
     }
 
-    private synchronized long timeSinceLastUpdate() {
-        return System.currentTimeMillis() - timeOfUpdate;
-    }
 
-    public synchronized void displayFrame(int cameraId, byte[] imageCopy) {
+    public synchronized void displayFrame(int cameraId, ImageFrame imageCopy) {
 //        LogUtil.info("Byteimage: " + imageCopy);
         currentFrames.put(cameraId, imageCopy);
         setChanged();
@@ -101,7 +105,9 @@ public class SystemMonitor extends Observable {
 
     }
     private void checkSynchronization(long now){
-        LogUtil.info("" + (now - currentlyShownFrameTimeStamp));
+//        LogUtil.info("" + (now-currentlyShownFrameTimeStamp));
+//        LogUtil.info("Current delay between two shown pictures " + (now-currentlyShownFrameTimeStamp));
+
         if(now-currentlyShownFrameTimeStamp > Constants.TIME_WINDOW && syncMode == SyncMode.Sync){
             setSyncMode(SyncMode.Async);
         }else if(now-currentlyShownFrameTimeStamp < Constants.TIME_WINDOW && syncMode == SyncMode.Async){
@@ -110,7 +116,8 @@ public class SystemMonitor extends Observable {
     }
 
     public synchronized void addImage(ImageFrame image) {
-        if(image.getFrame().motionDetected && mode == Mode.Idle  ){
+//        LogUtil.info("Priority queue size : " + images.size());
+        if(image.getFrame().motionDetected && mode == Mode.Idle){
            motionDetected(image.getCamera());
             //TODO Alert which camera recieved the motion-detection
         }
@@ -118,7 +125,6 @@ public class SystemMonitor extends Observable {
         notifyAll();
 
     }
-
     public synchronized void registerDelay(long captureTime) {
 
     }
@@ -126,17 +132,21 @@ public class SystemMonitor extends Observable {
     public synchronized void motionDetected(int id) {
         motionCamera = id;
         setMode(Mode.Movie);
-        setChanged();
-        notifyObservers(GUIUpdate.MotionDetected);
+
+
+
     }
     public synchronized int getMotionCamera(){
         return motionCamera;
     }
 
     public synchronized void setSyncMode(SyncMode mode) {
+        if(System.currentTimeMillis() - lastModeChangeTime >  Constants.RETARDEDNESS){
         this.syncMode = mode;
+        lastModeChangeTime = System.currentTimeMillis();
         setChanged();
         notifyObservers(GUIUpdate.SyncModeUpdate);
+        }
     }
 
     public synchronized void setMode(int mode) {
@@ -147,29 +157,31 @@ public class SystemMonitor extends Observable {
 
     private synchronized void broadcastMode(int mode) {
         for (Camera camera : cameraList) {
-            LogUtil.info("Adding mode change to mailbox: " + camera.toString());
+//            LogUtil.info("Adding mode change to mailbox: " + camera.toString());
             camera.addMessage(new ModeChange(mode, System.currentTimeMillis()));
         }
+        setChanged();
+        notifyObservers(GUIUpdate.ModeUpdate);
     }
 
     public synchronized Set<Integer> getCameraIds() {
-        return Arrays.stream(cameraList)
+        return cameraList.stream()
                 .map(c -> c.id)
                 .collect(Collectors.toSet());
     }
 
     public synchronized int getNrCameras() {
-        return cameraList.length;
+        return cameraList.size();
 
     }
 
-    public synchronized void init(Camera[] cameras) {
+    public synchronized void init(List<Camera> cameras) {
         cameraList = cameras;
-        currentFrames = new HashMap<Integer, byte[]>(8);
+        currentFrames = new HashMap<Integer, ImageFrame>(8);
     }
 
 
-    public synchronized byte[] getDisplayFrame(int i) {
+    public synchronized ImageFrame getDisplayFrame(int i) {
         return currentFrames.get(i);
     }
 

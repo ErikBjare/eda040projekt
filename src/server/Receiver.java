@@ -34,7 +34,7 @@ public class Receiver extends Thread {
                 //socket.setSoTimeout(1000);
 
                 int firstByte = s.read(); //Reads the first byte
-                LogUtil.info("Received message: "+firstByte);
+//                LogUtil.info("Received message: "+firstByte);
                 switch (firstByte) {
                     case 0: //Connect
                         Connect c = new Connect(socket);

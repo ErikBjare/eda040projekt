@@ -1,6 +1,7 @@
 package server;
 
 import server_util.LogUtil;
+import se.lth.cs.eda040.realcamera.AxisM3006V;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,20 +12,38 @@ import java.net.Socket;
  */
 public class Main {
     public static void main(String[] args) {
-        ServerSocket sock = null;
+        String cameraHostname = args[1];
+        int cameraPort = Integer.parseInt(args[2]);
+
+        AxisM3006V hardware = new AxisM3006V();
+        hardware.init();
+        hardware.setProxy(cameraHostname, cameraPort);
+        hardware.connect();
 
         try {
-            sock = new ServerSocket(Integer.parseInt(args[0]));
+            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077);
+            jpeghttpServer.start();
+
+            ServerSocket sock = new ServerSocket(Integer.parseInt(args[0]));
+
             while (!Thread.interrupted()) {
-                LogUtil.info("Started listening for new client");
-                Socket client = sock.accept();
-                LogUtil.info("Accepted connection");
-                CameraServer cameraServer = new CameraServer(args[1], Integer.parseInt(args[2]), client);
-                cameraServer.join();
-                LogUtil.info("Finished with client");
+                try {
+                    LogUtil.info("Started listening for new client");
+                    Socket client = sock.accept();
+                    LogUtil.info("Accepted connection");
+
+                    CameraServer cameraServer = new CameraServer(hardware, client);
+
+                    cameraServer.join();
+                   LogUtil.info("Finished with client");
+                } catch (IOException e) {
+                    LogUtil.exception(e);
+                }
             }
+
         } catch (IOException e) {
             LogUtil.exception(e);
         }
     }
+
 }

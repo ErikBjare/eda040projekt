@@ -27,10 +27,10 @@ public class CameraSender extends Thread {
         try {
             while (!isInterrupted()) {
                 Message mess = camera.getNextMessage();
-                LogUtil.info("Got message to send.");
+//                LogUtil.info("Got message to send.");
                 try {
                     mess.send(socket);
-                    LogUtil.info("Sent message.");
+//                    LogUtil.info("Sent message.");
                 } catch (IOException e) {
                     LogUtil.exception(e);
                 }

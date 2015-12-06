@@ -28,6 +28,8 @@ public class Monitor {
     public Monitor(Socket sendSocket, AxisM3006V hardware) {
         this.sendSocket = sendSocket;
         this.hardware = hardware;
+        this.mode = Mode.Idle;
+
     }
 
     public synchronized void newFrame(long time, boolean motion, byte[] frame) throws ShutdownException {
@@ -63,6 +65,7 @@ public class Monitor {
         Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp, motionDetected);
         mess.send(sendSocket);
         newPicArrived = false;
+//        LogUtil.info("Sent message: " + mess.getClass().toString());
         LogUtil.info("Sent new message");
         lastSentFrameTime = System.currentTimeMillis();
     }
