@@ -13,19 +13,21 @@ import java.net.Socket;
  */
 public class Main {
     public static void main(String[] args) {
-        String cameraHostname = args[1];
-        int cameraPort = Integer.parseInt(args[2]);
-
         AxisM3006V hardware = new AxisM3006V();
         hardware.init();
-        hardware.setProxy(cameraHostname, cameraPort);
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : 9191;
+        if (args.length > 1) {
+            String cameraHostname = args[1];
+            int cameraPort = Integer.parseInt(args[2]);
+            hardware.setProxy(cameraHostname, cameraPort);
+        }
         hardware.connect();
 
         try {
 //            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077);
 //            jpeghttpServer.start();
 
-            ServerSocket sock = new ServerSocket(Integer.parseInt(args[0]));
+            ServerSocket sock = new ServerSocket(port);
 
             while (!Thread.interrupted()) {
                 try {
