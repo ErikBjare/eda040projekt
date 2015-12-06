@@ -70,4 +70,12 @@ public class NetworkUtil {
         if (response == -1) throw new RuntimeException("socket end");
         return (byte)response;
     }
+
+    public static byte[] clone(byte[] arr){
+        byte[] result = new byte[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            result[i] = arr[i];
+        }
+        return result;
+    }
 }

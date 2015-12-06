@@ -1,6 +1,7 @@
 package server;
 
 import common.Mode;
+import common.NetworkUtil;
 import server_util.LogUtil;
 import common.protocol.*;
 //import se.lth.cs.eda040.proxycamera.AxisM3006V;
@@ -33,7 +34,8 @@ public class Monitor {
         if (isShutdown) throw new ShutdownException();
         //System.out.println("New frame from hardware");
         newPicArrived = true; //A new picture available
-        lastFrame = frame.clone();
+        // TODO: How necessary is it to clone
+        lastFrame = NetworkUtil.clone(frame);
         timeStamp = time;
         motionDetected = motion;
         notifyAll();
