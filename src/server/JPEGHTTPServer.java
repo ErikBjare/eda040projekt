@@ -9,9 +9,8 @@ package server;
  * Adapted for Axis cameras by Roger Henriksson
  */
 
+import se.lth.cs.eda040.realcamera.AxisM3006V;
 import server_util.LogUtil;
-import se.lth.cs.eda040.proxycamera.AxisM3006V;
-//import se.lth.cs.eda040.realcamera.AxisM3006V;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +27,7 @@ public class JPEGHTTPServer extends Thread {
     // ----------------------------------------------------- PRIVATE ATTRIBUTES
 
     private int myPort;                             // TCP port for HTTP server
-    private AxisM3006V myCamera;                    // Makes up the JPEG images
+    private AxisWrapper myCamera;                    // Makes up the JPEG images
     private final Monitor monitor;
 
     // By convention, these bytes are always sent between lines
@@ -41,7 +40,7 @@ public class JPEGHTTPServer extends Thread {
     /**
      * @param   port   The TCP port the server should listen to
      */
-    public JPEGHTTPServer(AxisM3006V myCamera, int port, Monitor monitor) {
+    public JPEGHTTPServer(AxisWrapper myCamera, int port, Monitor monitor) {
         this.setName(getClass().getName());
         this.setDaemon(true);
         this.myPort   = port;
