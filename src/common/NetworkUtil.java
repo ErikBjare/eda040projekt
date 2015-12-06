@@ -3,7 +3,6 @@ package common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 
 /**
  * Contains a bunch of static methods for simplifying socket code.
