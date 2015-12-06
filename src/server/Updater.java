@@ -3,11 +3,8 @@ package server;
 import common.LogUtil;
 import se.lth.cs.eda040.proxycamera.AxisM3006V;
 
-import java.io.IOException;
-import java.net.SocketException;
-
 public class Updater extends Thread {
-    private Monitor monitor;
+    private final Monitor monitor;
     private AxisM3006V hardware;
 
     public Updater(Monitor monitor, AxisM3006V hardware) {
@@ -18,31 +15,37 @@ public class Updater extends Thread {
 
 
     public void run() {
+        boolean cameraOffline = false;
         try {
-        while (!Thread.currentThread().isInterrupted()) {
-            int size = AxisM3006V.IMAGE_BUFFER_SIZE;
-            byte[] frame = new byte[size];
-            int len = 0;
+            while (!Thread.currentThread().isInterrupted() && !cameraOffline) {
+                int size = AxisM3006V.IMAGE_BUFFER_SIZE;
+                byte[] frame = new byte[size];
+                int len;
 
-                len = hardware.getJPEG(frame, 0);
-
-            try {
-                if (len > 0) {
-                    boolean motion = false;
-                    if(System.currentTimeMillis()%50==0) motion = true;
-
-                    monitor.newFrame(System.currentTimeMillis(),  motion , frame);
-//                    System.out.println("MOtion detected:: " + hardware.motionDetected());
+                synchronized(monitor) {
+                    len = hardware.getJPEG(frame, 0);
                 }
-            } catch (ShutdownException e) {
-                break;
+
+                try {
+                    if (len > 0) {
+                        boolean motion = false;
+                        if(System.currentTimeMillis()%50==0) motion = true;
+
+                        monitor.newFrame(System.currentTimeMillis(),  motion , frame);
+    //                    System.out.println("MOtion detected:: " + hardware.motionDetected());
+                    } else {
+                        LogUtil.error("Camera disconnected (received image of len 0, might mean something else?)");
+                        cameraOffline = true;
+                    }
+                } catch (ShutdownException e) {
+                    break;
+                }
             }
-        }
-        }catch (Error e){
+        } catch (Error e){
 //            LogUtil.exception(e);
 
 
-        }finally {
+        } finally {
 
             monitor.shutdown();
         }

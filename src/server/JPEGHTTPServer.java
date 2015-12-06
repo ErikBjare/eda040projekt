@@ -9,6 +9,7 @@ package server;
  * Adapted for Axis cameras by Roger Henriksson
  */
 
+import common.LogUtil;
 import se.lth.cs.eda040.proxycamera.AxisM3006V;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class JPEGHTTPServer extends Thread {
 
     private int myPort;                             // TCP port for HTTP server
     private AxisM3006V myCamera;                    // Makes up the JPEG images
+    private final Monitor monitor;
 
     // By convention, these bytes are always sent between lines
     // (CR = 13 = carriage return, LF = 10 = line feed)
@@ -38,9 +40,12 @@ public class JPEGHTTPServer extends Thread {
     /**
      * @param   port   The TCP port the server should listen to
      */
-    public JPEGHTTPServer(AxisM3006V myCamera, int port) {
+    public JPEGHTTPServer(AxisM3006V myCamera, int port, Monitor monitor) {
+        this.setName(getClass().getName());
+        this.setDaemon(true);
         this.myPort   = port;
         this.myCamera = myCamera;
+        this.monitor = monitor;
     }
 
 	// ----------------------------------------------------------- MAIN PROGRAM
@@ -49,7 +54,7 @@ public class JPEGHTTPServer extends Thread {
 		try {
 			handleRequests();
 		} catch(IOException e) {
-			System.out.println("Error!");
+			LogUtil.exception("Error!", e);
 			//destroy();
 			System.exit(1);
 		}
@@ -73,7 +78,7 @@ public class JPEGHTTPServer extends Thread {
 	public void handleRequests() throws IOException {
 		byte[] jpeg = new byte[AxisM3006V.IMAGE_BUFFER_SIZE];
 		ServerSocket serverSocket = new ServerSocket(myPort);
-		System.out.println("HTTP server operating at port " + myPort + ".");
+		LogUtil.info("HTTP server operating at port " + myPort + ".");
 
 		while (!Thread.currentThread().isInterrupted()) {
 			try {
@@ -101,12 +106,12 @@ public class JPEGHTTPServer extends Thread {
 					cont = !(header.equals(""));
 				} while (cont);
 
-				System.out.println("HTTP request '" + request
-						+ "' received.");
+				LogUtil.info("HTTP request '" + request
+                    + "' received.");
 
 				// Interpret the request. Complain about everything but GET.
 				// Ignore the file name.
-				if (request.substring(0,4).equals("GET ")) {
+				if (request.length() > 4 && request.substring(0,4).equals("GET ")) {
 					// Got a GET request. Respond with a JPEG image from the
 					// camera. Tell the client not to cache the image
 					putLine(os, "HTTP/1.0 200 OK");
@@ -120,9 +125,14 @@ public class JPEGHTTPServer extends Thread {
 						System.exit(1);
 					}*/
 
-                    System.out.println("Trying to fetch JPEG from camera");
-					int len = myCamera.getJPEG(jpeg, 0);
-                    System.out.println("Fetched JPEG from camera");
+                    int len;
+                    // TODO: Fetch image from another place instead of directly from the camera
+                    LogUtil.info("Trying to fetch image for HTTP request...");
+                    synchronized(monitor) {
+                        LogUtil.info("Received lock");
+                        len = myCamera.getJPEG(jpeg, 0);
+                    }
+                    LogUtil.info("Image fetched");
 
 					os.write(jpeg, 0, len);
 					//myCamera.close();
@@ -135,14 +145,14 @@ public class JPEGHTTPServer extends Thread {
 					putLine(os, "No can do. Request '" + request
 							+ "' not understood.");
 
-					System.out.println("Unsupported HTTP request!");
+					LogUtil.error("Unsupported HTTP request!");
 				}
 
 				os.flush();                      // Flush any remaining content
 				clientSocket.close();	          // Disconnect from the client
 			}
 			catch (IOException e) {
-				System.out.println("Caught exception " + e);
+				LogUtil.error("Caught exception " + e);
 			}
 		}
 	}

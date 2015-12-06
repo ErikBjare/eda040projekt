@@ -7,24 +7,24 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Created by von on 2015-11-08.
- */
 public class Main {
     public static void main(String[] args) {
+        int listeningPort = Integer.parseInt(args[0]);
         String cameraHostname = args[1];
         int cameraPort = Integer.parseInt(args[2]);
 
-        AxisM3006V hardware = new AxisM3006V();
-        hardware.init();
-        hardware.setProxy(cameraHostname, cameraPort);
-        hardware.connect();
-
         try {
-            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077);
-            jpeghttpServer.start();
+            ServerSocket sock = new ServerSocket(listeningPort);
 
-            ServerSocket sock = new ServerSocket(Integer.parseInt(args[0]));
+            AxisM3006V hardware = new AxisM3006V();
+            hardware.init();
+            hardware.setProxy(cameraHostname, cameraPort);
+            hardware.connect();
+
+            Monitor monitor = new Monitor(hardware);
+
+            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077, monitor);
+            jpeghttpServer.start();
 
             while (!Thread.interrupted()) {
                 try {
@@ -32,7 +32,7 @@ public class Main {
                     Socket client = sock.accept();
                     LogUtil.info("Accepted connection");
 
-                    CameraServer cameraServer = new CameraServer(hardware, client);
+                    CameraServer cameraServer = new CameraServer(hardware, monitor, client);
 
                     cameraServer.join();
                    LogUtil.info("Finished with client");

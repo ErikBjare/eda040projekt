@@ -1,8 +1,9 @@
 package server;
 
 import client.Mode;
-import common.LogUtil;
-import common.protocol.*;
+import common.protocol.Constants;
+import common.protocol.Message;
+import common.protocol.NewFrame;
 import se.lth.cs.eda040.proxycamera.AxisM3006V;
 
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.net.Socket;
  * Created by von on 2015-11-05.
  */
 public class Monitor {
-    private final Socket sendSocket;
     private final AxisM3006V hardware;
     byte[] lastFrame;
     boolean newPicArrived;
@@ -22,12 +22,12 @@ public class Monitor {
     private long lastSentFrameTime;
     private boolean isShutdown = false;
 
-    public Monitor(Socket sendSocket, AxisM3006V hardware) {
-        this.sendSocket = sendSocket;
+    public Monitor(AxisM3006V hardware) {
         this.hardware = hardware;
         this.mode = Mode.Idle;
-
     }
+
+
 
     public synchronized void newFrame(long time, boolean motion, byte[] frame) throws ShutdownException {
         if (isShutdown) throw new ShutdownException();
@@ -55,11 +55,11 @@ public class Monitor {
         notifyAll();
     }
 
-    public synchronized void sendNext() throws InterruptedException, IOException, ShutdownException {
+    public synchronized void sendNext(Socket socket) throws InterruptedException, IOException, ShutdownException {
         if (isShutdown) throw new ShutdownException();
         getReadyToSend();
         Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp, motionDetected);
-        mess.send(sendSocket);
+        mess.send(socket);
         newPicArrived = false;
 //        LogUtil.info("Sent message: " + mess.getClass().toString());
         lastSentFrameTime = System.currentTimeMillis();
