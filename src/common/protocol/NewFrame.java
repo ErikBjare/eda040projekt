@@ -54,7 +54,7 @@ public class NewFrame extends Message {
 //    }
 
     public NewFrame(int size, byte[] frame, long timestamp) {
-        super(MsgType.newFrame);
+        super((byte) 4);
         this.size = size;
         this.frame = frame;
         this.timestamp = timestamp;

@@ -14,12 +14,12 @@ public class Connect extends Message {
     long timestamp;
 
     public Connect(long timestamp) {
-        super(MsgType.connect);
+        super((byte) 0);
         this.timestamp = timestamp;
     }
 
     public Connect(Socket socket) throws IOException {
-        super(MsgType.connect);
+        super((byte) 0);
         this.decode(socket);
     }
 
