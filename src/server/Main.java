@@ -9,12 +9,12 @@ import java.net.Socket;
 public class Main {
     public static void start(AxisWrapper hardware){
         System.out.println(hardware);
-        System.out.println("before connect");
-        hardware.connect();
-        System.out.println("after connect");
         System.out.println("before init");
         hardware.init();
         System.out.println("after init");
+        System.out.println("before connect");
+        hardware.connect();
+        System.out.println("after connect");
 
         try {
             Monitor monitor = new Monitor(hardware);
