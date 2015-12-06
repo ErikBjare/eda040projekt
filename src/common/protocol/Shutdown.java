@@ -14,12 +14,12 @@ public class Shutdown extends Message {
     long timestamp;
 
     public Shutdown(long timestamp) {
-        super(MsgType.shutdown);
+        super((byte) 5);
         this.timestamp = timestamp;
     }
 
     public Shutdown(Socket socket) throws IOException {
-        super(MsgType.shutdown);
+        super((byte) 5);
         this.decode(socket);
     }
 

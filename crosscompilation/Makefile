@@ -20,7 +20,7 @@
 ## Change this to the name of the main file of your project           #####
 ###########################################################################
 
-MAIN_NAME=Main
+MAIN_NAME=RealCameraMain
 
 
 ###########################################################################
