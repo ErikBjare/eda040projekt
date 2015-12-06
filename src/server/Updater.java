@@ -1,8 +1,5 @@
 package server;
 
-//import se.lth.cs.eda040.fakecamera.AxisM3006V;
-import se.lth.cs.eda040.proxycamera.AxisM3006V;
-//import se.lth.cs.eda040.realcamera.AxisM3006V;
 import server_util.LogUtil;
 
 public class Updater extends Thread {
@@ -20,7 +17,7 @@ public class Updater extends Thread {
         boolean cameraOffline = false;
 
             while (!Thread.currentThread().isInterrupted() && !cameraOffline) {
-                int size = AxisM3006V.IMAGE_BUFFER_SIZE;
+                int size = 131072;
                 byte[] frame = new byte[size];
                 int len;
                 synchronized (monitor) {

@@ -17,7 +17,7 @@ public class Main {
             JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077, monitor);
             jpeghttpServer.start();
 
-            ServerSocket sock = new ServerSocket(port);
+            ServerSocket sock = new ServerSocket(9191);
 
             while (!Thread.interrupted()) {
                 try {
@@ -42,5 +42,4 @@ public class Main {
     }
 
 
-    }
 }

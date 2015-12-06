@@ -4,7 +4,7 @@ package server;
  * Created by von on 2015-12-06.
  */
 public class RealAxis implements AxisWrapper{
-    se.lth.cs.eda040.proxycamera.AxisM3006V realcam;
+    se.lth.cs.eda040.realcamera.AxisM3006V realcam;
 
     public RealAxis() {
     }

@@ -41,8 +41,8 @@ public class JPEGHTTPServer extends Thread {
      * @param   port   The TCP port the server should listen to
      */
     public JPEGHTTPServer(AxisWrapper myCamera, int port, Monitor monitor) {
-        this.setName(getClass().getName());
-        this.setDaemon(true);
+        // this.setName(getClass().getName());
+        // this.setDaemon(true);
         this.myPort   = port;
         this.myCamera = myCamera;
         this.monitor = monitor;
