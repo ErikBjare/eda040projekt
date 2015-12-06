@@ -8,14 +8,14 @@ import java.net.Socket;
 
 public class Main {
     public static void start(AxisWrapper hardware){
-        hardware.init();
+//        hardware.init();
         hardware.connect();
 
         try {
             Monitor monitor = new Monitor(hardware);
 
-            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077, monitor);
-            jpeghttpServer.start();
+//            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077, monitor);
+//            jpeghttpServer.start();
 
             ServerSocket sock = new ServerSocket(9191);
 
