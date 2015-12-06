@@ -16,9 +16,9 @@ public class Main {
         if (args.length > 1) {
             String cameraHostname = args[1];
             int cameraPort = Integer.parseInt(args[2]);
-            hardware = new AxisWrapper(cameraHostname, cameraPort);
+            hardware = new ProxyAxis(cameraHostname, cameraPort);
         } else {
-            hardware = new AxisWrapper();
+            hardware = new RealAxis();
         }
 
         hardware.init();
