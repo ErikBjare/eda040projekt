@@ -5,4 +5,4 @@ cp -r crosscompilation/* build_src
 
 ./build_axism3006v.sh
 
-scp ./build_bin/build/Main rt@argus-1.student.lth.se
+scp ./build_bin/build/Main rt@argus-1.student.lth.se:~/vemartony.exe
