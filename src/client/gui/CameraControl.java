@@ -53,7 +53,7 @@ public class CameraControl extends JPanel implements Observer {
         information.add(delay, BorderLayout.NORTH);
         information.add(motion, BorderLayout.SOUTH);
         panel.add(imagePlacement, BorderLayout.CENTER);
-        panel.add(information, BorderLayout.NORTH);
+        panel.add(information, BorderLayout.SOUTH);
 //        panel.add(motion, BorderLayout.NORTH);
         add(panel, BorderLayout.CENTER);
 //        setMinimumSize(new Dimension(640, 480));
@@ -84,11 +84,11 @@ public class CameraControl extends JPanel implements Observer {
 
     public void displayImage(byte[] image) {
 //        LogUtil.info("Byte Array contains: " + Arrays.toString(image));
-        long before = System.currentTimeMillis();
+//        long before = System.currentTimeMillis();
         Image img = getToolkit().createImage(image);
 //        LogUtil.info("Time for createImage: " + (System.currentTimeMillis()-before));
 
-        before = System.currentTimeMillis();
+//        before = System.currentTimeMillis();
 //        LogUtil.info("Rendering Icon: " + image.length);
         getToolkit().prepareImage(img, -1, -1, null);
 //        LogUtil.info("Time for prepareImage: " + (System.currentTimeMillis()-before));
@@ -96,12 +96,12 @@ public class CameraControl extends JPanel implements Observer {
 
 //        img = (calcImgSize() == null) ? img : img.getScaledInstance((int)imgsize.getWidth(),  (int)imgsize.getHeight(),Image.SCALE_DEFAULT);
 //        System.out.println(getWidth() + "X" + getHeight());
-         before = System.currentTimeMillis();
+//         before = System.currentTimeMillis();
         icon.setImage(img);
 //        LogUtil.info("Time for setImage: " + (System.currentTimeMillis()-before));
         // icon.paintIcon(this, this.getGraphics(), 100, 0);
 //        revalidate();
-        before = System.currentTimeMillis();
+//        before = System.currentTimeMillis();
 
         repaint();
 //        LogUtil.info("Time for repaint: " + (System.currentTimeMillis()-before));

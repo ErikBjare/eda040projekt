@@ -1,7 +1,6 @@
 package client;
 
 import client.camera.Camera;
-import client.camera.FrameBuffer;
 import client.camera.ImageFrame;
 import common.Constants;
 import common.LogUtil;
@@ -120,9 +119,6 @@ public class SystemMonitor extends Observable {
         }
         images.add(image);
         notifyAll();
-
-    }
-    public synchronized void registerDelay(long captureTime) {
 
     }
 

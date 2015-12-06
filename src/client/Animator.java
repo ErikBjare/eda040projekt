@@ -1,7 +1,6 @@
 package client;
 
 import client.camera.Camera;
-import client.camera.FrameBuffer;
 import common.protocol.NewFrame;
 
 import java.util.ArrayList;

@@ -15,18 +15,26 @@ public class Main {
         String[] s4 = new String[]{"5659", "argus-5.student.lth.se", "9191" };
         String[] s5 = new String[]{"5660", "argus-6.student.lth.se", "9191" };
         String[] s6 = new String[]{"5661", "argus-7.student.lth.se", "9191" };
-        Thread t3 = new Thread(()->server.Main.main(s3));
+        String[] s7 = new String[]{"5662", "argus-8.student.lth.se", "9191" };
+        String[] s8 = new String[]{"5663", "argus-1.student.lth.se", "9191" };
         Thread t1 = new Thread(()->server.Main.main(s));
         Thread t2 = new Thread(()->server.Main.main(s1));
+        Thread t3 = new Thread(()->server.Main.main(s3));
         Thread t4 = new Thread(()->server.Main.main(s4));
         Thread t5 = new Thread(()->server.Main.main(s5));
         Thread t6 = new Thread(()->server.Main.main(s6));
+        Thread t7 = new Thread(()->server.Main.main(s7));
+        Thread t8 = new Thread(()->server.Main.main(s8));
+
         t5.start();
         t6.start();
         t1.start();
+        t8.start();
         t2.start();
         t3.start();
         t4.start();
+        t7.start();
+
 //        String[] hosts = IntStream.iterate(5656, i->i+1)
 //                .mapToObj(i->"localhost "+i)
 //                .limit(4)

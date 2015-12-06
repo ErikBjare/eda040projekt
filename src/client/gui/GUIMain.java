@@ -54,7 +54,7 @@ public class GUIMain extends JFrame implements Observer {
 
         JPanel westMenuBar = new JPanel();
 
-        JLabel modeType = new JLabel("Mode: Auto", JLabel.CENTER);
+        JLabel modeType = new JLabel("Mode: Idle", JLabel.CENTER);
         modeType.setFont(new Font("Arial", Font.BOLD, 26));
         modeButtons = new ModeControl(westMenuBar, modeType);
 

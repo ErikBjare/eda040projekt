@@ -28,10 +28,12 @@ public class Updater extends Thread {
 
             try {
                 if (len > 0) {
-                    boolean motion = false;
-                    if(System.currentTimeMillis()%50==0) motion = true;
+//                    boolean motion = false;
+//                    if(System.currentTimeMillis()%50==0) motion = true;
 
-                    monitor.newFrame(System.currentTimeMillis(),  motion , frame);
+//                    monitor.newFrame(System.currentTimeMillis(),  motion , frame);
+                    monitor.newFrame(System.currentTimeMillis(),  hardware.motionDetected() , frame);
+
 //                    System.out.println("MOtion detected:: " + hardware.motionDetected());
                 }
             } catch (ShutdownException e) {
