@@ -74,9 +74,9 @@ public class NewFrame extends Message {
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
-        out.write(NetworkUtil.toBytes(size));
+        NetworkUtil.send(out,size);
         out.write(frame);
-        out.write(NetworkUtil.toBytes(timestamp));
+        NetworkUtil.send(out,timestamp);
     }
 
     @Override

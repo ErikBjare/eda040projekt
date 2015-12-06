@@ -2,21 +2,32 @@ package common;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
  * Contains a bunch of static methods for simplifying socket code.
  */
 public class NetworkUtil {
-    public static final int INTEGER_SIZE = 4*8;
-    public static final int BYTE_SIZE = 1*8;
-    public static final int LONG_SIZE = 8*8;
+    public static final int INTEGER_SIZE = 4;
+    public static final int LONG_SIZE = 8;
+    public static final int BITS_IN_BYTE = 8;
 
-    public static byte[] toBytes(int i){
-        return ByteBuffer.allocate(INTEGER_SIZE/ BYTE_SIZE).putInt(i).array();
+    public static void send(OutputStream out, int n) throws IOException {
+        byte[] result = new byte[4];
+        for (int i = INTEGER_SIZE-1; i >= 0; i--) {
+            result[i] = (byte)(n & 0xFF);
+            n >>= BITS_IN_BYTE;
+        }
+        out.write(result);
     }
-    public static byte[] toBytes(long l){
-        return ByteBuffer.allocate(LONG_SIZE / BYTE_SIZE).putLong(l).array();
+    public static void send(OutputStream out, long l) throws IOException {
+        byte[] result = new byte[LONG_SIZE];
+        for (int i = LONG_SIZE-1; i >= 0; i--) {
+            result[i] = (byte) (l & 0xFF);
+            l >>= BITS_IN_BYTE;
+        }
+        out.write(result);
     }
     public static void readAll(InputStream input, byte[] buffer) throws IOException {
         int  read = 0;
@@ -28,18 +39,30 @@ public class NetworkUtil {
         }
     }
     public static long toLong(byte[] bytes){
-        return ByteBuffer.wrap(bytes).getLong();
+        long l = 0;
+        for (int i = 0; i < LONG_SIZE; i++)
+        {
+             l <<= BITS_IN_BYTE;
+             l |= (bytes[i] & 0xFF);
+        }
+        return l;
     }
     public static int toInt(byte[] bytes){
-        return ByteBuffer.wrap(bytes).getInt();
+        int l = 0;
+        for (int i = 0; i < INTEGER_SIZE; i++)
+        {
+            l <<= BITS_IN_BYTE;
+            l |= bytes[i] & 0xFF;
+        }
+        return l;
     }
     public static long readLong(InputStream input) throws IOException {
-        byte[] buffer = new byte[8];
+        byte[] buffer = new byte[LONG_SIZE];
         NetworkUtil.readAll(input, buffer);
         return toLong(buffer);
     }
     public static int readInt(InputStream input) throws IOException {
-        byte[] buffer = new byte[4];
+        byte[] buffer = new byte[INTEGER_SIZE];
         NetworkUtil.readAll(input, buffer);
         return toInt(buffer);
     }

@@ -29,8 +29,8 @@ public class ModeChange extends Message {
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
-        out.write(NetworkUtil.toBytes(newMode));
-        out.write(NetworkUtil.toBytes(timestamp));
+        NetworkUtil.send(out,newMode);
+        NetworkUtil.send(out,timestamp);
     }
 
     @Override
