@@ -18,7 +18,7 @@ public class Updater extends Thread {
 
     public void run() {
         boolean cameraOffline = false;
-        try {
+
             while (!Thread.currentThread().isInterrupted() && !cameraOffline) {
                 int size = AxisM3006V.IMAGE_BUFFER_SIZE;
                 byte[] frame = new byte[size];
@@ -35,19 +35,17 @@ public class Updater extends Thread {
                         monitor.newFrame(System.currentTimeMillis(), hardware.motionDetected(), frame);
 
 //                    System.out.println("MOtion detected:: " + hardware.motionDetected());
-                    } else {
-                        LogUtil.error("Camera disconnected (received image of len 0, might mean something else?)");
-                        cameraOffline = true;
                     }
+
                 } catch (ShutdownException e) {
                     e.printStackTrace();
                     LogUtil.exception(e);
 
                 }
             }
-        }finally{
+
 
             monitor.shutdown();
         }
     }
-}
+

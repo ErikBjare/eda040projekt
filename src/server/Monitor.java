@@ -69,7 +69,8 @@ public class Monitor {
         lastSentFrameTime = System.currentTimeMillis();
     }
 
-    public synchronized void setMode(int newMode) {
+    public synchronized void setMode(int newMode) throws ShutdownException {
+        if (isShutdown) throw new ShutdownException();
         this.mode = newMode;
     }
 
