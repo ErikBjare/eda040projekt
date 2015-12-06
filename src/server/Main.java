@@ -8,8 +8,13 @@ import java.net.Socket;
 
 public class Main {
     public static void start(AxisWrapper hardware){
-//        hardware.init();
-//        hardware.connect();
+        System.out.println(hardware);
+        System.out.println("before connect");
+        hardware.connect();
+        System.out.println("after connect");
+        System.out.println("before init");
+        hardware.init();
+        System.out.println("after init");
 
         try {
             Monitor monitor = new Monitor(hardware);

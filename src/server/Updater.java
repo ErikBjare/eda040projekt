@@ -20,9 +20,9 @@ public class Updater extends Thread {
                 int size = 131072;
                 byte[] frame = new byte[size];
                 int len;
-                synchronized (monitor) {
+//                synchronized (monitor) {
                     len = hardware.getJPEG(frame, 0);
-                }
+ //               }
                 try {
                     if (len > 0) {
 //                    boolean motion = false;
