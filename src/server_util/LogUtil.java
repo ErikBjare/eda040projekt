@@ -28,6 +28,6 @@ public class LogUtil {
         System.out.println(message);
     }
     public static void logErr(String thread, String level, String message){
-       System.err.println(message);
+       System.out.println(message);
     }
 }
