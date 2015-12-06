@@ -1,5 +1,6 @@
 package common.protocol;
 
+import common.Mode;
 import common.NetworkUtil;
 
 import java.io.IOException;
@@ -15,13 +16,13 @@ public class ModeChange extends Message {
     long timestamp;
 
     public ModeChange(int newMode, long timestamp) {
-        super(MsgType.MODE_CHANGE);
+        super(MsgType.modeChange);
         this.newMode = newMode;
         this.timestamp = timestamp;
     }
 
     public ModeChange(Socket socket) throws IOException {
-        super(MsgType.MODE_CHANGE);
+        super(MsgType.modeChange);
         this.decode(socket);
     }
 

@@ -14,19 +14,19 @@ public class Connect extends Message {
     long timestamp;
 
     public Connect(long timestamp) {
-        super(MsgType.CONNECT);
+        super(MsgType.connect);
         this.timestamp = timestamp;
     }
 
     public Connect(Socket socket) throws IOException {
-        super(MsgType.CONNECT);
+        super(MsgType.connect);
         this.decode(socket);
     }
 
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
-        NetworkUtil.send(out, timestamp);
+        NetworkUtil.send(out,timestamp);
     }
 
     @Override
