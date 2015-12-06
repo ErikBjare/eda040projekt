@@ -56,15 +56,15 @@ public class NewFrame extends Message {
     public int getSize() {
         return size;
     }
-
-    @Override
-    public String toString() {
-        return "NewFrame{" +
-                "size=" + size +
-                ", frame=" + frame.toString() +
-                ", timestamp=" + timestamp +
-                '}';
-    }
+//    DOES NOT COMPILE TO C: Likely due to use of an array method
+//    @Override
+//    public String toString() {
+//        return "NewFrame{" +
+//                "size=" + size +
+//                ", frame=" + frame.toString() +
+//                ", timestamp=" + timestamp +
+//                '}';
+//    }
 
     public NewFrame(Socket socket) throws IOException {
         super(MsgType.newFrame);
