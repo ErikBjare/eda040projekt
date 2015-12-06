@@ -2,8 +2,8 @@ package server;
 
 import server_util.LogUtil;
 //import se.lth.cs.eda040.fakecamera.AxisM3006V;
-//import se.lth.cs.eda040.proxycamera.AxisM3006V;
-import se.lth.cs.eda040.realcamera.AxisM3006V;
+import se.lth.cs.eda040.proxycamera.AxisM3006V;
+//import se.lth.cs.eda040.realcamera.AxisM3006V;
 
 import java.net.Socket;
 
@@ -17,7 +17,7 @@ public class CameraServer {
     Receiver receiver;
     Sender sender;
     Updater updater;
-    JPEGHTTPServer jpeghttpServer;
+//    JPEGHTTPServer jpeghttpServer;
 
     public CameraServer(AxisM3006V hardware, Socket socket) {
         this.hardware = hardware;
@@ -35,7 +35,7 @@ public class CameraServer {
         receiver.interrupt();
         sender.interrupt();
         updater.interrupt();
-        jpeghttpServer.interrupt();
+//        jpeghttpServer.interrupt();
     }
 
     public void join() {
@@ -46,7 +46,7 @@ public class CameraServer {
             LogUtil.info("Sender thread joined");
             updater.join();
             LogUtil.info("Updater thread joined");
-            jpeghttpServer.join();
+//            jpeghttpServer.join();
             LogUtil.info("HTTP server thread joined");
         } catch (InterruptedException e) {
             LogUtil.exception(e);

@@ -1,7 +1,8 @@
 package server;
 
 import server_util.LogUtil;
-import se.lth.cs.eda040.realcamera.AxisM3006V;
+//import se.lth.cs.eda040.realcamera.AxisM3006V;
+import se.lth.cs.eda040.proxycamera.AxisM3006V;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -21,8 +22,8 @@ public class Main {
         hardware.connect();
 
         try {
-            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077);
-            jpeghttpServer.start();
+//            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077);
+//            jpeghttpServer.start();
 
             ServerSocket sock = new ServerSocket(Integer.parseInt(args[0]));
 

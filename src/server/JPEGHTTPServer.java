@@ -9,8 +9,8 @@ package server;
  * Adapted for Axis cameras by Roger Henriksson
  */
 
-//import se.lth.cs.eda040.proxycamera.AxisM3006V;
-import se.lth.cs.eda040.realcamera.AxisM3006V;
+import se.lth.cs.eda040.proxycamera.AxisM3006V;
+//import se.lth.cs.eda040.realcamera.AxisM3006V;
 
 import java.io.IOException;
 import java.io.InputStream;

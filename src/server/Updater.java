@@ -1,10 +1,9 @@
 package server;
 
 //import se.lth.cs.eda040.fakecamera.AxisM3006V;
-//import se.lth.cs.eda040.proxycamera.AxisM3006V;
-import se.lth.cs.eda040.realcamera.AxisM3006V;
+import se.lth.cs.eda040.proxycamera.AxisM3006V;
+//import se.lth.cs.eda040.realcamera.AxisM3006V;
 import server_util.LogUtil;
-// import se.lth.cs.eda040.proxycamera.AxisM3006V;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -41,10 +40,8 @@ public class Updater extends Thread {
                 break;
             }
         }
-        }catch (Error e){
-//            LogUtil.exception(e);
-
-
+        }catch (Exception e){
+            LogUtil.exception(e);
         }finally {
 
             monitor.shutdown();

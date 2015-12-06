@@ -1,7 +1,7 @@
 package client.gui;
 
 import client.GUIUpdate;
-import client.Mode;
+import common.Mode;
 import client.SystemMonitor;
 
 import javax.swing.*;
@@ -35,7 +35,8 @@ public class ModeControl extends ButtonGroup implements Observer {
 
         SystemMonitor monitor = (SystemMonitor) o;
         if((GUIUpdate) arg == GUIUpdate.ModeUpdate){
-            modeType.setText("Mode:" + monitor.getMode().toString());
+            // TODO: Print actual string of mode, rather than int
+            modeType.setText("Mode:" + monitor.getMode());
             if(monitor.getMode() == Mode.Movie) {
 
                 Enumeration<AbstractButton> e = this.getElements();
