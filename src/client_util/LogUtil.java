@@ -1,4 +1,4 @@
-package common;
+package client_util;
 
 public class LogUtil {
     protected static final String format = "%-10s %-20s %s\n";

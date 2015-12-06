@@ -1,6 +1,6 @@
 package server;
 
-import common.LogUtil;
+import server_util.LogUtil;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -12,7 +12,7 @@ public class Sender extends Thread {
     public Sender(Monitor monitor, Socket socket) {
         this.monitor = monitor;
         this.socket = socket;
-        setName("Sender");
+//        setName("Sender");
     }
 
     public void run() {

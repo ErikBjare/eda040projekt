@@ -1,15 +1,10 @@
-package common.protocol;
-
-import org.junit.After;
-import org.junit.Before;
+import common.protocol.Message;
+import common.protocol.NewFrame;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Random;
-import java.util.function.Function;
-
-import static org.junit.Assert.*;
 
 public class NewFrameTest {
 

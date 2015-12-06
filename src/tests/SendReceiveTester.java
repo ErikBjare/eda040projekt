@@ -1,4 +1,4 @@
-package common.protocol;
+import common.protocol.Message;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

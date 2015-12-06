@@ -1,22 +1,20 @@
 package client.gui;
 
-import client.*;
+import client.Animator;
+import client.GUIUpdate;
+import client.SyncMode;
+import client.SystemMonitor;
 import client.camera.Camera;
 import common.Constants;
-import common.LogUtil;
+import common.Mode;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.List;
-
-import static java.lang.Thread.sleep;
 
 /**
  * Created by von on 2015-11-08.
@@ -54,7 +52,7 @@ public class GUIMain extends JFrame implements Observer {
 
         JPanel westMenuBar = new JPanel();
 
-        JLabel modeType = new JLabel("Mode: Auto", JLabel.CENTER);
+        JLabel modeType = new JLabel("Mode: Idle", JLabel.CENTER);
         modeType.setFont(new Font("Arial", Font.BOLD, 26));
         modeButtons = new ModeControl(westMenuBar, modeType);
 
@@ -150,7 +148,7 @@ public class GUIMain extends JFrame implements Observer {
         });
     }
 
-    private void addButtonActionListener(JButton button, Mode mode) {
+    private void addButtonActionListener(JButton button, int mode) {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

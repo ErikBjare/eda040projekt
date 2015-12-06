@@ -1,8 +1,8 @@
 package client.camera;
 
 import client.SystemMonitor;
-import common.LogUtil;
 import common.protocol.Message;
+import client_util.LogUtil;
 import common.protocol.NewFrame;
 
 import java.io.IOException;
@@ -19,7 +19,6 @@ public class Camera {
     protected Socket socket;
     protected CameraReceiver receiver;
     protected CameraSender sender;
-    protected FrameBuffer buffer;
     protected SystemMonitor system;
     public int id;
 
@@ -38,7 +37,6 @@ public class Camera {
         this.system = system;
         this.receiver = new CameraReceiver(system, socket, this);
         this.sender = new CameraSender(system, socket, this);
-        this.buffer = new FrameBuffer();
         this.mailbox = new ConcurrentLinkedQueue<>();
         receiver.start();
         sender.start();
@@ -49,9 +47,6 @@ public class Camera {
     }
     public synchronized void updateCurrentFrame(){
 
-    }
-    public FrameBuffer getBuffer(){
-        return buffer;
     }
 
     public void stop() {

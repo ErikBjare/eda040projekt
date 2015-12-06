@@ -1,10 +1,12 @@
 package server;
 
-import client.Mode;
-import common.protocol.Constants;
-import common.protocol.Message;
-import common.protocol.NewFrame;
+import common.Mode;
+import common.NetworkUtil;
+import server_util.LogUtil;
+import common.protocol.*;
 import se.lth.cs.eda040.proxycamera.AxisM3006V;
+//import se.lth.cs.eda040.fakecamera.AxisM3006V;
+//import se.lth.cs.eda040.realcamera.AxisM3006V;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -18,7 +20,7 @@ public class Monitor {
     boolean newPicArrived;
     boolean motionDetected;
     long timeStamp;
-    Mode mode;
+    int mode;
     private long lastSentFrameTime;
     private boolean isShutdown = false;
 
@@ -33,7 +35,8 @@ public class Monitor {
         if (isShutdown) throw new ShutdownException();
         //System.out.println("New frame from hardware");
         newPicArrived = true; //A new picture available
-        lastFrame = frame.clone();
+        // TODO: How necessary is it to clone
+        lastFrame = NetworkUtil.clone(frame);
         timeStamp = time;
         motionDetected = motion;
         notifyAll();
@@ -62,10 +65,11 @@ public class Monitor {
         mess.send(socket);
         newPicArrived = false;
 //        LogUtil.info("Sent message: " + mess.getClass().toString());
+        LogUtil.info("Sent new message");
         lastSentFrameTime = System.currentTimeMillis();
     }
 
-    public synchronized void setMode(Mode newMode) {
+    public synchronized void setMode(int newMode) {
         this.mode = newMode;
     }
 
