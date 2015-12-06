@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+  <style>
+    html, body {
+      margin: 0;
+      parring: 0;
+    }
+
+    #imagefeed {
+      width: 640px;
+      height: 480px;
+    }
+
+    .image {
+      width: 640px;
+    }
+
+    .center{
+      margin: 0 auto 0 auto;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="center image">
+      <img id="imagefeed" src="">
+    </div>
+  </div>
+
+  <script>
+    var imagefeedEl = document.getElementById("imagefeed");
+    var url = "http://localhost:6077/image.jpg";
+
+    setInterval(function() {
+      imagefeedEl.src = url + "?" + new Date().getTime();
+      console.log(imagefeedEl.src);
+    }, 500);
+  </script>
+</body>
+</html>
