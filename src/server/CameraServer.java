@@ -38,23 +38,8 @@ public class CameraServer {
 //        jpeghttpServer.interrupt();
     }
 
-    public void join() {
-        try {
-            receiver.join();
-            LogUtil.info("Receiver thread joined");
-            sender.join();
-            LogUtil.info("Sender thread joined");
-            updater.join();
-            LogUtil.info("Updater thread joined");
-//            jpeghttpServer.join();
-            LogUtil.info("HTTP server thread joined");
-        } catch (InterruptedException e) {
-            LogUtil.exception(e);
-        }
-        finally {
-        hardware.close();
-        hardware.destroy();
-        }
+    public void join() throws InterruptedException {
+        monitor.waitForShutdown();
     }
 
 

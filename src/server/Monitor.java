@@ -93,4 +93,8 @@ public class Monitor {
         }
         notifyAll();
     }
+
+    public synchronized void waitForShutdown() throws InterruptedException {
+        while (!isShutdown) wait();
+    }
 }

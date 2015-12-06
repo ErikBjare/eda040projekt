@@ -7,11 +7,15 @@ import java.util.stream.IntStream;
 public class MainGuiStart {
     public static void main(String[] args) {
 
-        String[] hosts = IntStream.iterate(5657, i -> i + 1)
-                .mapToObj(i->"localhost "+i)
-                .limit(2)
-                .collect(Collectors.joining(" "))
-                .split(" ");
-        client.gui.GUIMain.main(hosts);
+//        String[] hosts = IntStream.iterate(5657, i -> i + 1)
+//                .mapToObj(i->"localhost "+i)
+//                .limit(2)
+//                .collect(Collectors.joining(" "))
+//                .split(" ");
+//        client.gui.GUIMain.main(hosts);
+
+        client.gui.GUIMain.main(new String[]{
+                "argus-1.student.lth.se", "9191"
+        });
     }
 }

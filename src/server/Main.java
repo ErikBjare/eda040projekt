@@ -41,6 +41,8 @@ public class Main {
                    LogUtil.info("Finished with client");
                 } catch (IOException e) {
                     LogUtil.exception(e);
+                } catch (InterruptedException e) {
+                    LogUtil.exception(e);
                 }
             }
 
