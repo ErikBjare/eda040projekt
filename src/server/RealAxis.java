@@ -1,5 +1,7 @@
 package server;
 
+import se.lth.cs.eda040.realcamera.AxisM3006V;
+
 /**
  * Created by von on 2015-12-06.
  */
@@ -7,6 +9,7 @@ public class RealAxis implements AxisWrapper{
     se.lth.cs.eda040.realcamera.AxisM3006V realcam;
 
     public RealAxis() {
+        realcam = new AxisM3006V();
     }
 
     public boolean connect() {
