@@ -18,10 +18,10 @@ public class CameraServer {
     Sender sender;
     Updater updater;
 
-    public CameraServer(Socket socket) {
+    public CameraServer(String hostname, int port, Socket socket) {
         this.hardware = new AxisM3006V();
         hardware.init();
-        hardware.setProxy("argus-1.student.lth.se", 5656);
+        hardware.setProxy(hostname, port);
         hardware.connect();
         monitor = new Monitor(socket, hardware);
         receiver = new Receiver(monitor, socket);

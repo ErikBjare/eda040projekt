@@ -78,4 +78,12 @@ public class NetworkUtil {
         }
         return result;
     }
+    public static boolean readBool(InputStream inputStream) throws  IOException{
+        int response = inputStream.read();
+        return response == 0 ? false : true;
+    }
+    public static void writeBool(OutputStream out, boolean b) throws  IOException{
+        out.write(b ? 1 : 0 );
+
+    }
 }

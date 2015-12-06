@@ -12,7 +12,7 @@ import java.net.Socket;
  * Message containing a new captured frame.
  */
 public class ModeChange extends Message {
-    int newMode;
+    public int newMode;
     long timestamp;
 
     public ModeChange(int newMode, long timestamp) {

@@ -1,3 +1,4 @@
+import common.Constants;
 import server.CameraServer;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class ServerWrap extends Thread {
     }
 
     public ServerWrap() {
-        this.cameraServerConstructor = s -> new CameraServer(s);
+        this.cameraServerConstructor = s -> new CameraServer(Constants.HOST, Constants.PORT,s);
     }
 
     public void run() {

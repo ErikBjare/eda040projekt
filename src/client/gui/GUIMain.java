@@ -1,17 +1,26 @@
 package client.gui;
 
-import client.Animator;
-import client.SystemMonitor;
+import client.*;
 import client.camera.Camera;
 import common.Constants;
 import client_util.LogUtil;
+import common.Mode;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
+import java.util.*;
+import java.util.List;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Created by von on 2015-11-08.
@@ -20,16 +29,20 @@ public class GUIMain extends JFrame implements Observer {
     public SyncModeControl syncButtons;
     public ModeControl modeButtons;
     public SystemMonitor monitor;
-    public CameraControl[] cams;
+    public HashMap<Integer, CameraControl> cams;
+    private JLabel currentSyncMode;
 
-    public GUIMain(String s, SystemMonitor monitor) throws HeadlessException {
+    public GUIMain(String s, SystemMonitor monitor) {
         super(s);
+        this.cams = new HashMap<>(8);
         this.monitor = monitor;
         syncButtons = new SyncModeControl();
         modeButtons = new ModeControl();
-        setMinimumSize(new Dimension(100, 100));
-        this.createImage(460, 260);
+        setMinimumSize(new Dimension(500, 500));
+//        this.createImage(460, 260);
         setLayout(new BorderLayout());
+
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         //init buttons
         JButton syncAutoButton = new JButton("Auto");
@@ -46,29 +59,31 @@ public class GUIMain extends JFrame implements Observer {
         modeButtons.add(idleButton);
         modeButtons.add(movieButton);
 
+        addButtonActionListener(syncAutoButton, SyncMode.Sync);
+        addButtonActionListener(syncButton, SyncMode.ForceSync);
+        addButtonActionListener(asyncButton, SyncMode.ForceAsync);
+        addButtonActionListener(autoButton, Mode.Idle);
+        addButtonActionListener(idleButton, Mode.ForceIdle);
+        addButtonActionListener(movieButton, Mode.ForceMovie);
+
+
         JPanel menuBar = new JPanel();
         menuBar.setLayout(new BorderLayout());
-        JPanel titleBar = new JPanel();
-        JPanel southTitleBar = new JPanel();
         JPanel westMenuBar = new JPanel();
         westMenuBar.setLayout(new BorderLayout());
         JPanel eastMenuBar = new JPanel();
         eastMenuBar.setLayout(new BorderLayout());
-        JPanel westNorthMenuBar = new JPanel();
-        JPanel eastNorthMenuBar = new JPanel();
 
 
         add(menuBar, BorderLayout.NORTH);
 
-//        menuBar.add(titleBar, BorderLayout.NORTH);
-//        menuBar.add(southTitleBar, BorderLayout.SOUTH);
-//        southTitleBar.add(westMenuBar, BorderLayout.WEST);
-//        southTitleBar.add(eastMenuBar, BorderLayout.EAST);
+        currentSyncMode = new JLabel("Sync");
+        currentSyncMode.setHorizontalAlignment(SwingConstants.CENTER);
+        currentSyncMode.setFont(new Font("Arial", Font.BOLD, 30));
+        menuBar.add(currentSyncMode, BorderLayout.CENTER);
 
         menuBar.add(westMenuBar, BorderLayout.WEST);
         menuBar.add(eastMenuBar, BorderLayout.EAST);
-//        eastMenuBar.add(eastNorthMenuBar, BorderLayout.NORTH);
-//        westMenuBar.add(westNorthMenuBar, BorderLayout.NORTH);
 
         eastMenuBar.add(syncAutoButton, BorderLayout.WEST);
         eastMenuBar.add(syncButton, BorderLayout.CENTER);
@@ -84,48 +99,106 @@ public class GUIMain extends JFrame implements Observer {
         title = new JLabel("Sync Mode", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 26));
         eastMenuBar.add(title, BorderLayout.NORTH);
-        cams = new CameraControl[monitor.getNrCameras()];
-        for (int i = 0; i < monitor.getNrCameras(); i++) {
-            cams[i] = new CameraControl();
-            add(cams[i], BorderLayout.SOUTH);
-        }
 
-        //update(monitor, this);
+        GridLayout cameraDisplay = new GridLayout(2, 4);
+        JPanel cameraPlacement = new JPanel(cameraDisplay);
+        add(cameraPlacement, BorderLayout.SOUTH);
+        int i = 0;
+        for(int id: monitor.getCameraIds()){
+            cams.put(id, new CameraControl(monitor, id));
+            cameraPlacement.add(cams.get(id));
+            monitor.addObserver(cams.get(id));
+            i++;
+        }
+        //TODO Add correct bordering. Now hardcoded
+//        String[] cameraPlacements = new String[]{"East", "West"};
+//        int i = 0;
+//        for (int id : monitor.getCameraIds()) {
+//            LogUtil.info("Found id:" + id);
+//            cams.put(id, new CameraControl(monitor, id));
+//            add(cams.get(id), cameraPlacements[i]);
+//            monitor.addObserver(cams.get(id));
+//            i++;
+//
+//        }
+//
+//        for (int i = 0; i < monitor.getNrCameras(); i++) {
+//            cams[i] = new CameraControl();
+//            add(cams[i], BorderLayout.SOUTH);
+//        }
+
+        //update    (monitor, this);
         pack();
         setVisible(true);
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
-    public void update(Observable observable, Object o) {
-        SwingUtilities.invokeLater(this::render);
-    }
+    private void addButtonActionListener(JButton button, SyncMode syncMode) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        monitor.setSyncMode(syncMode);
+                        syncButtons.setEnabled(button);
 
-    public void render() {
-        LogUtil.info("Rendering GUI");
-        for (int i = 0; i < cams.length; i++) {
-            renderImage(i);
-        }
-    }
-
-    public void renderImage(int i) {
-        synchronized (monitor) {
-            byte[] img = monitor.getDisplayFrame(i);
-            if (img != null) {
-                cams[i].displayImage(img);
-            } else {
-                LogUtil.info("Tried to render image, but no image available.");
+                        syncButtons.clearSelection();
+                        syncButtons.setSelected(button.getModel(), true);
+                    }
+                });
             }
-        }
+        });
     }
 
-    public static void main(String[] args) throws IOException {
+    private void addButtonActionListener(JButton button, int mode) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        monitor.setMode(mode);
+                        modeButtons.setEnabled(button);
+
+                        modeButtons.clearSelection();
+                        modeButtons.setSelected(button.getModel(), true);
+                    }
+                });
+            }
+        });
+    }
+
+    public void update(Observable observable, Object o) {
+        if ((GUIUpdate) o == GUIUpdate.SyncModeUpdate)
+            SwingUtilities.invokeLater(() -> {
+                currentSyncMode.setText(monitor.getSyncMode().toString());
+
+            });
+//        SwingUtilities.invokeLater(this::render);
+    }
+
+
+    public static void main(String[] args) {
         SystemMonitor monitor = new SystemMonitor();
-        //Camera [] cameras = {new Camera(monitor, "localhost", 5656), new Camera(monitor, "localhost", 5656)};
-        Camera[] cameras = {new Camera(monitor, "argus-1.student.lth.se", 5656)};
+
+//        Camera[] cameras = {new Camera(monitor, "localhost", 9191, 1)};
+        Camera[] cameras = new Camera[0];
+        try {
+            cameras = new Camera[]{new Camera(monitor, "localhost", 5656, 0), new Camera(monitor, "localhost", 5657, 1),
+                    new Camera(monitor, "localhost", 5658, 2), new Camera(monitor, "localhost", 5659, 3),
+                    new Camera(monitor, "localhost", 5660, 4), new Camera(monitor, "localhost", 5661, 5)};
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
         Animator anim = new Animator(monitor);
         monitor.init(cameras);
-        anim.start();
+
         GUIMain gui = new GUIMain(Constants.GUI_TITLE, monitor);
+        anim.start();
+//        sleep(100);
         Random random = new Random();
 //        byte[] initialImage = new byte[10000];
 //        random.nextBytes(initialImage);

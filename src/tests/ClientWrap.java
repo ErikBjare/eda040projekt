@@ -24,7 +24,8 @@ public class ClientWrap extends Thread {
         this.systemMonitorConstructor = ()->new SystemMonitor();
         this.cameraConstructor = sm -> {
             try {
-                return new Camera(sm, Constants.HOST, Constants.PORT);
+                //TODO change camera ID to be variable
+                return new Camera(sm, Constants.HOST, Constants.PORT, 0);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (ConnectException e) {

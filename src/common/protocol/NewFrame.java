@@ -14,6 +14,7 @@ public class NewFrame extends Message {
     public int size;
     byte[] frame;
     public long timestamp;
+    public boolean motionDetected;
 
     // DOES NOT COMPILE TO C
 //    @Override
@@ -28,6 +29,20 @@ public class NewFrame extends Message {
 //        return Arrays.equals(frame, newFrame.frame);
 //
 //    }
+    public NewFrame(int size, byte[] frame, long timestamp, boolean motionDetected) {
+        // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
+        super((byte)4);
+        this.size = size;
+        this.frame = frame;
+        this.timestamp = timestamp;
+        this.motionDetected = motionDetected;
+    }
+
+    public NewFrame(Socket socket) throws IOException {
+        // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
+        super((byte)4);
+        this.decode(socket);
+    }
 
     // ARRAYS.HASHCODE DOES NOT COMPILE TO C
 //    @Override
@@ -39,8 +54,7 @@ public class NewFrame extends Message {
 //    }
 
     public NewFrame(int size, byte[] frame, long timestamp) {
-        // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
-        super((byte)4);
+        super(MsgType.newFrame);
         this.size = size;
         this.frame = frame;
         this.timestamp = timestamp;
@@ -67,17 +81,12 @@ public class NewFrame extends Message {
 //                '}';
 //    }
 
-    public NewFrame(Socket socket) throws IOException {
-        // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
-        super((byte)4);
-        this.decode(socket);
-    }
-
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
         NetworkUtil.send(out, size);
         out.write(frame);
+        NetworkUtil.writeBool(out, motionDetected);
         NetworkUtil.send(out, timestamp);
     }
 
@@ -87,6 +96,11 @@ public class NewFrame extends Message {
         size = NetworkUtil.readInt(input);
         frame = new byte[size];
         NetworkUtil.readAll(input, frame);
+        motionDetected = NetworkUtil.readBool(input);
         timestamp = NetworkUtil.readLong(input);
+    }
+
+    public byte[] getFrameAsBytes() {
+        return frame;
     }
 }

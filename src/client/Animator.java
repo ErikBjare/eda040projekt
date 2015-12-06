@@ -20,8 +20,12 @@ public class Animator extends Thread {
 
     public void run() {
         //TODO add more cameras
-        while (true) {
-            system.animate();
+        try {
+            while (true) {
+                system.animate();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

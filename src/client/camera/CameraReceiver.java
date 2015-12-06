@@ -2,6 +2,7 @@ package client.camera;
 
 import client.SystemMonitor;
 import client_util.LogUtil;
+import common.protocol.NewFrame;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -25,7 +26,14 @@ public class CameraReceiver extends Thread {
     public void run() {
         while (!Thread.currentThread().isInterrupted()){
             try {
-                camera.receiveFrame();
+                LogUtil.info("Entering recieveframe");
+                int resp = -1;
+                while (resp == -1) resp = socket.getInputStream().read();
+                if (resp == -1) throw new RuntimeException("Socket returned -1");
+                byte msgType = (byte) resp;
+                LogUtil.info("New message - msgType: " + msgType);
+                ImageFrame mess = new ImageFrame(camera.id, new NewFrame(socket));
+                system.addImage(mess);
             } catch (IOException e) {
                 LogUtil.exception(e);
             }

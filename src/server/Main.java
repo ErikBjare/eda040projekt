@@ -12,13 +12,14 @@ import java.net.Socket;
 public class Main {
     public static void main(String[] args) {
         ServerSocket sock = null;
+
         try {
-            sock = new ServerSocket(5656);
-            while (true) {
+            sock = new ServerSocket(Integer.parseInt(args[0]));
+            while (!Thread.interrupted()) {
                 LogUtil.info("Started listening for new client");
                 Socket client = sock.accept();
                 LogUtil.info("Accepted connection");
-                CameraServer cameraServer = new CameraServer(client);
+                CameraServer cameraServer = new CameraServer(args[1], Integer.parseInt(args[2]), client);
                 cameraServer.join();
                 LogUtil.info("Finished with client");
             }

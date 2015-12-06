@@ -60,7 +60,7 @@ public class Monitor {
     public synchronized void sendNext() throws InterruptedException, IOException, ShutdownException {
         if (isShutdown) throw new ShutdownException();
         getReadyToSend();
-        Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp);
+        Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp, motionDetected);
         mess.send(sendSocket);
         newPicArrived = false;
         LogUtil.info("Sent new message");
@@ -68,7 +68,7 @@ public class Monitor {
     }
 
     public synchronized void setMode(int newMode) {
-
+        this.mode = newMode;
     }
 
     private void getReadyToSend() throws InterruptedException, ShutdownException {
