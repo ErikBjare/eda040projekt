@@ -1,8 +1,6 @@
 package server;
 
 import server_util.LogUtil;
-//import se.lth.cs.eda040.realcamera.AxisM3006V;
-import se.lth.cs.eda040.proxycamera.AxisM3006V;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,14 +10,18 @@ public class Main {
     public static void main(String[] args) {
         int listeningPort = Integer.parseInt(args[0]);
 
-        AxisM3006V hardware = new AxisM3006V();
-        hardware.init();
+        AxisWrapper hardware;
+
         int port = args.length > 0 ? Integer.parseInt(args[0]) : 9191;
         if (args.length > 1) {
             String cameraHostname = args[1];
             int cameraPort = Integer.parseInt(args[2]);
-            hardware.setProxy(cameraHostname, cameraPort);
+            hardware = new AxisWrapper(cameraHostname, cameraPort);
+        } else {
+            hardware = new AxisWrapper();
         }
+
+        hardware.init();
         hardware.connect();
 
         try {

@@ -15,7 +15,7 @@ import java.net.Socket;
  * Created by von on 2015-11-05.
  */
 public class Monitor {
-    private final AxisM3006V hardware;
+    private final AxisWrapper hardware;
     byte[] lastFrame;
     boolean newPicArrived;
     boolean motionDetected;
@@ -24,7 +24,7 @@ public class Monitor {
     private long lastSentFrameTime;
     private boolean isShutdown = false;
 
-    public Monitor(AxisM3006V hardware) {
+    public Monitor(AxisWrapper hardware) {
         this.hardware = hardware;
         this.mode = Mode.Idle;
     }

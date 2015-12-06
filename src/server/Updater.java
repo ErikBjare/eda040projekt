@@ -7,9 +7,9 @@ import server_util.LogUtil;
 
 public class Updater extends Thread {
     private final Monitor monitor;
-    private AxisM3006V hardware;
+    private AxisWrapper hardware;
 
-    public Updater(Monitor monitor, AxisM3006V hardware) {
+    public Updater(Monitor monitor, AxisWrapper hardware) {
         this.monitor = monitor;
         this.hardware = hardware;
 //        setName("Updater");
