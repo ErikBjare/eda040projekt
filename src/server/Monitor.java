@@ -20,7 +20,7 @@ public class Monitor {
     boolean newPicArrived;
     boolean motionDetected;
     long timeStamp;
-    Mode mode;
+    int mode;
     private long lastSentFrameTime;
     private boolean isShutdown = false;
 
@@ -61,11 +61,11 @@ public class Monitor {
         Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp);
         mess.send(sendSocket);
         newPicArrived = false;
-        LogUtil.info("Sent message: " + mess.getClass().toString());
+        LogUtil.info("Sent new message");
         lastSentFrameTime = System.currentTimeMillis();
     }
 
-    public synchronized void setMode(Mode newMode) {
+    public synchronized void setMode(int newMode) {
 
     }
 

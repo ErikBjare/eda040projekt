@@ -6,7 +6,7 @@ package common.protocol;
 public class MsgType {
     public static final byte connect = 0;
     public static final byte modeChange = 1;
-    public static final byte synchronizeClock = 2;
-    public static final byte newFrame = 3;
-    public static final byte shutdown = 4;
+    public static final byte synchronizeClock = 3;
+    public static final byte newFrame = 4;
+    public static final byte shutdown = 5;
 }
