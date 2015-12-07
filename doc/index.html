@@ -1,38 +1,46 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
 
-  <style>
-    html, body {
-      margin: 0;
-      parring: 0;
-    }
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
 
-    .imagefeed {
-      width: 640px;
-      height: 480px;
-      border: 1px solid #000;
-    }
+        <style>
 
-    .camera {
+.imagefeed {
+    width: 640px;
+    height: 480px;
+    border: 1px solid #BBB;
+}
+
+
+    .camera-box {
         float: left;
-      width: 640px;
+        width: 660px;
+        background: #CCC;
+            height: 530px;
+                border-radius: 10px;
+                    padding: 10px;
+                        border: 1px #555 solid;
+    }
+
+    .cameras {
+        width: 1320px;
+    }
+
+    .camera.add {
+        background: #EEE;
     }
 
     .center{
-      margin: 0 auto 0 auto;
+        margin: 0 auto 0 auto;
     }
 
     .row {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    .container {
-      width: 100%;
-      height: 100%;
+        width: 100%;
+        margin-top: 10px;
     }
 
     input.url {
@@ -42,87 +50,112 @@
     .updateSettings {
         float:right;
     }
-  </style>
-  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-</head>
-<body>
-  <div class="container">
-    <div class="row">
-        <h1>City Camera Project</h1>
-    </div>
+        </style>
+        <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header clearfix">
+                <nav>
+                    <ul class="nav nav-pills pull-right">
+                        <li role="presentation" class="active"><a href="https://github.com/vlthr/eda040projekt">Code</a></li>
+                        <li role="presentation"><a href="https://docs.google.com/document/d/1WoqFGEg-i9C5yWMv6r9wfb6SUHLAh19Unali1eQLryg/edit">Documentation</a></li>
+                        <li role="presentation"><a href="https://docs.google.com/presentation/d/1Drvd2l1LGT6PIz5txZjW2IA6pq8IDQdLvL6UqNVQOXI/edit?usp=sharing">Presentation</a></li>
+                    </ul>
+                </nav>
+                <h3 class="text-muted">
+                    Camera Project
+                </h3>
+            </div>
 
-    <div class="row">
-        <h2>About</h2>
-        <p>
-        Lorem ipsum
-        </p>
-    </div>
+            <div class="jumbotron">
+                <h1>Camera Project</h1>
+                <p class="lead">
+                    The result of our assignment in the course<br>
+                    EDA040 - Concurrent Programming
+                </p>
+            </div>
 
-    <div class="row">
-        <h2>Camera views</h2>
-        <button class="addCamera">+ Add camera</button>
-    </div>
+            <div class="row">
 
-    <div class="row cameras">
-        <div class="center camera">
-          <img class="imagefeed" src="">
-          <input placeholder="URL to image" class="url" type="text"/>
-          <select class="intervalSelect">
-            <option value="250">fast (250ms)</option>
-            <option selected=selected value="1000">medium (1s)</option>
-            <option value="5000">slow (5s)</option>
-            <option value="10000000">stop</option>
-          </select>
-          <button class="updateSettings">Update settings</button>
+                <div class="col-md-12">
+                <h2>About</h2>
+                <p>
+                    This is the page for the project, you can find links above to the code, documentation and presentation slides.
+                </p>
+                </div>
+            
+            </div>
         </div>
-    </div>
-  </div>
+                <hr>
 
-  <script>
-    var activeIntervals = [];
-        
-    function clearIntervals() {
-        $.each(activeIntervals, function(_, i) {
-            clearInterval(i);
-            console.log("cleared interval " + i);
-        });
-        activeIntervals = [];
-    }
+            <div class="text-center">
+                <h1>Camera views</h1>
+        </div>
 
 
-    function setUpdateTimers() {
-        clearIntervals();
-        var $camera = $(".camera");
-        $camera.each(function(i, el) {
-            console.log(i + el);
-            var $imagefeed = $(".imagefeed", el)[0];
+            <div class="cameras center-block">
+                <div class="center camera-box camera">
+                    <img class="imagefeed" src="">
+                    <input placeholder="URL to image" class="url" type="text"/>
+                    <select class="intervalSelect">
+                        <option value="250">fast (250ms)</option>
+                        <option selected=selected value="1000">medium (1s)</option>
+                        <option value="5000">slow (5s)</option>
+                        <option value="10000000">stop</option>
+                    </select>
+                    <button class="updateSettings">Update settings</button>
+                </div>
+                <div class="add camera-box">
+                    <button class="addCamera btn btn-success btn-lg center-block" style="margin-top: 230px;">+ Add camera</button>
+                </div>
+            </div>
 
-            var intervalTime = parseInt($(".intervalSelect", el).val());
+        <script>
+var activeIntervals = [];
 
-            intervalId = setInterval(function() {
-              var url = $(".url", el).val();
-              url = !url ? "http://argus-5.student.lth.se:6077/image.jpg" : url;
-              $imagefeed.src = url + "?" + new Date().getTime();
-              //console.log(imagefeed.src);
-            }, intervalTime);
-            activeIntervals.push(intervalId);
-        });
-    }
-
-    function addCamera() {
-        $(".cameras").append($(".camera").last()[0].outerHTML);
-        console.log($(".camera"));
-    }
-
-    $("button.updateSettings").click(function() {
-        setUpdateTimers();
+function clearIntervals() {
+    $.each(activeIntervals, function(_, i) {
+        clearInterval(i);
+        console.log("cleared interval " + i);
     });
-    
-    $("button.addCamera").click(function() {
-        addCamera();
+    activeIntervals = [];
+}
+
+
+function setUpdateTimers() {
+    clearIntervals();
+    var $camera = $(".camera");
+    $camera.each(function(i, el) {
+        console.log(i + el);
+        var $imagefeed = $(".imagefeed", el)[0];
+
+        var intervalTime = parseInt($(".intervalSelect", el).val());
+
+        intervalId = setInterval(function() {
+            var url = $(".url", el).val();
+            url = !url ? "http://argus-5.student.lth.se:7077/image.jpg" : url;
+            $imagefeed.src = url + "?" + new Date().getTime();
+            //console.log(imagefeed.src);
+        }, intervalTime);
+        activeIntervals.push(intervalId);
     });
-        
+}
+
+function addCamera() {
+    $(".camera").last().after($(".camera").last()[0].outerHTML);
+    console.log($(".camera"));
+}
+
+$("button.updateSettings").click(function() {
     setUpdateTimers();
-  </script>
-</body>
+});
+
+$("button.addCamera").click(function() {
+    addCamera();
+});
+
+setUpdateTimers();
+        </script>
+    </body>
 </html>
