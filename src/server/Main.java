@@ -15,7 +15,7 @@ public class Main {
             Monitor monitor = new Monitor();
             Updater updater = new Updater(monitor, hardware);
 
-            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077, monitor);
+            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, port+1000, monitor);
             jpeghttpServer.start();
             updater.start();
 
