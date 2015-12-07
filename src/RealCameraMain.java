@@ -5,6 +5,6 @@ import server.RealAxis;
  */
 public class RealCameraMain {
     public static void main(String[] args) {
-        server.Main.start(new RealAxis());
+        server.Main.start(9191, new RealAxis());
     }
 }

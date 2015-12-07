@@ -21,6 +21,7 @@ public abstract class Message {
     public void send(Socket socket) throws IOException {
         socket.getOutputStream().write(msgType);
         sendPayload(socket);
+        socket.getOutputStream().flush();
     }
 
     /**

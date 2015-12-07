@@ -8,7 +8,14 @@ import java.util.stream.IntStream;
 public class MainGuiStart {
     public static void main(String[] args) {
         client.gui.GUIMain.main(new String[]{
-                "argus-1.student.lth.se", "9191"
+                "argus-1.student.lth.se", "9191",
+//                "argus-2.student.lth.se", "9191",
+                "argus-3.student.lth.se", "9191",
+//                "argus-4.student.lth.se", "9191",
+//                "argus-5.student.lth.se", "9191",
+//                "argus-6.student.lth.se", "9191",
+//                "argus-7.student.lth.se", "9191",
+//                "argus-8.student.lth.se", "9191"
         });
     }
 }

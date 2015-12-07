@@ -14,6 +14,7 @@ import java.net.Socket;
 public class Monitor {
     private final AxisWrapper hardware;
     byte[] lastFrame;
+    byte[] tempFrame = new byte[131072];
     boolean newPicArrived;
     boolean motionDetected;
     long timeStamp;
@@ -28,15 +29,21 @@ public class Monitor {
 
 
 
-    public synchronized void newFrame(long time, boolean motion, byte[] frame) throws ShutdownException {
+    public synchronized void newFrame(AxisWrapper hardware) throws ShutdownException, InterruptedException {
         if (isShutdown) throw new ShutdownException();
-        //System.out.println("New frame from hardware");
+        LogUtil.info("entered newFrame");
+        int len = 0;
+        while (len <= 0){
+            len = hardware.getJPEG(tempFrame, 0);
+            LogUtil.info("hardware returned length: "+len);
+        }
         newPicArrived = true; //A new picture available
         // TODO: How necessary is it to clone
-        lastFrame = NetworkUtil.clone(frame);
-        timeStamp = time;
-        motionDetected = motion;
+        lastFrame = NetworkUtil.clone(tempFrame);
+        timeStamp = System.currentTimeMillis();
+        motionDetected = hardware.motionDetected();
         notifyAll();
+        LogUtil.info("about to exit newFrame");
     }
 
     /* Connects the monitor to the camera */
@@ -58,21 +65,7 @@ public class Monitor {
 
     public synchronized void sendNext(Socket socket) throws InterruptedException, IOException, ShutdownException {
         if (isShutdown) throw new ShutdownException();
-        getReadyToSend();
-        Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp, motionDetected);
-        mess.send(socket);
-        newPicArrived = false;
-//        LogUtil.info("Sent message: " + mess.getClass().toString());
-        LogUtil.info("Sent new message");
-        lastSentFrameTime = System.currentTimeMillis();
-    }
-
-    public synchronized void setMode(int newMode) throws ShutdownException {
-        if (isShutdown) throw new ShutdownException();
-        this.mode = newMode;
-    }
-
-    private void getReadyToSend() throws InterruptedException, ShutdownException {
+        LogUtil.info("entered sendNext");
         if (isShutdown) throw new ShutdownException();
         long frameMsInterval;
         if (mode == Mode.Idle || mode == Mode.ForceIdle) {
@@ -86,10 +79,23 @@ public class Monitor {
             if (isShutdown) throw new ShutdownException();
             now = System.currentTimeMillis();
             long timeLeft = wakeup - now;
+            LogUtil.info("sleeping for timeLeft: " + timeLeft + "("+newPicArrived+")");
             if (timeLeft > 0) wait(timeLeft);
-            else wait();
+            else if (!newPicArrived) wait();
         }
+        LogUtil.info("sendNext passed getReadyToSend");
+        Message mess = new NewFrame(lastFrame.length, lastFrame, timeStamp, motionDetected);
+        mess.send(socket);
+        LogUtil.info("sentNext sent new message");
+        newPicArrived = false;
+//        LogUtil.info("Sent message: " + mess.getClass().toString());
+        lastSentFrameTime = System.currentTimeMillis();
         notifyAll();
+    }
+
+    public synchronized void setMode(int newMode) throws ShutdownException {
+        if (isShutdown) throw new ShutdownException();
+        this.mode = newMode;
     }
 
     public synchronized void waitForShutdown() throws InterruptedException {

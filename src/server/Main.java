@@ -7,14 +7,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
-    public static void start(AxisWrapper hardware){
-        System.out.println(hardware);
-        System.out.println("before init");
+    public static void start(int port, AxisWrapper hardware){
         hardware.init();
-        System.out.println("after init");
-        System.out.println("before connect");
         hardware.connect();
-        System.out.println("after connect");
 
         try {
             Monitor monitor = new Monitor(hardware);
@@ -22,7 +17,7 @@ public class Main {
 //            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077, monitor);
 //            jpeghttpServer.start();
 
-            ServerSocket sock = new ServerSocket(9191);
+            ServerSocket sock = new ServerSocket(port);
 
             while (!Thread.interrupted()) {
                 try {

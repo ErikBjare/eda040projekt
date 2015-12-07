@@ -28,6 +28,7 @@ public class Sender extends Thread {
                 break;
             } catch (ShutdownException e) {
                 this.interrupt();
+                LogUtil.info("Sender shutdown.");
                 break;
             }
         }

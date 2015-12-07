@@ -15,34 +15,19 @@ public class Updater extends Thread {
 
     public void run() {
         boolean cameraOffline = false;
-
+        try {
             while (!Thread.currentThread().isInterrupted() && !cameraOffline) {
-                int size = 131072;
-                byte[] frame = new byte[size];
-                int len;
-//                synchronized (monitor) {
-                    len = hardware.getJPEG(frame, 0);
- //               }
-                try {
-                    if (len > 0) {
-//                    boolean motion = false;
-//                    if(System.currentTimeMillis()%50==0) motion = true;
-
-//                    monitor.newFrame(System.currentTimeMillis(),  motion , frame);
-                        monitor.newFrame(System.currentTimeMillis(), hardware.motionDetected(), frame);
-
-//                    System.out.println("MOtion detected:: " + hardware.motionDetected());
-                    }
-
-                } catch (ShutdownException e) {
-                    e.printStackTrace();
-                    LogUtil.exception(e);
-
-                }
+                monitor.newFrame(hardware);
             }
+        } catch (ShutdownException e) {
+            LogUtil.exception(e);
 
-
-            monitor.shutdown();
+        } catch (InterruptedException e) {
+            LogUtil.exception(e);
         }
+
+
+        monitor.shutdown();
     }
+}
 
