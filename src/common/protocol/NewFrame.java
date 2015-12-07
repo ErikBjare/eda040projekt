@@ -16,19 +16,6 @@ public class NewFrame extends Message {
     public long timestamp;
     public boolean motionDetected;
 
-    // DOES NOT COMPILE TO C
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        NewFrame newFrame = (NewFrame) o;
-//
-//        if (size != newFrame.size) return false;
-//        if (timestamp != newFrame.timestamp) return false;
-//        return Arrays.equals(frame, newFrame.frame);
-//
-//    }
     public NewFrame(int size, byte[] frame, long timestamp, boolean motionDetected) {
         // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
         super((byte)4);
@@ -53,14 +40,6 @@ public class NewFrame extends Message {
         this.decode(socket);
     }
 
-    // ARRAYS.HASHCODE DOES NOT COMPILE TO C
-//    @Override
-//    public int hashCode() {
-//        int result = size;
-//        result = 31 * result + (frame != null ? Arrays.hashCode(frame) : 0);
-//        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
-//        return result;
-//    }
 
     public NewFrame(int size, byte[] frame, long timestamp) {
         super((byte) 4);
@@ -80,16 +59,6 @@ public class NewFrame extends Message {
     public int getSize() {
         return size;
     }
-//    DOES NOT COMPILE TO C: Likely due to use of an array method
-//    @Override
-//    public String toString() {
-//        return "NewFrame{" +
-//                "size=" + size +
-//                ", frame=" + frame.toString() +
-//                ", timestamp=" + timestamp +
-//                '}';
-//    }
-
     @Override
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
@@ -112,4 +81,40 @@ public class NewFrame extends Message {
     public byte[] getFrameAsBytes() {
         return frame;
     }
+
+////     ARRAYS.HASHCODE DOES NOT COMPILE TO C
+//    @Override
+//    public int hashCode() {
+//        int result = size;
+//        result = 31 * result + (frame != null ? Arrays.hashCode(frame) : 0);
+//        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+//        result = 31 * result + (motionDetected ? 1 : 0);
+//        return result;
+//    }
+//
+//    //     DOES NOT COMPILE TO C
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        NewFrame newFrame = (NewFrame) o;
+//
+//        if (size != newFrame.size) return false;
+//        if (motionDetected != newFrame.motionDetected) return false;
+//        if (timestamp != newFrame.timestamp) return false;
+//        return Arrays.equals(frame, newFrame.frame);
+//
+//    }
+//
+////    DOES NOT COMPILE TO C: Likely due to use of an array method
+//    @Override
+//    public String toString() {
+//        return "NewFrame{" +
+//                "size=" + size +
+//                ", frame=" + frame.toString() +
+//                ", timestamp=" + timestamp +
+//                '}';
+//    }
+
 }

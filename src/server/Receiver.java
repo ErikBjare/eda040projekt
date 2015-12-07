@@ -1,9 +1,7 @@
 package server;
 
-import server_util.LogUtil;
 import common.protocol.*;
-import common.Mode;
-
+import server_util.LogUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;

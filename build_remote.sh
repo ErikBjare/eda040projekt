@@ -23,7 +23,8 @@ ENDSSH
 # Copy all error logs and if possible the main exe back here
 rm -rf ./build_bin
 mkdir -p ./build_bin/build
-scp $1:$2/build_bin/{build/build.err,build/build.log,build.log,build.err} ./build_bin/build/
+scp $1:$2/build_bin/build/{build.err,build.log} ./build_bin/build/
+scp $1:$2/build_bin/{build.log,build.log,build.err} ./build_bin/
 scp $1:$2/build_bin/build/RealCameraMain ./build_bin/build/RealCameraMain
 
 # After this, use ./distribute.sh to mass connect to all the cameras

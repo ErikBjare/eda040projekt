@@ -2,8 +2,9 @@ package server;
 
 import common.Mode;
 import common.NetworkUtil;
+import common.protocol.Constants;
+import common.protocol.NewFrame;
 import server_util.LogUtil;
-import common.protocol.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -14,7 +15,6 @@ import java.net.Socket;
 public class Monitor {
     private final AxisWrapper hardware;
     byte[] lastFrame = new byte[131072];
-    byte[] tempFrame = new byte[131072];
     boolean newPicArrived;
     boolean motionDetected;
     long timeStamp;
@@ -32,20 +32,17 @@ public class Monitor {
 
 
     public synchronized void newFrame(AxisWrapper hardware) throws ShutdownException, InterruptedException {
+    }
+
+    public synchronized void setCurrentFrame(byte[] tmp, boolean motion, long timeStamp) throws ShutdownException {
         if (isShutdown) throw new ShutdownException();
-        LogUtil.info("entered newFrame");
-        int len = 0;
-        while (len <= 0){
-            len = hardware.getJPEG(tempFrame, 0);
-            LogUtil.info("hardware returned length: "+len);
-        }
         newPicArrived = true; //A new picture available
         // TODO: How necessary is it to clone
-        NetworkUtil.cloneTo(tempFrame, lastFrame);
-        timeStamp = System.currentTimeMillis();
-        motionDetected = hardware.motionDetected();
+        NetworkUtil.cloneTo(tmp, lastFrame);
+        this.timeStamp = timeStamp;
+        motionDetected = motion;
         notifyAll();
-        LogUtil.info("about to exit newFrame");
+        LogUtil.info("about to exit setCurrentFrame");
     }
 
     /* Connects the monitor to the camera */
@@ -68,7 +65,11 @@ public class Monitor {
     public synchronized void sendNext(Socket socket) throws InterruptedException, IOException, ShutdownException {
         if (isShutdown) throw new ShutdownException();
         LogUtil.info("entered sendNext");
-        while(!newPicArrived) wait();
+        while(!newPicArrived) {
+            LogUtil.info("sendNext sleeping until woken");
+            wait();
+            LogUtil.info("sendNext woken!");
+        }
         long frameMsInterval;
         if (mode == Mode.Idle || mode == Mode.ForceIdle) {
             frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
