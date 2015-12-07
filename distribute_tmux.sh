@@ -10,4 +10,4 @@ function distribute(){
     tmux select-pane -t 0
     tmux set-window-option synchronize-panes on > /dev/null
 }
-distribute $*
+distribute {1..8}

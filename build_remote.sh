@@ -3,6 +3,7 @@ if [ "$#" -lt 2 ]; then
     echo "Error: Wrong number of arguments!"
     echo "First argument: the ssh target (ex. user@server.internet.com)"
     echo "Second argument: the remote directory where the build should be done. Remember to put the path in quotes if your shell could expand the it before sending. (ex. "~/eda040projekt")."
+    exit 1
 fi
 SSH_TARGET=$1
 REMOTE_DIR=$2
@@ -20,6 +21,7 @@ cp -r crosscompilation/* build_src
 ENDSSH
 
 # Copy all error logs and if possible the main exe back here
+rm -rf ./build_bin
 mkdir -p ./build_bin/build
 scp $1:$2/build_bin/{build/build.err,build/build.log,build.log,build.err} ./build_bin/build/
 scp $1:$2/build_bin/build/RealCameraMain ./build_bin/build/RealCameraMain
