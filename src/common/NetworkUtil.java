@@ -78,6 +78,12 @@ public class NetworkUtil {
         }
         return result;
     }
+    public static byte[] cloneTo(byte[] arr, byte[] target){
+        for (int i = 0; i < arr.length; i++) {
+            target[i] = arr[i];
+        }
+        return target;
+    }
     public static boolean readBool(InputStream inputStream) throws  IOException{
         int response = inputStream.read();
         return response == 0 ? false : true;

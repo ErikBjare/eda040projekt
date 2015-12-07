@@ -13,7 +13,7 @@ import java.net.Socket;
  */
 public class Monitor {
     private final AxisWrapper hardware;
-    byte[] lastFrame;
+    byte[] lastFrame = new byte[131072];
     byte[] tempFrame = new byte[131072];
     boolean newPicArrived;
     boolean motionDetected;
@@ -39,7 +39,7 @@ public class Monitor {
         }
         newPicArrived = true; //A new picture available
         // TODO: How necessary is it to clone
-        lastFrame = NetworkUtil.clone(tempFrame);
+        NetworkUtil.cloneTo(tempFrame, lastFrame);
         timeStamp = System.currentTimeMillis();
         motionDetected = hardware.motionDetected();
         notifyAll();
@@ -66,7 +66,6 @@ public class Monitor {
     public synchronized void sendNext(Socket socket) throws InterruptedException, IOException, ShutdownException {
         if (isShutdown) throw new ShutdownException();
         LogUtil.info("entered sendNext");
-        if (isShutdown) throw new ShutdownException();
         long frameMsInterval;
         if (mode == Mode.Idle || mode == Mode.ForceIdle) {
             frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
