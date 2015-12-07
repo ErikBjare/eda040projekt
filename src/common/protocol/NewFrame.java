@@ -32,10 +32,19 @@ public class NewFrame extends Message {
     public NewFrame(int size, byte[] frame, long timestamp, boolean motionDetected) {
         // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
         super((byte)4);
+        fill(size, frame, timestamp, motionDetected);
+    }
+
+    public void fill(int size, byte[] frame, long timestamp, boolean motionDetected) {
         this.size = size;
         this.frame = frame;
         this.timestamp = timestamp;
         this.motionDetected = motionDetected;
+    }
+
+    public NewFrame() {
+        // TODO: Hardcoded MsgType.newFrame for C compilation debugging.
+        super((byte) 4);
     }
 
     public NewFrame(Socket socket) throws IOException {
