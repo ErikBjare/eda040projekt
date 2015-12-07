@@ -10,12 +10,14 @@
       parring: 0;
     }
 
-    #imagefeed {
+    .imagefeed {
       width: 640px;
       height: 480px;
+      border: 1px solid #000;
     }
 
-    .image {
+    .camera {
+        float: left;
       width: 640px;
     }
 
@@ -23,27 +25,104 @@
       margin: 0 auto 0 auto;
     }
 
+    .row {
+      width: 100%;
+      margin-top: 10px;
+    }
+
     .container {
       width: 100%;
       height: 100%;
     }
+
+    input.url {
+        width: 300px;
+    }
+
+    .updateSettings {
+        float:right;
+    }
   </style>
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 </head>
 <body>
   <div class="container">
-    <div class="center image">
-      <img id="imagefeed" src="">
+    <div class="row">
+        <h1>City Camera Project</h1>
+    </div>
+
+    <div class="row">
+        <h2>About</h2>
+        <p>
+        Lorem ipsum
+        </p>
+    </div>
+
+    <div class="row">
+        <h2>Camera views</h2>
+        <button class="addCamera">+ Add camera</button>
+    </div>
+
+    <div class="row cameras">
+        <div class="center camera">
+          <img class="imagefeed" src="">
+          <input placeholder="URL to image" class="url" type="text"/>
+          <select class="intervalSelect">
+            <option value="250">fast (250ms)</option>
+            <option selected=selected value="1000">medium (1s)</option>
+            <option value="5000">slow (5s)</option>
+            <option value="10000000">stop</option>
+          </select>
+          <button class="updateSettings">Update settings</button>
+        </div>
     </div>
   </div>
 
   <script>
-    var imagefeedEl = document.getElementById("imagefeed");
-    var url = "http://localhost:6077/image.jpg";
+    var activeIntervals = [];
+        
+    function clearIntervals() {
+        $.each(activeIntervals, function(_, i) {
+            clearInterval(i);
+            console.log("cleared interval " + i);
+        });
+        activeIntervals = [];
+    }
 
-    setInterval(function() {
-      imagefeedEl.src = url + "?" + new Date().getTime();
-      console.log(imagefeedEl.src);
-    }, 500);
+
+    function setUpdateTimers() {
+        clearIntervals();
+        var $camera = $(".camera");
+        $camera.each(function(i, el) {
+            console.log(i + el);
+            var $imagefeed = $(".imagefeed", el)[0];
+
+            var intervalTime = parseInt($(".intervalSelect", el).val());
+
+            intervalId = setInterval(function() {
+              var url = $(".url", el).val();
+              url = !url ? "http://argus-5.student.lth.se:6077/image.jpg" : url;
+              $imagefeed.src = url + "?" + new Date().getTime();
+              //console.log(imagefeed.src);
+            }, intervalTime);
+            activeIntervals.push(intervalId);
+        });
+    }
+
+    function addCamera() {
+        $(".cameras").append($(".camera").last()[0].outerHTML);
+        console.log($(".camera"));
+    }
+
+    $("button.updateSettings").click(function() {
+        setUpdateTimers();
+    });
+    
+    $("button.addCamera").click(function() {
+        addCamera();
+    });
+        
+    setUpdateTimers();
   </script>
 </body>
 </html>
