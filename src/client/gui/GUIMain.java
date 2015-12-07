@@ -189,9 +189,7 @@ public class GUIMain extends JFrame implements Observer {
         ArrayList<Camera> cameras = new ArrayList<>();
         try {
             for (int i = 0; i < args.length; i += 2) {
-
                 cameras.add(new Camera(monitor, args[i], Integer.parseInt(args[i + 1]), i / 2));
-
             }
 
 
