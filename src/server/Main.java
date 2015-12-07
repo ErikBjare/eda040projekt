@@ -12,10 +12,12 @@ public class Main {
         hardware.connect();
 
         try {
-            Monitor monitor = new Monitor(hardware);
+            Monitor monitor = new Monitor();
+            Updater updater = new Updater(monitor, hardware);
 
-//            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077, monitor);
-//            jpeghttpServer.start();
+            JPEGHTTPServer jpeghttpServer = new JPEGHTTPServer(hardware, 6077, monitor);
+            jpeghttpServer.start();
+            updater.start();
 
             ServerSocket sock = new ServerSocket(port);
 

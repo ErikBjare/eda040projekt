@@ -128,10 +128,7 @@ public class JPEGHTTPServer extends Thread {
                     int len;
                     // TODO: Fetch image from another place instead of directly from the camera
                     LogUtil.info("Trying to fetch image for HTTP request...");
-                    synchronized(monitor) {
-                        LogUtil.info("Received lock");
-                        len = myCamera.getJPEG(jpeg, 0);
-                    }
+                    len = monitor.cloneFrame(jpeg);
                     LogUtil.info("Image fetched");
 
 					os.write(jpeg, 0, len);
