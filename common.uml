@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>common</OriginalElement>
+  <nodes>
+    <node x="489.0" y="879.0">common.protocol.Constants</node>
+    <node x="0.0" y="879.0">common.Mode</node>
+    <node x="342.5" y="0.0">common.protocol.Message</node>
+    <node x="741.0" y="205.5">common.protocol.Connect</node>
+    <node x="226.0" y="879.0">common.Connection</node>
+    <node x="0.0" y="448.0">common.NetworkUtil</node>
+    <node x="523.0" y="448.0">common.Constants</node>
+    <node x="194.99999999999997" y="205.0">common.protocol.ModeChange</node>
+    <node x="819.0" y="448.0">common.protocol.MsgType</node>
+    <node x="406.0" y="121.0">common.protocol.NewFrame</node>
+    <node x="0.0" y="227.0">common.protocol.Shutdown</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="common.protocol.ModeChange" target="common.protocol.Message">
+      <point x="0.0" y="-57.0" />
+      <point x="290.5" y="101.0" />
+      <point x="405.875" y="101.0" />
+      <point x="-21.125" y="35.5" />
+    </edge>
+    <edge source="common.protocol.Shutdown" target="common.protocol.Message">
+      <point x="0.0" y="-35.0" />
+      <point x="87.5" y="91.0" />
+      <point x="363.625" y="91.0" />
+      <point x="-63.375" y="35.5" />
+    </edge>
+    <edge source="common.protocol.NewFrame" target="common.protocol.Message">
+      <point x="0.0" y="-141.0" />
+      <point x="563.5" y="101.0" />
+      <point x="448.125" y="101.0" />
+      <point x="21.125" y="35.5" />
+    </edge>
+    <edge source="common.protocol.Connect" target="common.protocol.Message">
+      <point x="0.0" y="-56.5" />
+      <point x="843.5" y="91.0" />
+      <point x="490.375" y="91.0" />
+      <point x="63.375" y="35.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.5978682170542635" x="516.5" y="506.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+
