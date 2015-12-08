@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 /**
  * Created by Tank on 12/2/2015.
  */
-public class Main {
+public class ProxyMain {
     public static void main(String[] args) {
         Thread t1 = new Thread(()->server.Main.start(5656, new ProxyAxis("argus-1.student.lth.se", 9191)));
         t1.start();
