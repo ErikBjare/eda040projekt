@@ -21,10 +21,12 @@ public class Monitor {
     private long lastSentFrameTime;
     private boolean isShutdown = false;
     NewFrame mess;
+    long frameMsInterval;
 
     public Monitor() {
         this.mode = Mode.Idle;
         mess = new NewFrame();
+        recalcFrameRate();
     }
 
     public synchronized int cloneFrame(byte[] target){
@@ -33,12 +35,7 @@ public class Monitor {
     }
 
     public synchronized void waitForNextFrame() throws InterruptedException {
-        long frameMsInterval;
-        if (mode == Mode.Idle || mode == Mode.ForceIdle) {
-            frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
-        } else {
-            frameMsInterval = 1000 / Constants.MOVIE_FRAMERATE;
-        }
+        recalcFrameRate();
         long now = System.currentTimeMillis();
         long wakeup = lastSentFrameTime + frameMsInterval;
         while (now < wakeup) {
@@ -49,9 +46,16 @@ public class Monitor {
         }
     }
 
+    public void recalcFrameRate() {
+        if (mode == Mode.Idle || mode == Mode.ForceIdle) {
+            frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
+        } else {
+            frameMsInterval = 1000 / Constants.MOVIE_FRAMERATE;
+        }
+    }
+
     public synchronized void setCurrentFrame(byte[] tmp, boolean motion, long timeStamp) {
         newPicArrived = true; //A new picture available
-        // TODO: How necessary is it to clone
         NetworkUtil.cloneTo(tmp, lastFrame);
         this.timeStamp = timeStamp;
         motionDetected = motion;
