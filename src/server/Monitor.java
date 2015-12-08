@@ -14,6 +14,7 @@ import java.net.Socket;
  */
 public class Monitor {
     byte[] lastFrame = new byte[131072];
+    private int lastLength;
     boolean newPicArrived;
     boolean motionDetected;
     long timeStamp;
@@ -54,11 +55,12 @@ public class Monitor {
         }
     }
 
-    public synchronized void setCurrentFrame(byte[] tmp, boolean motion, long timeStamp) {
+    public synchronized void setCurrentFrame(int length, byte[] tmp, boolean motion, long timeStamp) {
         newPicArrived = true; //A new picture available
-        NetworkUtil.cloneTo(tmp, lastFrame);
+        NetworkUtil.cloneTo(tmp, lastFrame, 0,length);
+        this.lastLength = length;
         this.timeStamp = timeStamp;
-        motionDetected = motion;
+        this.motionDetected = motion;
         notifyAll();
 //        LogUtil.info("about to exit setCurrentFrame");
     }
@@ -89,7 +91,7 @@ public class Monitor {
             wait();
 //            LogUtil.info("sendNext woken!");
         }
-        mess.fill(lastFrame.length, lastFrame, timeStamp, motionDetected);
+        mess.fill(lastLength, lastFrame, timeStamp, motionDetected);
         mess.send(socket);
 //        LogUtil.info("sentNext sent new message");
         newPicArrived = false;

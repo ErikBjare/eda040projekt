@@ -12,6 +12,10 @@ public class NetworkUtil {
     public static final int LONG_SIZE = 8;
     public static final int BITS_IN_BYTE = 8;
 
+    public static void send(OutputStream out, byte[] array, int size) throws IOException {
+        out.write(array,0,size);
+    }
+
     public static void send(OutputStream out, int n) throws IOException {
         byte[] result = new byte[4];
         for (int i = INTEGER_SIZE-1; i >= 0; i--) {
@@ -80,6 +84,12 @@ public class NetworkUtil {
     }
     public static byte[] cloneTo(byte[] arr, byte[] target){
         for (int i = 0; i < arr.length; i++) {
+            target[i] = arr[i];
+        }
+        return target;
+    }
+    public static byte[] cloneTo(byte[] arr, byte[] target, int start, int stop){
+        for (int i = start; i < stop; i++) {
             target[i] = arr[i];
         }
         return target;

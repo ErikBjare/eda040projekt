@@ -29,7 +29,7 @@ public class Updater extends Thread {
 //                LogUtil.info("hardware returned length: "+len);
             }
 //            LogUtil.info("about to enter setCurrentFrame");
-            monitor.setCurrentFrame(tempFrame, hardware.motionDetected(), System.currentTimeMillis());
+            monitor.setCurrentFrame(len , tempFrame, hardware.motionDetected(), System.currentTimeMillis());
         }
         monitor.shutdown();
     }

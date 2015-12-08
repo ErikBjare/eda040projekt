@@ -63,7 +63,7 @@ public class NewFrame extends Message {
     protected void sendPayload(Socket socket) throws IOException {
         OutputStream out = socket.getOutputStream();
         NetworkUtil.send(out, size);
-        out.write(frame);
+        NetworkUtil.send(out, frame, size);
         NetworkUtil.writeBool(out, motionDetected);
         NetworkUtil.send(out, timestamp);
     }
