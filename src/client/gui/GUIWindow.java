@@ -19,14 +19,14 @@ import java.util.*;
 /**
  * Created by von on 2015-11-08.
  */
-public class GUIMain extends JFrame implements Observer {
+public class GUIWindow extends JFrame implements Observer {
     public SyncModeControl syncButtons;
     public ModeControl modeButtons;
     public SystemMonitor monitor;
     public HashMap<Integer, CameraControl> cams;
     private JLabel currentSyncMode;
 
-    public GUIMain(String s, SystemMonitor monitor) {
+    public GUIWindow(String s, SystemMonitor monitor) {
         super(s);
         this.cams = new HashMap<>(8);
         this.monitor = monitor;
@@ -107,24 +107,6 @@ public class GUIMain extends JFrame implements Observer {
             cameraPlacement.add(cams.get(id));
             monitor.addObserver(cams.get(id));
         }
-        //TODO Add correct bordering. Now hardcoded
-//        String[] cameraPlacements = new String[]{"East", "West"};
-//        int i = 0;
-//        for (int id : monitor.getCameraIds()) {
-//            LogUtil.info("Found id:" + id);
-//            cams.put(id, new CameraControl(monitor, id));
-//            add(cams.get(id), cameraPlacements[i]);
-//            monitor.addObserver(cams.get(id));
-//            i++;
-//
-//        }
-//
-//        for (int i = 0; i < monitor.getNrCameras(); i++) {
-//            cams[i] = new CameraControl();
-//            add(cams[i], BorderLayout.SOUTH);
-//        }
-
-        //update    (monitor, this);
         pack();
         setVisible(true);
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -184,15 +166,11 @@ public class GUIMain extends JFrame implements Observer {
 
     public static void main(String[] args) {
         SystemMonitor monitor = new SystemMonitor();
-
-//        Camera[] cameras = {new Camera(monitor, "localhost", 9191, 1)};
         ArrayList<Camera> cameras = new ArrayList<>();
         try {
             for (int i = 0; i < args.length; i += 2) {
                 cameras.add(new Camera(monitor, args[i], Integer.parseInt(args[i + 1]), i / 2));
             }
-
-
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (ConnectException e) {
@@ -201,13 +179,8 @@ public class GUIMain extends JFrame implements Observer {
         Animator anim = new Animator(monitor);
         monitor.init(cameras);
 
-        GUIMain gui = new GUIMain(Constants.GUI_TITLE, monitor);
+        GUIWindow gui = new GUIWindow(Constants.GUI_TITLE, monitor);
         anim.start();
-//        sleep(100);
-        Random random = new Random();
-//        byte[] initialImage = new byte[10000];
-//        random.nextBytes(initialImage);
-//        gui.cams[0].displayImage(initialImage);
         monitor.addObserver(gui);
     }
 }
