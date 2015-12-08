@@ -16,7 +16,13 @@ public class Updater extends Thread {
 
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
+
 //            LogUtil.info("Updater loop entered");
+            try {
+                monitor.waitForNextFrame();
+            } catch (InterruptedException e) {
+                LogUtil.exception(e);
+            }
             int len = 0;
             while (len <= 0){
                 len = hardware.getJPEG(tempFrame, 0);

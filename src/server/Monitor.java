@@ -32,6 +32,23 @@ public class Monitor {
         return lastFrame.length;
     }
 
+    public synchronized void waitForNextFrame() throws InterruptedException {
+        long frameMsInterval;
+        if (mode == Mode.Idle || mode == Mode.ForceIdle) {
+            frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
+        } else {
+            frameMsInterval = 1000 / Constants.MOVIE_FRAMERATE;
+        }
+        long now = System.currentTimeMillis();
+        long wakeup = lastSentFrameTime + frameMsInterval;
+        while (now < wakeup) {
+            long timeLeft = wakeup-now;
+//            LogUtil.info("sleeping for timeLeft: " + timeLeft + "("+newPicArrived+")");
+            wait(timeLeft);
+            now = System.currentTimeMillis();
+        }
+    }
+
     public synchronized void setCurrentFrame(byte[] tmp, boolean motion, long timeStamp) {
         newPicArrived = true; //A new picture available
         // TODO: How necessary is it to clone
@@ -67,20 +84,6 @@ public class Monitor {
 //            LogUtil.info("sendNext sleeping until woken");
             wait();
 //            LogUtil.info("sendNext woken!");
-        }
-        long frameMsInterval;
-        if (mode == Mode.Idle || mode == Mode.ForceIdle) {
-            frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
-        } else {
-            frameMsInterval = 1000 / Constants.MOVIE_FRAMERATE;
-        }
-        long now = System.currentTimeMillis();
-        long wakeup = lastSentFrameTime + frameMsInterval;
-        while (now < wakeup) {
-            long timeLeft = wakeup-now;
-//            LogUtil.info("sleeping for timeLeft: " + timeLeft + "("+newPicArrived+")");
-            wait(timeLeft);
-            now = System.currentTimeMillis();
         }
         mess.fill(lastFrame.length, lastFrame, timeStamp, motionDetected);
         mess.send(socket);
