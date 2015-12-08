@@ -49,8 +49,6 @@ public class SystemMonitor extends Observable {
         return mode;
     }
     public synchronized void animate() throws InterruptedException {
-
-
             //TODO Implement for more cameras aswell as synchronization
 
             ImageFrame next = images.peek();
@@ -118,7 +116,6 @@ public class SystemMonitor extends Observable {
 //        LogUtil.info("Priority queue size : " + images.size());
         if(image.getFrame().motionDetected && mode == Mode.Idle){
            motionDetected(image.getCamera());
-            //TODO Alert which camera recieved the motion-detection
         }
         images.add(image);
         notifyAll();

@@ -36,7 +36,7 @@ public class ModeControl extends ButtonGroup implements Observer {
         SystemMonitor monitor = (SystemMonitor) o;
         if((GUIUpdate) arg == GUIUpdate.ModeUpdate){
             // TODO: Print actual string of mode, rather than int
-            modeType.setText("Mode:" + monitor.getMode());
+            modeType.setText("Mode:" + Mode.toString(monitor.getMode()));
             if(monitor.getMode() == Mode.Movie) {
 
                 Enumeration<AbstractButton> e = this.getElements();

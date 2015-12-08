@@ -32,7 +32,7 @@ public class CameraControl extends JPanel implements Observer {
         panel = new JPanel();
 
         motion = new JLabel("<No Motion Detected>");
-        delay = new JLabel("Network Delay: 0ms");
+        delay = new JLabel("Delay: 0ms");
         nbrCameras = system.getNrCameras();
 
 
@@ -109,8 +109,7 @@ public class CameraControl extends JPanel implements Observer {
     }
 
     public void displayDelay(long delay) {
-        this.delay.setText("Network Delay: "+Long.toString((System.currentTimeMillis()-delay))+"ms" );
-
+        this.delay.setText("Delay: "+Long.toString((System.currentTimeMillis()-delay))+"ms" );
     }
 
     public void update(Observable observable, Object o) {

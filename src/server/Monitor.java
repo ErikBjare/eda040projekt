@@ -2,7 +2,6 @@ package server;
 
 import common.Mode;
 import common.NetworkUtil;
-import common.protocol.Constants;
 import common.protocol.NewFrame;
 import server_util.LogUtil;
 
@@ -36,26 +35,28 @@ public class Monitor {
     }
 
     public synchronized void waitForNextFrame() throws InterruptedException {
-        recalcFrameRate();
         long now = System.currentTimeMillis();
         long wakeup = lastSentFrameTime + frameMsInterval;
         while (now < wakeup) {
             long timeLeft = wakeup-now;
-//            LogUtil.info("sleeping for timeLeft: " + timeLeft + "("+newPicArrived+")");
+//            LogUtil.info("updater sleeping for timeLeft: " + timeLeft + "("+newPicArrived+")");
             wait(timeLeft);
+            recalcFrameRate();
             now = System.currentTimeMillis();
+            wakeup = lastSentFrameTime + frameMsInterval;
         }
     }
 
     public void recalcFrameRate() {
         if (mode == Mode.Idle || mode == Mode.ForceIdle) {
-            frameMsInterval = 1000 / Constants.IDLE_FRAMERATE;
+            frameMsInterval = 1000 / common.Constants.IDLE_FRAMERATE;
         } else {
-            frameMsInterval = 1000 / Constants.MOVIE_FRAMERATE;
+            frameMsInterval = 1000 / common.Constants.MOVIE_FRAMERATE;
         }
     }
 
     public synchronized void setCurrentFrame(int length, byte[] tmp, boolean motion, long timeStamp) {
+//        LogUtil.info("entered setCurrentFrame");
         newPicArrived = true; //A new picture available
         NetworkUtil.cloneTo(tmp, lastFrame, 0,length);
         this.lastLength = length;
@@ -88,7 +89,7 @@ public class Monitor {
 //        LogUtil.info("entered sendNext");
         while(!newPicArrived) {
 //            LogUtil.info("sendNext sleeping until woken");
-            wait();
+            wait(50);
 //            LogUtil.info("sendNext woken!");
         }
         mess.fill(lastLength, lastFrame, timeStamp, motionDetected);

@@ -10,4 +10,6 @@ public class Constants {
     public static final long RETARDEDNESS = 100;
     public static final int PROXY_PORT_START = 5656;
     public static final int CAMERA_PORT = 9191;
+    public static int IDLE_FRAMERATE = 1;
+    public static int MOVIE_FRAMERATE = 25;
 }
