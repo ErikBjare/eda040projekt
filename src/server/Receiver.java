@@ -35,19 +35,19 @@ public class Receiver extends Thread {
 //                LogUtil.info("Received message: "+firstByte);
                 switch (firstByte) {
                     case 0: //Connect
-                        LogUtil.info("Receiving message: Connect");
+//                        LogUtil.info("Receiving message: Connect");
                         Connect c = new Connect(socket);
                         LogUtil.info("Received message: Connect");
                         monitor.connect();
                         break;
                     case 1: //Change Mode
-                        LogUtil.info("Receiving message: ModeChange");
+//                        LogUtil.info("Receiving message: ModeChange");
                         ModeChange mc = new ModeChange(socket);
                         LogUtil.info("Received message: ModeChange");
                         monitor.setMode(mc.newMode);
                         break;
                     case 5: //Shutdown message
-                        LogUtil.info("Receiving message: Shutdown");
+//                        LogUtil.info("Receiving message: Shutdown");
                         Shutdown sd = new Shutdown(socket);
                         LogUtil.info("Received message: Shutdown");
                         monitor.shutdown();

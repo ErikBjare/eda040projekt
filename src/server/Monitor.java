@@ -39,7 +39,7 @@ public class Monitor {
         this.timeStamp = timeStamp;
         motionDetected = motion;
         notifyAll();
-        LogUtil.info("about to exit setCurrentFrame");
+//        LogUtil.info("about to exit setCurrentFrame");
     }
 
     /* Connects the monitor to the camera */
@@ -62,11 +62,11 @@ public class Monitor {
 
     public synchronized void sendNext(Socket socket) throws InterruptedException, IOException, ShutdownException {
         if (isShutdown) throw new ShutdownException();
-        LogUtil.info("entered sendNext");
+//        LogUtil.info("entered sendNext");
         while(!newPicArrived) {
-            LogUtil.info("sendNext sleeping until woken");
+//            LogUtil.info("sendNext sleeping until woken");
             wait();
-            LogUtil.info("sendNext woken!");
+//            LogUtil.info("sendNext woken!");
         }
         long frameMsInterval;
         if (mode == Mode.Idle || mode == Mode.ForceIdle) {
@@ -78,13 +78,13 @@ public class Monitor {
         long wakeup = lastSentFrameTime + frameMsInterval;
         while (now < wakeup) {
             long timeLeft = wakeup-now;
-            LogUtil.info("sleeping for timeLeft: " + timeLeft + "("+newPicArrived+")");
+//            LogUtil.info("sleeping for timeLeft: " + timeLeft + "("+newPicArrived+")");
             wait(timeLeft);
             now = System.currentTimeMillis();
         }
         mess.fill(lastFrame.length, lastFrame, timeStamp, motionDetected);
         mess.send(socket);
-        LogUtil.info("sentNext sent new message");
+//        LogUtil.info("sentNext sent new message");
         newPicArrived = false;
         lastSentFrameTime = System.currentTimeMillis();
         notifyAll();

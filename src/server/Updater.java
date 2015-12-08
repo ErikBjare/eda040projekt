@@ -16,13 +16,13 @@ public class Updater extends Thread {
 
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
-            LogUtil.info("Updater loop entered");
+//            LogUtil.info("Updater loop entered");
             int len = 0;
             while (len <= 0){
                 len = hardware.getJPEG(tempFrame, 0);
-                LogUtil.info("hardware returned length: "+len);
+//                LogUtil.info("hardware returned length: "+len);
             }
-            LogUtil.info("about to enter setCurrentFrame");
+//            LogUtil.info("about to enter setCurrentFrame");
             monitor.setCurrentFrame(tempFrame, hardware.motionDetected(), System.currentTimeMillis());
         }
         monitor.shutdown();
